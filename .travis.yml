@@ -1,0 +1,9 @@
+jdk:
+  - oraclejdk11
+language: java
+sudo: enabled
+before_install:
+  - "chmod +x mvnw"
+install:
+  - "mvn -N io.takari:maven:wrapper"
+  - "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
