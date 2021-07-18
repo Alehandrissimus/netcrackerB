@@ -10,32 +10,32 @@ import java.util.Collection;
 public class QuestionDAOImpl implements QuestionDAO {
 
     @Override
-    public QuestionImpl getQuestionById(BigInteger id) {
+    public Question getQuestionById(BigInteger id) {
         return null;
     }
 
     @Override
-    public void createQuestion(QuestionImpl question) {
+    public void createQuestion(Question question) {
 
     }
 
     @Override
-    public void deleteQuestion(QuestionImpl question) {
+    public void deleteQuestion(Question question) {
 
     }
 
     @Override
-    public Collection<QuestionImpl> getAllQuestions() {
+    public Collection<Question> getAllQuestions() {
         return null;
     }
 
     @Override
-    public QuestionImpl updateQuestion(QuestionImpl question) {
+    public Question updateQuestion(Question question) {
         return null;
     }
 
     @Override
-    public Collection<QuestionImpl> updateAllQuestionAnswers(Collection<QuestionImpl> questions) {
+    public Collection<Question> updateAllQuestionAnswers(Collection<Question> questions) {
         return null;
     }
 }

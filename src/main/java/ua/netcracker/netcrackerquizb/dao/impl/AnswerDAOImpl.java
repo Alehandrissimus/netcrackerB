@@ -9,7 +9,7 @@ import java.math.BigInteger;
 public class AnswerDAOImpl implements AnswerDAO {
 
     @Override
-    public AnswerImpl getAnswerById(BigInteger id) {
+    public Answer getAnswerById(BigInteger id) {
         return null;
     }
 
@@ -19,12 +19,12 @@ public class AnswerDAOImpl implements AnswerDAO {
     }
 
     @Override
-    public void deleteAnswer(AnswerImpl answer) {
+    public void deleteAnswer(Answer answer) {
 
     }
 
     @Override
-    public AnswerImpl updateAnswer(AnswerImpl answer) {
+    public Answer updateAnswer(Answer answer) {
         return null;
     }
 }

@@ -6,11 +6,11 @@ import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import java.math.BigInteger;
 
 public interface AnswerDAO {
-    AnswerImpl getAnswerById(BigInteger id);
+    Answer getAnswerById(BigInteger id);
 
     void createAnswer();
 
-    void deleteAnswer(AnswerImpl answer);
+    void deleteAnswer(Answer answer);
 
-    AnswerImpl updateAnswer(AnswerImpl answer);
+    Answer updateAnswer(Answer answer);
 }

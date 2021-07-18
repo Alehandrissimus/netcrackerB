@@ -14,42 +14,42 @@ import java.util.Map;
 public class AnnouncementDAOImpl implements AnnouncementDAO {
 
     @Override
-    public void deleteAnnouncement(AnnouncementImpl announcement) {
+    public void deleteAnnouncement(Announcement announcement) {
 
     }
 
     @Override
-    public AnnouncementImpl editAnnouncement(AnnouncementImpl announcement, Map<String, String> mapAnnouncement) {
+    public Announcement editAnnouncement(Announcement announcement, Map<String, String> mapAnnouncement) {
         return null;
     }
 
     @Override
-    public void addParticipant(AnnouncementImpl announcement, UserImpl user) {
+    public void addParticipant(Announcement announcement, User user) {
 
     }
 
     @Override
-    public List<AnnouncementImpl> getPopular() {
+    public List<Announcement> getPopular() {
         return null;
     }
 
     @Override
-    public Collection<AnnouncementImpl> getLikedByUser(UserImpl user) {
+    public Collection<Announcement> getLikedByUser(User user) {
         return null;
     }
 
     @Override
-    public void getParticipantById(AnnouncementImpl announcement, UserImpl user) {
+    public void getParticipantById(Announcement announcement, User user) {
 
     }
 
     @Override
-    public AnnouncementImpl getByTitle(String title) {
+    public Announcement getByTitle(String title) {
         return null;
     }
 
     @Override
-    public AnnouncementImpl getPopular(BigInteger number) {
+    public Announcement getPopular(BigInteger number) {
         return null;
     }
 }

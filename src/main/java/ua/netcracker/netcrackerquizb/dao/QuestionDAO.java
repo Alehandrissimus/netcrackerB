@@ -7,15 +7,15 @@ import java.math.BigInteger;
 import java.util.Collection;
 
 public interface QuestionDAO {
-    QuestionImpl getQuestionById(BigInteger id);
+    Question getQuestionById(BigInteger id);
 
-    void createQuestion(QuestionImpl question);
+    void createQuestion(Question question);
 
-    void deleteQuestion(QuestionImpl question);
+    void deleteQuestion(Question question);
 
-    Collection<QuestionImpl> getAllQuestions();
+    Collection<Question> getAllQuestions();
 
-    QuestionImpl updateQuestion(QuestionImpl question);
+    Question updateQuestion(Question question);
 
-    Collection<QuestionImpl> updateAllQuestionAnswers(Collection<QuestionImpl> questions);
+    Collection<Question> updateAllQuestionAnswers(Collection<Question> questions);
 }
