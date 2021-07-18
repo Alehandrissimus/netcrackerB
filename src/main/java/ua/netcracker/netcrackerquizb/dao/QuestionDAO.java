@@ -1,20 +1,21 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.model.Question;
+import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
 
 import java.math.BigInteger;
 import java.util.Collection;
 
 public interface QuestionDAO {
-    Question getQuestionById(BigInteger id);
+    QuestionImpl getQuestionById(BigInteger id);
 
-    void createQuestion(Question question);
+    void createQuestion(QuestionImpl question);
 
-    void deleteQuestion(Question question);
+    void deleteQuestion(QuestionImpl question);
 
-    Collection<Question> getAllQuestions();
+    Collection<QuestionImpl> getAllQuestions();
 
-    void updateQuestion(Question question);
+    QuestionImpl updateQuestion(QuestionImpl question);
 
-    void updateAllQuestionAnswers(Collection<Question> questions);
+    Collection<QuestionImpl> updateAllQuestionAnswers(Collection<QuestionImpl> questions);
 }

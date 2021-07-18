@@ -2,6 +2,7 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 
 import ua.netcracker.netcrackerquizb.dao.QuestionDAO;
 import ua.netcracker.netcrackerquizb.model.Question;
+import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -9,32 +10,32 @@ import java.util.Collection;
 public class QuestionDAOImpl implements QuestionDAO {
 
     @Override
-    public Question getQuestionById(BigInteger id) {
+    public QuestionImpl getQuestionById(BigInteger id) {
         return null;
     }
 
     @Override
-    public void createQuestion(Question question) {
+    public void createQuestion(QuestionImpl question) {
 
     }
 
     @Override
-    public void deleteQuestion(Question question) {
+    public void deleteQuestion(QuestionImpl question) {
 
     }
 
     @Override
-    public Collection<Question> getAllQuestions() {
+    public Collection<QuestionImpl> getAllQuestions() {
         return null;
     }
 
     @Override
-    public void updateQuestion(Question question) {
-
+    public QuestionImpl updateQuestion(QuestionImpl question) {
+        return null;
     }
 
     @Override
-    public void updateAllQuestionAnswers(Collection<Question> questions) {
-
+    public Collection<QuestionImpl> updateAllQuestionAnswers(Collection<QuestionImpl> questions) {
+        return null;
     }
 }

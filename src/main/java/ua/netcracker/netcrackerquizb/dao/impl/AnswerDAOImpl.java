@@ -2,12 +2,14 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
 import ua.netcracker.netcrackerquizb.model.Answer;
+import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 
 import java.math.BigInteger;
 
 public class AnswerDAOImpl implements AnswerDAO {
+
     @Override
-    public Answer getAnswerById(BigInteger id) {
+    public AnswerImpl getAnswerById(BigInteger id) {
         return null;
     }
 
@@ -17,12 +19,12 @@ public class AnswerDAOImpl implements AnswerDAO {
     }
 
     @Override
-    public void deleteAnswer(Answer answer) {
+    public void deleteAnswer(AnswerImpl answer) {
 
     }
 
     @Override
-    public Answer updateAnswer(Answer answer) {
+    public AnswerImpl updateAnswer(AnswerImpl answer) {
         return null;
     }
 }
