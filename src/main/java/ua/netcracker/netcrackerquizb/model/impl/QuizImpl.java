@@ -1,5 +1,6 @@
 package ua.netcracker.netcrackerquizb.model.impl;
 
+import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.User;
