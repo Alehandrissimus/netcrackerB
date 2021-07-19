@@ -1,4 +1,6 @@
 package ua.netcracker.netcrackerquizb.service.Impl;
 
-public class AnnouncementServiceImpl {
+import ua.netcracker.netcrackerquizb.service.AnnouncementService;
+
+public class AnnouncementServiceImpl implements AnnouncementService {
 }
