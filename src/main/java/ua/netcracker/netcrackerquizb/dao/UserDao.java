@@ -6,7 +6,7 @@ import ua.netcracker.netcrackerquizb.model.User;
 
 public interface UserDao {
 
-  User getUser(BigInteger id);
+  User getUserById(BigInteger id);
   User getUserByEmail(String email);
   void deleteUser(BigInteger id);
   User createUser(String email, String lastName, String firstName, String password);
