@@ -1,8 +1,13 @@
 package ua.netcracker.netcrackerquizb.model;
 
+import java.math.BigInteger;
 import java.util.Collection;
 
 public interface Question {
+
+    void setId(BigInteger id);
+
+    BigInteger getId();
 
     void setQuestion(String question);
 
