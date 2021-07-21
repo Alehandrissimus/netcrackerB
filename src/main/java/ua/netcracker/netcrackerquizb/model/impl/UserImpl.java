@@ -18,6 +18,50 @@ public class UserImpl implements User {
   private Set<BigInteger> accomplishedQuizes;
   private String emailCode;
 
+  @Override
+  public void setId(BigInteger id) {
+    this.id = id;
+  }
+
+  @Override
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  @Override
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  @Override
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  @Override
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  @Override
+  public void setRole(UserRoles role) {
+    this.role = role;
+  }
+
+  @Override
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  @Override
+  public void setFavoriteQuizes(Set<BigInteger> favoriteQuizes) {
+    this.favoriteQuizes = favoriteQuizes;
+  }
+
+  @Override
+  public void setAccomplishedQuizes(Set<BigInteger> accomplishedQuizes) {
+    this.accomplishedQuizes = accomplishedQuizes;
+  }
 
   @Override
   public BigInteger getId() {
