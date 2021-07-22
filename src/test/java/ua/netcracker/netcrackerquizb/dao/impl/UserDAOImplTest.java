@@ -2,11 +2,14 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 
 import java.math.BigInteger;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test.*;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserDAOImplTest {
@@ -16,7 +19,7 @@ public class UserDAOImplTest {
   
   @Test
   void getUserById() {
-    Assertions.assertEquals(true,true);
+    assertEquals(true, true);
   }
 
   @Test
