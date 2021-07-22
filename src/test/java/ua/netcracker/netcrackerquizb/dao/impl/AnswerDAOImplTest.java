@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigInteger;
 
@@ -17,8 +18,8 @@ public class AnswerDAOImplTest {
     @Test
     void getAnswerByIdTest() {
         Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
-        assert(answer != null);
-        assert(answer.getValue().equals("America"));
+        assertNotNull(answer);
+        assertEquals(answer.getValue(), "America");
     }
 
     @Test
@@ -31,24 +32,41 @@ public class AnswerDAOImplTest {
         answerImpl.setQuestionId(questionId);
 
         answerDAO.createAnswer(answerImpl);
-        Answer newAnswer = answerDAO.getAnswerByTitle(value);
+        Answer anAnswer = answerDAO.getAnswerByTitle(value);
 
-        assert(newAnswer.getValue().equals(answerImpl.getValue()));
-
-//        answerDAO.deleteAnswer(newAnswer.getId());
-//        Answer nullAnswer = answerDAO.getAnswerByTitle(value);
-//
-//        assert(nullAnswer == null);
-
+        assertEquals(anAnswer.getValue(), answerImpl.getValue());
+        assertEquals(anAnswer.getAnswer(), answerImpl.getAnswer());
+        assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
     }
 
     @Test
     void deleteAnswerTest() {
+        Answer nullAnswer = answerDAO.getAnswerByTitle("Antarctica");
+        assertNotNull(nullAnswer);
 
+        answerDAO.deleteAnswer(nullAnswer.getId());
+        assertNull(answerDAO.getAnswerByTitle("Antarctica"));
     }
 
     @Test
     void updateAnswerTest() {
+        Answer newAnswer = new AnswerImpl();
+        newAnswer.setValue("Moon");
+        newAnswer.setAnswer(false);
+        newAnswer.setQuestionId(BigInteger.valueOf(2));
+        answerDAO.createAnswer(newAnswer);
 
+        Answer testNewAnswer = answerDAO.getAnswerByTitle("Moon");
+        newAnswer.setId(testNewAnswer.getId());
+        assertEquals(testNewAnswer.getAnswer(), newAnswer.getAnswer());
+        assertEquals(testNewAnswer.getQuestionId(), newAnswer.getQuestionId());
+        assertEquals(testNewAnswer.getValue(), newAnswer.getValue());
+
+        answerDAO.deleteAnswer(testNewAnswer.getId());
+        answerDAO.deleteAnswer(newAnswer.getId());
+
+        assertNull(answerDAO.getAnswerByTitle("Moon"));
     }
 }
+
+
