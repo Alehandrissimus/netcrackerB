@@ -8,12 +8,12 @@ public class AnswerImpl implements Answer {
 
     private BigInteger id;
     private String value;
-    private Boolean answer = false;
+    private Boolean answer;
     private BigInteger questionId;
 
     @Override
     public String getValue() {
-        return null;
+        return value;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class AnswerImpl implements Answer {
 
     @Override
     public BigInteger getQuestionId() {
-        return null;
+        return questionId;
     }
 
     @Override

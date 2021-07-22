@@ -1,7 +1,8 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
@@ -9,20 +10,23 @@ import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import java.math.BigInteger;
 import java.sql.*;
 
+@Repository
 public class AnswerDAOImpl implements AnswerDAO {
     private final static String SQL_GET_ANSWER_BY_ID = "SELECT * FROM answer WHERE id_answer = %d";
-    private final static String SQL_CREATE_ANSWER = "INSERT INTO answer VALUES(s_answer.NEXTVAL, %s, %d, %d)";
+    private final static String SQL_GET_ANSWER_BY_TITLE = "SELECT * FROM answer WHERE text = '%s'";
+    private final static String SQL_CREATE_ANSWER = "INSERT INTO answer VALUES(s_answer.NEXTVAL, '%s', %d, %d)";
     private final static String SQL_DELETE_ANSWER = "DELETE answer WHERE id_answer = %d";
     private final static String SQL_UPDATE_ANSWER =
-            "UPDATE answer SET text = %s, is_true = %d, question = %d WHERE id_answer = %d";
-
-    private final static String URL = "";
-    private final static String USERNAME = "";
-    private final static String PASSWORD = "";
+            "UPDATE answer SET text = '%s', is_true = %d, question = %d WHERE id_answer = %d";
 
     private static Connection connection;
 
-    static {
+    @Autowired
+    AnswerDAOImpl(
+            @Value("${spring.datasource.url}") String URL,
+            @Value("${spring.datasource.username}") String USERNAME,
+            @Value("${spring.datasource.password}") String PASSWORD
+    ) {
         try {
             Class.forName("oracle.jdbc.OracleDriver");
         } catch (ClassNotFoundException e) {
@@ -35,9 +39,6 @@ public class AnswerDAOImpl implements AnswerDAO {
         }
     }
 
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
-
     @Override
     public Answer getAnswerById(BigInteger id) {
         Answer answer = new AnswerImpl();
@@ -48,12 +49,30 @@ public class AnswerDAOImpl implements AnswerDAO {
             answer.setValue(resultSet.getString("text"));
             answer.setAnswer(resultSet.getInt("is_true") == 1);
             answer.setQuestionId(BigInteger.valueOf(resultSet.getInt("question")));
+            answer.setId(id);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
         return answer;
-        //return jdbcTemplate.queryForObject(String.format(SQL_GET_ANSWER_BY_ID, id), Answer.class);
     }
+
+    @Override
+    public Answer getAnswerByTitle(String title) {
+        Answer answer = new AnswerImpl();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(String.format(SQL_GET_ANSWER_BY_TITLE, title));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            answer.setId(BigInteger.valueOf(resultSet.getInt("id_answer")));
+            answer.setValue(title);
+            answer.setAnswer(resultSet.getInt("is_true") == 1);
+            answer.setQuestionId(BigInteger.valueOf(resultSet.getInt("question")));
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return answer;
+    }
+
 
     @Override
     public void createAnswer(Answer answer) {
@@ -64,18 +83,16 @@ public class AnswerDAOImpl implements AnswerDAO {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        //jdbcTemplate.update(String.format(SQL_CREATE_ANSWER, answer.getValue(), answer.getAnswer(), questionId));
     }
 
     @Override
-    public void deleteAnswer(Answer answer) {
+    public void deleteAnswer(BigInteger id) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(String.format(SQL_DELETE_ANSWER, answer.getId()));
+            PreparedStatement preparedStatement = connection.prepareStatement(String.format(SQL_DELETE_ANSWER, id));
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        //jdbcTemplate.update(String.format(SQL_DELETE_ANSWER, answer.getId()));
     }
 
     @Override
@@ -87,6 +104,5 @@ public class AnswerDAOImpl implements AnswerDAO {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        //return jdbcTemplate.queryForObject(String.format(SQL_UPDATE_ANSWER, answer.getValue(), answer.getAnswer(), questionId, answer.getId()), Answer.class);
     }
 }
