@@ -43,6 +43,7 @@ public class AnswerDAOImplTest {
         assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
 
         answerDAO.deleteAnswer(anAnswer.getId());
+        assertNull(answerDAO.getAnswerByTitle("Antarctica"));
     }
 
     @Test
