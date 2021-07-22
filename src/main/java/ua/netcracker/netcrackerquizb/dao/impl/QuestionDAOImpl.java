@@ -57,8 +57,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public Question getQuestionById(BigInteger id, Collection<Answer> answers) {
         Question question = new QuestionImpl();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(getQuestionById);
+        try(PreparedStatement preparedStatement = connection.prepareStatement(getQuestionById)) {
             preparedStatement.setInt(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) return null;
@@ -95,13 +94,9 @@ public class QuestionDAOImpl implements QuestionDAO {
         return question;
     }
 
-    //need quiz id
-    //после вызова createQuestion по идее в сервисе идет вызов createAnswer answerDAO
-    //мб нужно вернуть id созданного question?
     @Override
     public void createQuestion(Question question, BigInteger quizId) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(createQuestion);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(createQuestion)) {
             preparedStatement.setString(1, question.getQuestion());
             preparedStatement.setInt(2, question.getQuestionType().ordinal());
             preparedStatement.setInt(3, quizId.intValue());
@@ -171,8 +166,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public Collection<Question> getAllQuestions(BigInteger quizId) {
         Collection<Question> questions = new ArrayList<>();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(getAllQuestions);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getAllQuestions)){
             preparedStatement.setInt(1, quizId.intValue());
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -215,8 +209,7 @@ public class QuestionDAOImpl implements QuestionDAO {
 
     @Override
     public void updateQuestion(Question question) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(updateQuestion);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuestion)) {
             preparedStatement.setString(1, question.getQuestion());
             preparedStatement.setInt(2, question.getQuestionType().ordinal());
             preparedStatement.setInt(3, question.getId().intValue());

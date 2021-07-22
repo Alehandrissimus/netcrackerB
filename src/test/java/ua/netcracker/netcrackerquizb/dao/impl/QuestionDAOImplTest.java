@@ -1,6 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Question;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class QuestionDAOImplTest {
@@ -19,13 +21,15 @@ class QuestionDAOImplTest {
     private QuestionDAOImpl questionDAO;
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuestionByIdTest() {
         Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
         assertNotNull(question);
-        assertEquals(question.getQuestion(), "Ukraine location?");
+        assertEquals("Ukraine location?", question.getQuestion());
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createQuestionTest() {
         BigInteger quizId = BigInteger.valueOf(1);
         String questionText = "Where is?";
@@ -35,19 +39,20 @@ class QuestionDAOImplTest {
 
         questionDAO.createQuestion(questionModel, quizId);
 
-        boolean bool = false;
+        boolean isFound = false;
         Collection<Question> questions = questionDAO.getAllQuestions(quizId);
         for(Question question : questions) {
             if(question.getQuestion().equals(questionText)) {
-                bool = true;
+                isFound = true;
             }
         }
-        assertTrue(bool);
+        assertTrue(isFound);
 
         questionDAO.deleteQuestion(questionModel, quizId);
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuestionsByQuizTest() {
         Collection<Question> questions = questionDAO.getAllQuestions(BigInteger.valueOf(1));
         for (Question question : questions) {
@@ -56,16 +61,17 @@ class QuestionDAOImplTest {
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateQuestionTest() {
-        BigInteger quizId = BigInteger.valueOf(3);
-        Question questionOld = questionDAO.getQuestionById(quizId, new ArrayList<>());
+        BigInteger questionId = BigInteger.valueOf(3);
+        Question questionOld = questionDAO.getQuestionById(questionId, new ArrayList<>());
         Question questionNew = questionOld;
         questionNew.setQuestion("New que");
         questionNew.setQuestionType(QuestionType.FOUR_ANSWERS);
 
         questionDAO.updateQuestion(questionNew);
 
-        Question questionGot  = questionDAO.getQuestionById(quizId, new ArrayList<>());
+        Question questionGot  = questionDAO.getQuestionById(questionId, new ArrayList<>());
 
         questionDAO.updateQuestion(questionOld);
         assertEquals(questionGot.getQuestion(), questionNew.getQuestion());
@@ -73,6 +79,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuestionReturningNull() {
         Question question = questionDAO.getQuestionById(BigInteger.valueOf(-1), new ArrayList<>());
         assertNull(question);
