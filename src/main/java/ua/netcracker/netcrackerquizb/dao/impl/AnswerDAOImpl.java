@@ -45,7 +45,7 @@ public class AnswerDAOImpl implements AnswerDAO {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(String.format(SQL_GET_ANSWER_BY_ID, id));
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
+            if(!resultSet.next()) return null;
             answer.setValue(resultSet.getString("text"));
             answer.setAnswer(resultSet.getInt("is_true") == 1);
             answer.setQuestionId(BigInteger.valueOf(resultSet.getInt("question")));

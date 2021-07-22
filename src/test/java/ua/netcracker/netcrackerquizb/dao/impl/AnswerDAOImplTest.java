@@ -1,6 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Answer;
@@ -8,6 +9,7 @@ import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 public class AnswerDAOImplTest {
@@ -16,13 +18,15 @@ public class AnswerDAOImplTest {
     private AnswerDAOImpl answerDAO;
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getAnswerByIdTest() {
         Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
         assertNotNull(answer);
-        assertEquals(answer.getValue(), "America");
+        assertEquals("America", answer.getValue());
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createAnswerTest() {
         BigInteger questionId = BigInteger.valueOf(1);
         String value = "Antarctica";
@@ -37,18 +41,28 @@ public class AnswerDAOImplTest {
         assertEquals(anAnswer.getValue(), answerImpl.getValue());
         assertEquals(anAnswer.getAnswer(), answerImpl.getAnswer());
         assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
+
+        answerDAO.deleteAnswer(anAnswer.getId());
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void deleteAnswerTest() {
-        Answer nullAnswer = answerDAO.getAnswerByTitle("Antarctica");
+        Answer ans = new AnswerImpl();
+        ans.setValue("Mars");
+        ans.setQuestionId(BigInteger.valueOf(1));
+        ans.setAnswer(false);
+        answerDAO.createAnswer(ans);
+
+        Answer nullAnswer = answerDAO.getAnswerByTitle("Mars");
         assertNotNull(nullAnswer);
 
         answerDAO.deleteAnswer(nullAnswer.getId());
-        assertNull(answerDAO.getAnswerByTitle("Antarctica"));
+        assertNull(answerDAO.getAnswerByTitle("Mars"));
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateAnswerTest() {
         Answer newAnswer = new AnswerImpl();
         newAnswer.setValue("Moon");
@@ -58,14 +72,20 @@ public class AnswerDAOImplTest {
 
         Answer testNewAnswer = answerDAO.getAnswerByTitle("Moon");
         newAnswer.setId(testNewAnswer.getId());
-        assertEquals(testNewAnswer.getAnswer(), newAnswer.getAnswer());
-        assertEquals(testNewAnswer.getQuestionId(), newAnswer.getQuestionId());
-        assertEquals(testNewAnswer.getValue(), newAnswer.getValue());
 
-        answerDAO.deleteAnswer(testNewAnswer.getId());
-        answerDAO.deleteAnswer(newAnswer.getId());
+        testNewAnswer.setAnswer(true);
+        testNewAnswer.setValue("Sun");
+        testNewAnswer.setQuestionId(BigInteger.valueOf(3));
+        answerDAO.updateAnswer(testNewAnswer);
 
-        assertNull(answerDAO.getAnswerByTitle("Moon"));
+        Answer finalAnswer = answerDAO.getAnswerByTitle("Sun");
+        assertEquals(testNewAnswer.getAnswer(), finalAnswer.getAnswer());
+        assertEquals(testNewAnswer.getQuestionId(), finalAnswer.getQuestionId());
+        assertEquals(testNewAnswer.getValue(), finalAnswer.getValue());
+
+        answerDAO.deleteAnswer(finalAnswer.getId());
+
+        assertNull(answerDAO.getAnswerByTitle("Sun"));
     }
 }
 
