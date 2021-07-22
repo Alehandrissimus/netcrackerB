@@ -6,19 +6,21 @@ import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.QuizDAO;
 import ua.netcracker.netcrackerquizb.model.*;
 import ua.netcracker.netcrackerquizb.model.QuizType;
+import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public class QuizDAOImpl implements QuizDAO {
 
-    private final static String SQL_SELECT_QUIZ_BY_TYPE = "SELECT * FROM QUIZ WHERE QUIZ_TYPE=? ORDER_BY(ID_QUIZ)";
-    private final static String SQL_SELECT_ALL_QUIZZES = "SELECT * FROM QUIZ";
-    private final static String SQL_SELECT_BY_ID = "SELECT * FROM QUIZ WHERE ID_QUIZ=?";
-    private final static String SQL_SELECT_BY_TITLE = "SELECT * FROM QUIZ WHERE TITLE=?";
+    private final static String SQL_SELECT_QUIZ_BY_TYPE = "SELECT * FROM QUIZ WHERE QUIZ_TYPE=? ORDER BY ID_QUIZ";
+    private final static String SQL_SELECT_ALL_QUIZZES = "SELECT * FROM QUIZ ORDER BY ID_QUIZ";
+    private final static String SQL_SELECT_BY_ID = "SELECT * FROM QUIZ WHERE ID_QUIZ=? ORDER BY ID_QUIZ";
+    private final static String SQL_SELECT_BY_TITLE = "SELECT * FROM QUIZ WHERE TITLE=? ORDER BY ID_QUIZ";
 
 
     private final static String SQL_UPDATE_QUIZ = "UPDATE QUIZ SET TITLE=?, DESCRIPTION=?, " +
@@ -109,12 +111,11 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.setInt(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-
             if(!resultSet.next()) return null;
 
-            quiz = new Quiz();
+            quiz = new QuizImpl();
 
-            quiz.setId(BigInteger.valueOf(resultSet.getInt("ID_QUIZ")));
+            quiz.setId(id);
             quiz.setTitle(resultSet.getString("TITLE"));
             quiz.setDescription(resultSet.getString("DESCRIPTION"));
             quiz.setQuizType(QuizType.values()[resultSet.getInt("QUIZ_TYPE")] );
@@ -131,14 +132,14 @@ public class QuizDAOImpl implements QuizDAO {
 
 
     @Override
-    public List<Quiz> getAllQuizzes() {
-        List<Quiz> quizzes = new ArrayList<>();
+    public Collection<Quiz> getAllQuizzes() {
+        Collection<Quiz> quizzes = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_QUIZZES)){
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Quiz quiz = new Quiz();
+                Quiz quiz = new QuizImpl();
 
                 quiz.setId(BigInteger.valueOf(resultSet.getInt("ID_QUIZ")));
                 quiz.setTitle(resultSet.getString("TITLE"));
@@ -167,10 +168,10 @@ public class QuizDAOImpl implements QuizDAO {
 
             if(!resultSet.next()) return null;
 
-            quiz = new Quiz();
+            quiz = new QuizImpl();
 
             quiz.setId(BigInteger.valueOf(resultSet.getInt("ID_QUIZ")));
-            quiz.setTitle(resultSet.getString("TITLE"));
+            quiz.setTitle(title);
             quiz.setDescription(resultSet.getString("DESCRIPTION"));
             quiz.setQuizType(QuizType.values()[resultSet.getInt("QUIZ_TYPE")]);
             quiz.setCreationDate(resultSet.getDate("CREATION_DATE"));
@@ -183,9 +184,9 @@ public class QuizDAOImpl implements QuizDAO {
     }
 
     @Override
-    public List<Quiz> getQuizzesByType(QuizType quizType) {
+    public Collection<Quiz> getQuizzesByType(QuizType quizType) {
 
-        List<Quiz> quizzes = new ArrayList<>();
+        Collection<Quiz> quizzes = new ArrayList<>();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_QUIZ_BY_TYPE)){
 
@@ -204,7 +205,7 @@ public class QuizDAOImpl implements QuizDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Quiz quiz = new Quiz();
+                Quiz quiz = new QuizImpl();
 
                 quiz.setId(BigInteger.valueOf(resultSet.getInt("ID_QUIZ")));
                 quiz.setTitle(resultSet.getString("TITLE"));
