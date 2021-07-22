@@ -1,30 +1,25 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.model.Announcement;
-import ua.netcracker.netcrackerquizb.model.User;
-import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
-import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
-
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public interface AnnouncementDAO {
-    void deleteAnnouncement(Announcement announcement);
+    void deleteAnnouncement(BigInteger id_announcement);
 
-    Announcement editAnnouncement(Announcement announcement, Map<String, String> mapAnnouncement);
+    void createAnnouncement(Announcement newAnnouncement);
 
-    void addParticipant(Announcement announcement, User user);
+    void editAnnouncement(Announcement newAnnouncement);
 
-    List<Announcement> getPopular();
+    void addParticipant(BigInteger id_announcement, BigInteger id_user);
 
-    Collection<Announcement> getLikedByUser(User user);
-
-    void getParticipantById(Announcement announcement, User user);
+    boolean getParticipantById(BigInteger id_announcement, BigInteger id_user);
 
     Announcement getByTitle(String title);
 
-    Announcement getPopular(BigInteger number);
+    Set<Announcement> getLikedByUser(BigInteger id_user);
+
+    List<Announcement> getPopular(int number);
 
 }
