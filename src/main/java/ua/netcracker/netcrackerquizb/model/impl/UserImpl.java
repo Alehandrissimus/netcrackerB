@@ -2,6 +2,7 @@ package ua.netcracker.netcrackerquizb.model.impl;
 
 import java.math.BigInteger;
 import java.util.Set;
+import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
 
@@ -15,24 +16,24 @@ public class UserImpl implements User {
   private UserRoles role;
   private String description;
   private boolean active;
-  private Set<BigInteger> favoriteQuizes;
-  private Set<BigInteger> accomplishedQuizes;
+  private Set<Quiz> favoriteQuizes;
+  private Set<Quiz> accomplishedQuizes;
   private String emailCode;
 
-  public Set<BigInteger> getAllFavoriteQuizes() {
+  public Set<Quiz> getAllFavoriteQuizes() {
     return favoriteQuizes;
   }
 
-  public Set<BigInteger> getAllAccomplishedQuizes() {
+  public Set<Quiz> getAllAccomplishedQuizes() {
     return favoriteQuizes;
   }
 
-  public void addFavoriteQuiz(BigInteger id) {
-    favoriteQuizes.add(id);
+  public void addFavoriteQuiz(Quiz quiz) {
+    favoriteQuizes.add(quiz);
   }
 
-  public void addAccomplishedQuiz(BigInteger id) {
-    accomplishedQuizes.add(id);
+  public void addAccomplishedQuiz(Quiz quiz) {
+    accomplishedQuizes.add(quiz);
   }
 
   public void removeFavoriteQuiz(BigInteger id) {
@@ -86,12 +87,12 @@ public class UserImpl implements User {
   }
 
   @Override
-  public void setFavoriteQuizes(Set<BigInteger> favoriteQuizes) {
+  public void setFavoriteQuizes(Set<Quiz> favoriteQuizes) {
     this.favoriteQuizes = favoriteQuizes;
   }
 
   @Override
-  public void setAccomplishedQuizes(Set<BigInteger> accomplishedQuizes) {
+  public void setAccomplishedQuizes(Set<Quiz> accomplishedQuizes) {
     this.accomplishedQuizes = accomplishedQuizes;
   }
 
@@ -131,12 +132,12 @@ public class UserImpl implements User {
   }
 
   @Override
-  public Set<BigInteger> getAccomplishedQuizes() {
+  public Set<Quiz> getAccomplishedQuizes() {
     return accomplishedQuizes;
   }
 
   @Override
-  public Set<BigInteger> getFavoriteQuizes() {
+  public Set<Quiz> getFavoriteQuizes() {
     return favoriteQuizes;
   }
 

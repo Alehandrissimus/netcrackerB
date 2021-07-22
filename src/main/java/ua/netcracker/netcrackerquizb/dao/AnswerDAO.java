@@ -7,9 +7,11 @@ import java.math.BigInteger;
 public interface AnswerDAO {
     Answer getAnswerById(BigInteger id);
 
+    Answer getAnswerByTitle(String title);
+
     void createAnswer(Answer answer);
 
-    void deleteAnswer(Answer answer);
+    void deleteAnswer(BigInteger id);
 
     void updateAnswer(Answer answer);
 }
