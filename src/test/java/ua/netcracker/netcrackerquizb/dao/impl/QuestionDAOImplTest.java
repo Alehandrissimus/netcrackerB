@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
 import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ class QuestionDAOImplTest {
     @Test
     void getQuestionByIdTest() {
         Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
-        assert (question != null);
-        assert (question.getQuestion().equals("Ukraine location?"));
+        assertNotNull(question);
+        assertEquals(question.getQuestion(), "Ukraine location?");
     }
 
     @Test
@@ -37,9 +38,11 @@ class QuestionDAOImplTest {
         boolean bool = false;
         Collection<Question> questions = questionDAO.getAllQuestions(quizId);
         for(Question question : questions) {
-            bool = question.getQuestion().equals(questionText);
+            if(question.getQuestion().equals(questionText)) {
+                bool = true;
+            }
         }
-        assert(bool);
+        assertTrue(bool);
 
         questionDAO.deleteQuestion(questionModel, quizId);
     }
@@ -48,12 +51,31 @@ class QuestionDAOImplTest {
     void getQuestionsByQuizTest() {
         Collection<Question> questions = questionDAO.getAllQuestions(BigInteger.valueOf(1));
         for (Question question : questions) {
-            assert (question.getQuestion() != null);
+            assertNotNull(question.getQuestion());
         }
     }
 
     @Test
     void updateQuestionTest() {
+        BigInteger quizId = BigInteger.valueOf(3);
+        Question questionOld = questionDAO.getQuestionById(quizId, new ArrayList<>());
+        Question questionNew = questionOld;
+        questionNew.setQuestion("New que");
+        questionNew.setQuestionType(QuestionType.FOUR_ANSWERS);
 
+        questionDAO.updateQuestion(questionNew);
+
+        Question questionGot  = questionDAO.getQuestionById(quizId, new ArrayList<>());
+
+        questionDAO.updateQuestion(questionOld);
+        assertEquals(questionGot.getQuestion(), questionNew.getQuestion());
+        assertEquals(questionGot.getQuestionType(), questionNew.getQuestionType());
     }
+
+    @Test
+    void getQuestionReturningNull() {
+        Question question = questionDAO.getQuestionById(BigInteger.valueOf(-1), new ArrayList<>());
+        assertNull(question);
+    }
+
 }

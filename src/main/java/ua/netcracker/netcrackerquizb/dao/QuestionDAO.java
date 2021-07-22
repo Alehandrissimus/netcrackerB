@@ -16,7 +16,6 @@ public interface QuestionDAO {
 
     Collection<Question> getAllQuestions(BigInteger id);
 
-    Question updateQuestion(Question question);
+    void updateQuestion(Question question);
 
-    Collection<Question> updateAllQuestionAnswers(Collection<Question> questions);
 }

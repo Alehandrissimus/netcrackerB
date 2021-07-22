@@ -54,4 +54,14 @@ public class QuestionImpl implements Question {
     public QuestionType getQuestionType() {
         return questionType;
     }
+
+    @Override
+    public String toString() {
+        return "QuestionImpl{" +
+                "idQuestion=" + idQuestion +
+                ", question='" + question + '\'' +
+                ", questionType=" + questionType +
+                ", answers=" + answers +
+                '}';
+    }
 }

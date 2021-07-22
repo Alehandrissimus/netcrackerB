@@ -31,7 +31,7 @@ public class QuestionDAOImpl implements QuestionDAO {
 
     private static final String getAllQuestions = "SELECT * FROM question WHERE quiz = ?";
 
-    private static final String updateQuestion = "UPDATE question SET question_name = ?, SET question_type = ? WHERE id_question = ?";
+    private static final String updateQuestion = "UPDATE question SET question_name = ?, question_type = ? WHERE id_question = ?";
 
     private static Connection connection;
 
@@ -61,7 +61,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(getQuestionById);
             preparedStatement.setInt(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
+            if(!resultSet.next()) return null;
 
             question.setQuestion(resultSet.getString("question_name"));
 
@@ -72,7 +72,7 @@ public class QuestionDAOImpl implements QuestionDAO {
                     question.setQuestionType(questionType);
                 }
             }
-
+            question.setId(BigInteger.valueOf(resultSet.getInt("id_question")));
             /*
             preparedStatement.clearParameters();
             preparedStatement = connection.prepareStatement(getAnswersById);
@@ -141,7 +141,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             preparedStatement.setInt(2, quizId.intValue());
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
+            if(!resultSet.next()) return;
 
             int questionId = resultSet.getInt("id_question");
 
@@ -213,9 +213,8 @@ public class QuestionDAOImpl implements QuestionDAO {
         return questions;
     }
 
-    //зачем возвращать question?
     @Override
-    public Question updateQuestion(Question question) {
+    public void updateQuestion(Question question) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuestion);
             preparedStatement.setString(1, question.getQuestion());
@@ -225,27 +224,5 @@ public class QuestionDAOImpl implements QuestionDAO {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-        return null;
     }
-
-    //зачем возвращать collquestion?
-    // и вообще, почему это относ. к question?
-    @Override
-    public Collection<Question> updateAllQuestionAnswers(Collection<Question> questions) {
-        try {
-            for (Question question : questions) {
-                PreparedStatement preparedStatement = connection.prepareStatement(updateQuestion);
-                preparedStatement.setString(1, question.getQuestion());
-                preparedStatement.setInt(2, question.getQuestionType().ordinal());
-                preparedStatement.setInt(3, question.getId().intValue());
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        return null;
-    }
-
 }
