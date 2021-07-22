@@ -1,8 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import java.math.BigInteger;
-import java.util.Set;
-import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.User;
 
 public interface UserDAO {

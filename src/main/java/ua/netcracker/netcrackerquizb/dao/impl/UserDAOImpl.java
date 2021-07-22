@@ -109,7 +109,7 @@ public class UserDAOImpl implements UserDAO {
       ResultSet resultSet = statement.executeQuery();
 
       if (resultSet.next()) {
-      user = new UserImpl();
+        user = new UserImpl();
         user.setId(BigInteger.valueOf(resultSet.getLong(USER_ID)));
         user.setFirstName(resultSet.getString(USER_FIRST_NAME));
         user.setLastName(resultSet.getString(USER_LAST_NAME));

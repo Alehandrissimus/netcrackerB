@@ -18,16 +18,23 @@ public class UserDAOImplTest {
   private UserDAOImpl userDAO;
   
   @Test
-  void getUserById() {
-    assertEquals(true, true);
+  void getUserByNullId() {
+    assertNull(userDAO.getUserById(BigInteger.ZERO));
   }
 
   @Test
-  void getUserByEmail() {
+  void getUserByAdminId() {
+    assertNotNull(userDAO.getUserById(BigInteger.ONE));
+  }
+
+  @Test
+  void getUserByNullEmail() {
+    assertNull(userDAO.getUserByEmail(""));
   }
 
   @Test
   void deleteUser() {
+
   }
 
   @Test
