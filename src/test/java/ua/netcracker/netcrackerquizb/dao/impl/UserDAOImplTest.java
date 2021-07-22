@@ -1,27 +1,57 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
 import java.math.BigInteger;
-import java.util.Collections;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
 
 @SpringBootTest
 public class UserDAOImplTest {
 
   @Autowired
   private UserDAOImpl userDAO;
-
+  
   @Test
-  public void getUserByIdTest() {
-    System.out.println(userDAO.getUserById(BigInteger.ONE, Collections.emptySet(), Collections.emptySet()));
+  void getUserById() {
+    Assertions.assertEquals(true,true);
   }
 
   @Test
-  public void getUserByEmailTest() {
-    System.out.println(userDAO.getUserByEmail("abobuba@gmail.com", Collections.emptySet(), Collections.emptySet()));
+  void getUserByEmail() {
   }
 
+  @Test
+  void deleteUser() {
+  }
 
+  @Test
+  void createUser() {
+  }
 
+  @Test
+  void updateUsersName() {
+  }
+
+  @Test
+  void updateUsersPassword() {
+  }
+
+  @Test
+  void getAuthorizeUser() {
+  }
+
+  @Test
+  void updateUsersDescription() {
+  }
+
+  @Test
+  void getUserByEmailCode() {
+  }
+
+  @Test
+  void activateUser() {
+  }
 }
