@@ -56,4 +56,37 @@ public class AnnouncementImpl implements Announcement {
   public int getParticipantsCap() {
     return participantsCap;
   }
+
+
+  public void setId(BigInteger id) {
+    this.id = id;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public void setOwner(BigInteger owner) {
+    this.owner = owner;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+  public void setParticipants(Collection<BigInteger> participants) {
+    this.participants = participants;
+  }
+
+  public void setParticipantsCap(int participantsCap) {
+    this.participantsCap = participantsCap;
+  }
 }
