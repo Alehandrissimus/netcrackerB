@@ -47,5 +47,7 @@ public interface User {
 
   public void setAccomplishedQuizes(Set<BigInteger> accomplishedQuizes);
 
+  String getDescription();
 
+  void setDescription(String description);
 }

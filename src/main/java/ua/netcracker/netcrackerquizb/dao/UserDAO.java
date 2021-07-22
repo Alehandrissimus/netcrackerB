@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.Set;
 import ua.netcracker.netcrackerquizb.model.User;
 
-public interface UserDao {
+public interface UserDAO {
 
   User getUserById(BigInteger id);
   User getUserByEmail(String email);
