@@ -1,8 +1,9 @@
-package ua.netcracker.netcrackerquizb.dao;
+package ua.netcracker.netcrackerquizb.dao.Impl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.netcracker.netcrackerquizb.dao.AnnouncementDAOImpl;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 
