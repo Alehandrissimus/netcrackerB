@@ -1,4 +1,4 @@
-package ua.netcracker.netcrackerquizb.dao;
+package ua.netcracker.netcrackerquizb.dao.impl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +13,14 @@ import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class QuizDAOTest {
+class QuizDAOImplTest {
 
     @Autowired
     private QuizDAOImpl quizDAO;
@@ -43,11 +44,11 @@ class QuizDAOTest {
 
     @Test
     void getQuizByIdTest() {
-        Quiz quiz = quizDAO.getQuizById(BigInteger.valueOf(29));
-        System.out.println(quiz);
+        Quiz quiz = quizDAO.getQuizById(BigInteger.valueOf(3));
+
         assert (quiz != null);
-        assert (quiz.getId().intValue() == 29);
-        assert(quiz.getTitle().equals("TheBest"));
+        assert (quiz.getId().intValue() == 3);
+        assert (quiz.getTitle().equals("ZNO"));
     }
 
     @Test
@@ -75,8 +76,7 @@ class QuizDAOTest {
         Quiz updatedQuiz = quizDAO.getQuizById(quiz.getId());
         updatedQuiz.setTitle("Txt");
         quizDAO.updateQuiz(quiz.getId(), updatedQuiz);
-        System.out.println(quiz);
-        System.out.println(updatedQuiz);
+
         assert (quiz != updatedQuiz);
     }
 
@@ -90,14 +90,11 @@ class QuizDAOTest {
 
     @Test
     void getQuizByTitleTest() {
-        Quiz quiz = quizDAO.getQuizByTitle("TheBest") ;
-        System.out.println(quiz);
-        assert (quiz.getTitle().equals("TheBest"));
-        assert (quiz.getId().intValue() == 29);
+        Quiz quiz = quizDAO.getQuizByTitle("Testing") ;
+
+        assert (quiz.getTitle().equals("Testing"));
+        assert (quiz.getId().intValue() == 2);
     }
 
-    @Test
-    void getQuizzesByTypeTest() {
 
-    }
 }

@@ -2,17 +2,9 @@ package ua.netcracker.netcrackerquizb.model;
 
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class Quiz {
-
-//    BigInteger getId();
-//    String getTitle();
-//    Date getCreationDate();
-//    QuizType getType();
-//    User getCreator();
-//    List<Question> getQuestions();
 
     private BigInteger id;
     private String title;
@@ -22,15 +14,16 @@ public class Quiz {
     private BigInteger creatorId;
 
     public Quiz() {
-
     }
 
-    public Quiz(String title, QuizType quizType, Date creationDate, BigInteger creatorId) {
+    public Quiz(String title, String description, QuizType quizType, Date creationDate, BigInteger creatorId) {
         this.title = title;
+        this.description = description;
         this.quizType = quizType;
         this.creationDate = creationDate;
         this.creatorId = creatorId;
     }
+
 
     public BigInteger getId() {
         return id;
@@ -82,10 +75,24 @@ public class Quiz {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Quiz quiz = (Quiz) o;
+        return Objects.equals(id, quiz.id) && Objects.equals(title, quiz.title) && Objects.equals(description, quiz.description) && quizType == quiz.quizType && Objects.equals(creationDate, quiz.creationDate) && Objects.equals(creatorId, quiz.creatorId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, quizType, creationDate, creatorId);
+    }
+
+    @Override
     public String toString() {
         return "Quiz{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
                 ", quizType=" + quizType +
                 ", creationDate=" + creationDate +
                 ", creatorId=" + creatorId +
