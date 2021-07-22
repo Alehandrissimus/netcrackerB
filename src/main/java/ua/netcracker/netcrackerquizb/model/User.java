@@ -23,9 +23,9 @@ public interface User {
 
   void setEmailCode(String email);
 
-  Set<BigInteger> getAccomplishedQuizes();
+  Set<Quiz> getAccomplishedQuizes();
 
-  Set<BigInteger> getFavoriteQuizes();
+  Set<Quiz> getFavoriteQuizes();
 
   UserRoles getUserRole();
 
@@ -43,9 +43,9 @@ public interface User {
 
   public void setActive(boolean active);
 
-  public void setFavoriteQuizes(Set<BigInteger> favoriteQuizes);
+  public void setFavoriteQuizes(Set<Quiz> favoriteQuizes);
 
-  public void setAccomplishedQuizes(Set<BigInteger> accomplishedQuizes);
+  public void setAccomplishedQuizes(Set<Quiz> accomplishedQuizes);
 
   String getDescription();
 

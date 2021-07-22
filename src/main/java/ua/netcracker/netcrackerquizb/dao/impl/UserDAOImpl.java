@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserDAO;
+import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
@@ -64,33 +65,35 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public User getUserById(BigInteger id) {
+  public User getUserById(BigInteger id, Set<Quiz> accomplishedQuizes, Set<Quiz> favoriteQuizes) {
     User user = new UserImpl();
     try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_BY_ID)) {
       statement.setInt(1, id.intValue());
 
       ResultSet resultSet = statement.executeQuery();
-      if (resultSet.next()) {
+      resultSet.next();
 
-        user.setId(id);
-        user.setFirstName(resultSet.getString(USER_FIRST_NAME));
-        user.setLastName(resultSet.getString(USER_LAST_NAME));
-        user.setEmail(resultSet.getString(USER_EMAIL));
-        user.setPassword(resultSet.getString(USER_PASSWORD));
-        switch (resultSet.getInt(USER_ROLE)) {
-          case 1:
-            user.setRole(UserRoles.ADMIN);
-            break;
-          case 2:
-            user.setRole(UserRoles.USER);
-            break;
-          default:
-            user.setRole(UserRoles.UNVERIFIED);
-        }
-        user.setActive(resultSet.getInt(USER_ACTIVE) == 1);
-        user.setEmailCode(resultSet.getString(USER_EMAIL_CODE));
-        user.setDescription(resultSet.getString(USER_DESCRIPTION));
+      user.setId(id);
+      user.setFirstName(resultSet.getString(USER_FIRST_NAME));
+      user.setLastName(resultSet.getString(USER_LAST_NAME));
+      user.setEmail(resultSet.getString(USER_EMAIL));
+      user.setPassword(resultSet.getString(USER_PASSWORD));
+      switch (resultSet.getInt(USER_ROLE)) {
+        case 1:
+          user.setRole(UserRoles.ADMIN);
+          break;
+        case 2:
+          user.setRole(UserRoles.USER);
+          break;
+        default:
+          user.setRole(UserRoles.UNVERIFIED);
       }
+      user.setActive(resultSet.getInt(USER_ACTIVE) == 1);
+      user.setEmailCode(resultSet.getString(USER_EMAIL_CODE));
+      user.setDescription(resultSet.getString(USER_DESCRIPTION));
+      user.setAccomplishedQuizes(accomplishedQuizes);
+      user.setFavoriteQuizes(favoriteQuizes);
+
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
@@ -99,7 +102,7 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public User getUserByEmail(String email) {
+  public User getUserByEmail(String email, Set<Quiz> accomplishedQuizes, Set<Quiz> favoriteQuizes) {
     User user = new UserImpl();
     try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_BY_EMAIL)) {
       statement.setString(1, email);
@@ -107,7 +110,7 @@ public class UserDAOImpl implements UserDAO {
       ResultSet resultSet = statement.executeQuery();
       if (resultSet.next()) {
 
-        user.setId((BigInteger) resultSet.getObject(USER_ID));
+        user.setId(BigInteger.valueOf(resultSet.getLong(USER_ID)));
         user.setFirstName(resultSet.getString(USER_FIRST_NAME));
         user.setLastName(resultSet.getString(USER_LAST_NAME));
         user.setEmail(email);
@@ -125,6 +128,8 @@ public class UserDAOImpl implements UserDAO {
         user.setActive(resultSet.getInt(USER_ACTIVE) == 1);
         user.setEmailCode(resultSet.getString(USER_EMAIL_CODE));
         user.setDescription(resultSet.getString(USER_DESCRIPTION));
+        user.setAccomplishedQuizes(accomplishedQuizes);
+        user.setFavoriteQuizes(favoriteQuizes);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -191,15 +196,37 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public User getAuthorizeUser(String email, String password) {
+    User user = new UserImpl();
     try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_AUTHORIZE)) {
       statement.setString(1, email);
       statement.setString(2, password);
 
-      statement.executeUpdate();
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        user.setId(BigInteger.valueOf(resultSet.getLong(USER_ID)));
+        user.setFirstName(resultSet.getString(USER_FIRST_NAME));
+        user.setLastName(resultSet.getString(USER_LAST_NAME));
+        user.setEmail(email);
+        user.setPassword(password);
+        switch (resultSet.getInt(USER_ROLE)) {
+          case 1:
+            user.setRole(UserRoles.ADMIN);
+            break;
+          case 2:
+            user.setRole(UserRoles.USER);
+            break;
+          default:
+            user.setRole(UserRoles.UNVERIFIED);
+        }
+        user.setActive(resultSet.getInt(USER_ACTIVE) == 1);
+        user.setEmailCode(resultSet.getString(USER_EMAIL_CODE));
+        user.setDescription(resultSet.getString(USER_DESCRIPTION));
+      }
     } catch (SQLException e) {
       e.printStackTrace();
+      return null;
     }
-    return null;
+    return user;
   }
 
   @Override
@@ -212,31 +239,6 @@ public class UserDAOImpl implements UserDAO {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-  }
-
-  @Override
-  public Set<BigInteger> getAccomplishedQuizes(BigInteger id) {
-    return null;
-  }
-
-  @Override
-  public Set<BigInteger> getFavoriteQuizes(BigInteger id) {
-    return null;
-  }
-
-  @Override
-  public void addAccomplishedQuiz(BigInteger id) {
-
-  }
-
-  @Override
-  public void addFavoriteQuiz(BigInteger id) {
-
-  }
-
-  @Override
-  public void removeFavoriteQuiz(BigInteger id) {
-
   }
 
   @Override
