@@ -1,16 +1,17 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.model.Answer;
-import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 
 import java.math.BigInteger;
 
 public interface AnswerDAO {
     Answer getAnswerById(BigInteger id);
 
-    void createAnswer();
+    Answer getAnswerByTitle(String title);
 
-    void deleteAnswer(Answer answer);
+    void createAnswer(Answer answer);
 
-    Answer updateAnswer(Answer answer);
+    void deleteAnswer(BigInteger id);
+
+    void updateAnswer(Answer answer);
 }
