@@ -5,17 +5,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.QuizDAO;
 import ua.netcracker.netcrackerquizb.model.*;
+import ua.netcracker.netcrackerquizb.model.enums.QuizType;
 
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public class QuizDAOImpl implements QuizDAO {
 
-    private final static String SQL_SELECT_QUIZ_BY_TYPE = "SELECT * FROM QUIZ WHERE QUIZ_TYPE=?";
+    private final static String SQL_SELECT_QUIZ_BY_TYPE = "SELECT * FROM QUIZ WHERE QUIZ_TYPE=? ORDER_BY(ID_QUIZ)";
     private final static String SQL_SELECT_ALL_QUIZZES = "SELECT * FROM QUIZ";
     private final static String SQL_SELECT_BY_ID = "SELECT * FROM QUIZ WHERE ID_QUIZ=?";
     private final static String SQL_SELECT_BY_TITLE = "SELECT * FROM QUIZ WHERE TITLE=?";
@@ -90,17 +90,15 @@ public class QuizDAOImpl implements QuizDAO {
 
 
     @Override
-    public boolean deleteQuiz(Quiz quiz) {
+    public void deleteQuiz(BigInteger id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_QUIZ)){
-            preparedStatement.setInt(1, quiz.getId().intValue());
+            preparedStatement.setInt(1, id.intValue());
 
             preparedStatement.executeUpdate();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-        return true;
     }
 
 
@@ -111,7 +109,8 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.setInt(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            resultSet.next();
+
+            if(!resultSet.next()) return null;
 
             quiz = new Quiz();
 
@@ -166,7 +165,7 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            resultSet.next();
+            if(!resultSet.next()) return null;
 
             quiz = new Quiz();
 
@@ -190,7 +189,17 @@ public class QuizDAOImpl implements QuizDAO {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_QUIZ_BY_TYPE)){
 
+//            int typeNumber;
+//            switch (quizType) {
+//                case HISTORIC: typeNumber = 0; break;
+//                case SCIENCE: typeNumber = 1; break;
+//                case GEOGRAPHICAL: typeNumber = 2; break;
+//                case MATHEMATICS: typeNumber = 3; break;
+//                default: typeNumber = 0;
+//            }
+
             preparedStatement.setInt(1, quizType.ordinal());
+
 
             ResultSet resultSet = preparedStatement.executeQuery();
 

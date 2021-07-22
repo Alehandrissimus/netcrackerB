@@ -1,7 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.model.Quiz;
-import ua.netcracker.netcrackerquizb.model.QuizType;
+import ua.netcracker.netcrackerquizb.model.enums.QuizType;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -12,7 +12,7 @@ public interface QuizDAO {
 
     void updateQuiz(BigInteger id, Quiz updatedQuiz);
 
-    boolean deleteQuiz(Quiz quiz);
+    void deleteQuiz(BigInteger id);
 
     Quiz getQuizById(BigInteger id);
 

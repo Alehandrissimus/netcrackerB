@@ -1,5 +1,7 @@
 package ua.netcracker.netcrackerquizb.model;
 
+import ua.netcracker.netcrackerquizb.model.enums.QuizType;
+
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Objects;
