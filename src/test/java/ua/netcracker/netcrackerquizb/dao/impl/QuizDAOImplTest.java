@@ -1,22 +1,12 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.Quiz;
-import ua.netcracker.netcrackerquizb.model.enums.QuizType;
-import ua.netcracker.netcrackerquizb.model.User;
-import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
-import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
 import java.math.BigInteger;
-import java.sql.*;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.QuizDAO;
 import ua.netcracker.netcrackerquizb.model.*;
-import ua.netcracker.netcrackerquizb.model.enums.QuizType;
+import ua.netcracker.netcrackerquizb.model.QuizType;
 
 import java.math.BigInteger;
 import java.sql.*;

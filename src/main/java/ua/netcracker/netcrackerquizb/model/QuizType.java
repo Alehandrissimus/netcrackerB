@@ -1,4 +1,4 @@
-package ua.netcracker.netcrackerquizb.model.enums;
+package ua.netcracker.netcrackerquizb.model;
 
 public enum QuizType {
     HISTORIC,

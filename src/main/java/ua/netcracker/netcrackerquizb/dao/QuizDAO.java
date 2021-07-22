@@ -1,7 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.model.Quiz;
-import ua.netcracker.netcrackerquizb.model.enums.QuizType;
+import ua.netcracker.netcrackerquizb.model.QuizType;
 
 import java.math.BigInteger;
 import java.util.List;
