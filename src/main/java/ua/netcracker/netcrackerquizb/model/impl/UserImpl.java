@@ -13,10 +13,31 @@ public class UserImpl implements User {
   private String email;
   private String password;
   private UserRoles role;
+  private String description;
   private boolean active;
   private Set<BigInteger> favoriteQuizes;
   private Set<BigInteger> accomplishedQuizes;
   private String emailCode;
+
+  public Set<BigInteger> getAllFavoriteQuizes() {
+    return favoriteQuizes;
+  }
+
+  public Set<BigInteger> getAllAccomplishedQuizes() {
+    return favoriteQuizes;
+  }
+
+  public void addFavoriteQuiz(BigInteger id) {
+    favoriteQuizes.add(id);
+  }
+
+  public void addAccomplishedQuiz(BigInteger id) {
+    accomplishedQuizes.add(id);
+  }
+
+  public void removeFavoriteQuiz(BigInteger id) {
+    favoriteQuizes.remove(id);
+  }
 
   @Override
   public void setId(BigInteger id) {
@@ -51,6 +72,17 @@ public class UserImpl implements User {
   @Override
   public void setActive(boolean active) {
     this.active = active;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @Override
@@ -121,5 +153,22 @@ public class UserImpl implements User {
   @Override
   public void setEmailCode(String emailCode) {
     this.emailCode = emailCode;
+  }
+
+  @Override
+  public String toString() {
+    return "UserImpl{" +
+        "id=" + id +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", role=" + role +
+        ", description='" + description + '\'' +
+        ", active=" + active +
+        ", favoriteQuizes=" + favoriteQuizes +
+        ", accomplishedQuizes=" + accomplishedQuizes +
+        ", emailCode='" + emailCode + '\'' +
+        '}';
   }
 }
