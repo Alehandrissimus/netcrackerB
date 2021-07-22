@@ -24,17 +24,14 @@ public class UserDAOImpl implements UserDAO {
   public static final String SEARCH_USER_BY_EMAIL_CODE = "SELECT * FROM usr WHERE email_code=(?)";
   public static final String SEARCH_USER_AUTHORIZE = "SELECT * FROM usr WHERE email=(?) and passwd=(?) and isactive='1'";
 
-
   private static final String UPDATE_USER_NAME = "UPDATE usr SET first_name=(?), SET last_name=(?) WHERE id_usr=(?)";
   private static final String UPDATE_USER_PASSWORD = "UPDATE usr SET passwd=(?) WHERE id_usr=(?)";
-  private static final String UPDATE_USER_DESCRIPTION = "UPDATE usr SET de=(?) WHERE id_usr=(?)";
+  private static final String UPDATE_USER_DESCRIPTION = "UPDATE usr SET description=(?) WHERE id_usr=(?)";
+  private static final String UPDATE_USER_ACTIVE = "UPDATE usr SET isactive='1' WHERE id_usr=(?)";
 
   public static final String DELETE_USER_BY_ID = "DELETE FROM usr WHERE id_usr=(?)";
 
   public static final String CREATE_USER = "INSERT INTO usr (s_usr.NEXTVAL, email, first_name, last_name, passwd, isactive, email_code) VALUES (?,?,?,?,?,?)";
-//  public static final String GET_AUTHORIZE_USER = "SELECT "
-//    в бд нет поля boolean active
-
 
   public static final String USER_ID = "id_usr";
   public static final String USER_FIRST_NAME = "first_name";
@@ -194,13 +191,12 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public User getAuthorizeUser(String email, String password) {
-    try(PreparedStatement statement = connection.prepareStatement(SEARCH_USER_AUTHORIZE)) {
+    try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_AUTHORIZE)) {
       statement.setString(1, email);
       statement.setString(2, password);
 
       statement.executeUpdate();
-    }
-    catch (SQLException e){
+    } catch (SQLException e) {
       e.printStackTrace();
     }
     return null;
@@ -208,7 +204,14 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public void updateUsersDescription(BigInteger id, String newDescription) {
+    try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_DESCRIPTION)) {
+      statement.setString(1, newDescription);
+      statement.setInt(2, id.intValue());
 
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -237,12 +240,49 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public String getUserByEmailCode(String code) {
-    return null;
+  public User getUserByEmailCode(String code) {
+    User user = new UserImpl();
+    try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_BY_EMAIL_CODE)) {
+      statement.setString(1, code);
+
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+
+        user.setId((BigInteger) resultSet.getObject(USER_ID));
+        user.setFirstName(resultSet.getString(USER_FIRST_NAME));
+        user.setLastName(resultSet.getString(USER_LAST_NAME));
+        user.setEmail(resultSet.getString(USER_EMAIL));
+        user.setPassword(resultSet.getString(USER_PASSWORD));
+        switch (resultSet.getInt(USER_ROLE)) {
+          case 1:
+            user.setRole(UserRoles.ADMIN);
+            break;
+          case 2:
+            user.setRole(UserRoles.USER);
+            break;
+          default:
+            user.setRole(UserRoles.UNVERIFIED);
+        }
+        user.setActive(resultSet.getInt(USER_ACTIVE) == 1);
+        user.setEmailCode(code);
+        user.setDescription(resultSet.getString(USER_DESCRIPTION));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+    return user;
   }
 
   @Override
   public void activateUser(BigInteger id) {
+    try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_ACTIVE)) {
+      statement.setInt(1, id.intValue());
+
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
 
   }
 }

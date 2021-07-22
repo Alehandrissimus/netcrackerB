@@ -19,7 +19,7 @@ public interface UserDAO {
   void addAccomplishedQuiz(BigInteger id);
   void addFavoriteQuiz(BigInteger id);
   void removeFavoriteQuiz(BigInteger id);
-  String getUserByEmailCode(String code);
+  User getUserByEmailCode(String code);
   void activateUser(BigInteger id);
 
 }
