@@ -20,16 +20,6 @@ import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 @Repository
 public class UserDAOImpl implements UserDAO {
 
-//  public static final String USER_ID = "id_usr";
-//  public static final String USER_FIRST_NAME = "first_name";
-//  public static final String USER_LAST_NAME = "last_name";
-//  public static final String USER_EMAIL = "email";
-//  public static final String USER_PASSWORD = "passwd";
-//  public static final String USER_ROLE = "usr_role";
-//  public static final String USER_ACTIVE = "isactive";
-//  public static final String USER_EMAIL_CODE = "email_code";
-//  public static final String USER_DESCRIPTION = "description";
-
   private Connection connection;
   private final Properties properties = new Properties();
 
