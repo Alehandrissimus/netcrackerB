@@ -2,16 +2,10 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test.*;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,6 +74,7 @@ public class UserDAOImplTest {
   void updateExistUsersName() {
     String testFirstName = "testFirst";
     String testLastName = "testLast";
+
     String expected = testLastName + " " + testFirstName;
     String oldFirstName, oldLastName;
     oldLastName = userDAO.getUserById(BigInteger.ONE).getLastName().trim();
@@ -104,7 +99,7 @@ public class UserDAOImplTest {
 
     userDAO.updateUsersName(BigInteger.ZERO, testFirstName, testLastName);
     try {
-      userDAO.getUserById(BigInteger.ZERO).getFullName().trim();
+      userDAO.getUserById(BigInteger.ZERO).getFullName();
 
       fail();
     } catch (NullPointerException e) {
@@ -136,7 +131,7 @@ public class UserDAOImplTest {
 
     userDAO.updateUsersPassword(BigInteger.ZERO, testPassword);
     try {
-      userDAO.getUserById(BigInteger.ZERO).getPassword().trim();
+      userDAO.getUserById(BigInteger.ZERO).getPassword();
 
       fail();
     } catch (NullPointerException e) {
@@ -146,7 +141,20 @@ public class UserDAOImplTest {
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-  void getAuthorizeUser() {
+  void getAuthorizeActiveUser() {
+    assertNotNull(userDAO.getAuthorizeUser(userDAO.getUserById(BigInteger.ONE).getEmail(),
+        userDAO.getUserById(BigInteger.ONE).getPassword()));
+  }
+
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void getAuthorizeNotActiveUser() {
+    userDAO.createUser("test@gmail.co", "testLastName", "testFirstName", "testPassword",
+        "testEmailCode");
+
+    assertNull(userDAO.getAuthorizeUser("test@gmail.co", "testPassword"));
+
+    userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
   }
 
   @Test
@@ -184,11 +192,34 @@ public class UserDAOImplTest {
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-  void getUserByEmailCode() {
+  void getUserByValidEmailCode() {
+    assertNotNull(userDAO.getUserByEmailCode(userDAO.getUserById(BigInteger.ONE).getEmailCode()));
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-  void activateUser() {
+  void getUserByInvalidEmailCode() {
+    assertNull(userDAO.getUserByEmailCode("notActiveCode"));
+  }
+
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void activateUnverifiedUser() {
+    userDAO.createUser("test@gmail.co", "testLastName", "testFirstName", "testPassword",
+        "testEmailCode");
+
+    userDAO.activateUser(userDAO.getUserByEmail("test@gmail.co").getId());
+
+    assertTrue(userDAO.getUserByEmail("test@gmail.co").isActive());
+
+    userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
+  }
+
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void activateVerifiedUser() {
+    userDAO.activateUser(BigInteger.ONE);
+
+    assertTrue(userDAO.getUserById(BigInteger.ONE).isActive());
   }
 }
