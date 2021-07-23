@@ -4,5 +4,5 @@ public enum QuizType {
     HISTORIC,
     SCIENCE,
     GEOGRAPHICAL,
-    MATHEMATICS
+    MATHEMATICS;
 }
