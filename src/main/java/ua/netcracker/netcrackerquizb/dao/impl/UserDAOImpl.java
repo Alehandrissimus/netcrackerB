@@ -20,22 +20,23 @@ import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 @Repository
 public class UserDAOImpl implements UserDAO {
 
-  public static final String SEARCH_USER_BY_ID = "SELECT * FROM usr WHERE id_usr=(?)";
-  public static final String SEARCH_USER_BY_EMAIL = "SELECT * FROM usr WHERE email=(?)";
-  public static final String SEARCH_USER_BY_EMAIL_CODE = "SELECT * FROM usr WHERE email_code=(?)";
-  public static final String SEARCH_USER_AUTHORIZE = "SELECT * FROM usr WHERE email=(?) and passwd=(?) and isactive='1'";
+  //  public static final String SEARCH_USER_BY_ID = "SELECT * FROM usr WHERE id_usr=(?)";
+//  public static final String SEARCH_USER_BY_EMAIL = "SELECT * FROM usr WHERE email=(?)";
+//  public static final String SEARCH_USER_BY_EMAIL_CODE = "SELECT * FROM usr WHERE email_code=(?)";
+//  public static final String SEARCH_USER_AUTHORIZE = "SELECT * FROM usr WHERE email=(?) and passwd=(?) and isactive='1'";
 
-  private static final String UPDATE_USER_NAME = "UPDATE usr SET first_name=(?), last_name=(?) WHERE id_usr=(?)";
-  private static final String UPDATE_USER_PASSWORD = "UPDATE usr SET passwd=(?) WHERE id_usr=(?)";
-  private static final String UPDATE_USER_DESCRIPTION = "UPDATE usr SET description=(?) WHERE id_usr=(?)";
-  private static final String UPDATE_USER_ACTIVE = "UPDATE usr SET isactive='1' WHERE id_usr=(?)";
+//  private static final String UPDATE_USER_NAME = "UPDATE usr SET first_name=(?), last_name=(?) WHERE id_usr=(?)";
+//  private static final String UPDATE_USER_PASSWORD = "UPDATE usr SET passwd=(?) WHERE id_usr=(?)";
+//  private static final String UPDATE_USER_DESCRIPTION = "UPDATE usr SET description=(?) WHERE id_usr=(?)";
+//  private static final String UPDATE_USER_ACTIVE = "UPDATE usr SET isactive='1' WHERE id_usr=(?)";
 
 //  private static final JOIN
 
-  public static final String DELETE_USER_BY_ID = "DELETE FROM usr WHERE id_usr=(?)";
+//  public static final String DELETE_USER_BY_ID = "DELETE FROM usr WHERE id_usr=(?)";
 
 
   public static final String CREATE_USER = "INSERT INTO usr VALUES (s_usr.NEXTVAL, ?,?,?,?,?,?,?,?)";
+
   public static final String USER_TABLE = "usr";
   public static final String USER_ID = "id_usr";
   public static final String USER_FIRST_NAME = "first_name";
@@ -76,7 +77,8 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public User getUserById(BigInteger id) {
     User user = null;
-    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("SEARCH_USER_BY_ID"))) {
+    try (PreparedStatement statement = connection
+        .prepareStatement(properties.getProperty("SEARCH_USER_BY_ID"))) {
       statement.setInt(1, id.intValue());
 
       ResultSet resultSet = statement.executeQuery();
@@ -112,7 +114,8 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public User getUserByEmail(String email) {
     User user = null;
-    try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_BY_EMAIL)) {
+    try (PreparedStatement statement = connection
+        .prepareStatement(properties.getProperty("SEARCH_USER_BY_EMAIL"))) {
       statement.setString(1, email);
 
       ResultSet resultSet = statement.executeQuery();
@@ -148,7 +151,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public void deleteUser(BigInteger id) {
-    try (PreparedStatement statement = connection.prepareStatement(DELETE_USER_BY_ID)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("DELETE_USER_BY_ID"))) {
       statement.setInt(1, id.intValue());
       statement.executeUpdate();
     } catch (SQLException e) {
@@ -178,7 +181,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public void updateUsersName(BigInteger id, String newFirstName, String newLastName) {
-    try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_NAME)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("UPDATE_USER_NAME"))) {
       statement.setString(1, newFirstName);
       statement.setString(2, newLastName);
       statement.setInt(3, id.intValue());
@@ -192,7 +195,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public void updateUsersPassword(BigInteger id, String newPassword) {
-    try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_PASSWORD)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("UPDATE_USER_PASSWORD"))) {
       statement.setString(1, newPassword);
       statement.setInt(2, id.intValue());
 
@@ -206,7 +209,7 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public User getAuthorizeUser(String email, String password) {
     User user = null;
-    try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_AUTHORIZE)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("SEARCH_USER_AUTHORIZE"))) {
       statement.setString(1, email);
       statement.setString(2, password);
 
@@ -241,7 +244,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public void updateUsersDescription(BigInteger id, String newDescription) {
-    try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_DESCRIPTION)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("UPDATE_USER_DESCRIPTION"))) {
       statement.setString(1, newDescription);
       statement.setInt(2, id.intValue());
 
@@ -254,7 +257,7 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public User getUserByEmailCode(String code) {
     User user = null;
-    try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_BY_EMAIL_CODE)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("SEARCH_USER_BY_EMAIL_CODE"))) {
       statement.setString(1, code);
 
       ResultSet resultSet = statement.executeQuery();
@@ -289,7 +292,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public void activateUser(BigInteger id) {
-    try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_ACTIVE)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("UPDATE_USER_ACTIVE"))) {
       statement.setInt(1, id.intValue());
 
       statement.executeUpdate();
