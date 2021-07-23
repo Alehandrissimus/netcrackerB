@@ -148,7 +148,6 @@ public class QuizDAOImpl implements QuizDAO {
                 quiz.setQuizType(QuizType.values()[resultSet.getInt("QUIZ_TYPE")] );
                 quiz.setCreatorId(BigInteger.valueOf(resultSet.getInt("CREATOR")));
 
-
                 quizzes.add(quiz);
             }
         } catch (SQLException throwables) {
@@ -190,17 +189,7 @@ public class QuizDAOImpl implements QuizDAO {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_QUIZ_BY_TYPE)){
 
-//            int typeNumber;
-//            switch (quizType) {
-//                case HISTORIC: typeNumber = 0; break;
-//                case SCIENCE: typeNumber = 1; break;
-//                case GEOGRAPHICAL: typeNumber = 2; break;
-//                case MATHEMATICS: typeNumber = 3; break;
-//                default: typeNumber = 0;
-//            }
-
             preparedStatement.setInt(1, quizType.ordinal());
-
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
