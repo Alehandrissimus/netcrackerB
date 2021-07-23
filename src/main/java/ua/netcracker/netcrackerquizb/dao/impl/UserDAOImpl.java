@@ -1,11 +1,14 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -17,21 +20,22 @@ import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 @Repository
 public class UserDAOImpl implements UserDAO {
 
-  //  добавить в параметры получения accomplished и favorite quizes
   public static final String SEARCH_USER_BY_ID = "SELECT * FROM usr WHERE id_usr=(?)";
   public static final String SEARCH_USER_BY_EMAIL = "SELECT * FROM usr WHERE email=(?)";
   public static final String SEARCH_USER_BY_EMAIL_CODE = "SELECT * FROM usr WHERE email_code=(?)";
   public static final String SEARCH_USER_AUTHORIZE = "SELECT * FROM usr WHERE email=(?) and passwd=(?) and isactive='1'";
 
-  private static final String UPDATE_USER_NAME = "UPDATE usr SET first_name=(?), SET last_name=(?) WHERE id_usr=(?)";
+  private static final String UPDATE_USER_NAME = "UPDATE usr SET first_name=(?), last_name=(?) WHERE id_usr=(?)";
   private static final String UPDATE_USER_PASSWORD = "UPDATE usr SET passwd=(?) WHERE id_usr=(?)";
   private static final String UPDATE_USER_DESCRIPTION = "UPDATE usr SET description=(?) WHERE id_usr=(?)";
   private static final String UPDATE_USER_ACTIVE = "UPDATE usr SET isactive='1' WHERE id_usr=(?)";
 
+//  private static final JOIN
+
   public static final String DELETE_USER_BY_ID = "DELETE FROM usr WHERE id_usr=(?)";
 
-  public static final String CREATE_USER = "INSERT INTO usr (s_usr.NEXTVAL, email, first_name, last_name, passwd, isactive, email_code) VALUES (?,?,?,?,?,?)";
 
+  public static final String CREATE_USER = "INSERT INTO usr VALUES (s_usr.NEXTVAL, ?,?,?,?,?,?,?,?)";
   public static final String USER_TABLE = "usr";
   public static final String USER_ID = "id_usr";
   public static final String USER_FIRST_NAME = "first_name";
@@ -44,6 +48,7 @@ public class UserDAOImpl implements UserDAO {
   public static final String USER_DESCRIPTION = "description";
 
   private Connection connection;
+  private final Properties properties = new Properties();
 
   @Autowired
   UserDAOImpl(
@@ -58,15 +63,20 @@ public class UserDAOImpl implements UserDAO {
     }
     try {
       connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    try (FileInputStream fis = new FileInputStream("src/main/resources/sqlScripts.properties")) {
+      properties.load(fis);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
   @Override
   public User getUserById(BigInteger id) {
     User user = null;
-    try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_BY_ID)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("SEARCH_USER_BY_ID"))) {
       statement.setInt(1, id.intValue());
 
       ResultSet resultSet = statement.executeQuery();
@@ -91,7 +101,6 @@ public class UserDAOImpl implements UserDAO {
         user.setActive(resultSet.getInt(USER_ACTIVE) == 1);
         user.setEmailCode(resultSet.getString(USER_EMAIL_CODE));
         user.setDescription(resultSet.getString(USER_DESCRIPTION));
-
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -151,13 +160,14 @@ public class UserDAOImpl implements UserDAO {
   public void createUser(String email, String lastName, String firstName, String password,
       String emailCode) {
     try (PreparedStatement statement = connection.prepareStatement(CREATE_USER)) {
-
-      statement.setString(1, email);
-      statement.setString(2, firstName);
-      statement.setString(3, lastName);
-      statement.setString(4, password);
-      statement.setInt(5, 0);
-      statement.setString(6, emailCode);
+      statement.setString(1, firstName);
+      statement.setString(2, lastName);
+      statement.setString(3, null);
+      statement.setString(4, email);
+      statement.setString(5, password);
+      statement.setInt(6, 3);
+      statement.setInt(7, 0);
+      statement.setString(8, emailCode);
 
       statement.executeUpdate();
     } catch (SQLException e) {
