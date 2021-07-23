@@ -7,19 +7,23 @@ import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.Properties;
 
 @Repository
 public class AnswerDAOImpl implements AnswerDAO {
-    private final static String SQL_GET_ANSWER_BY_ID = "SELECT * FROM answer WHERE id_answer = %d";
-    private final static String SQL_GET_ANSWER_BY_TITLE = "SELECT * FROM answer WHERE text = '%s'";
-    private final static String SQL_CREATE_ANSWER = "INSERT INTO answer VALUES(s_answer.NEXTVAL, '%s', %d, %d)";
-    private final static String SQL_DELETE_ANSWER = "DELETE answer WHERE id_answer = %d";
-    private final static String SQL_UPDATE_ANSWER =
-            "UPDATE answer SET text = '%s', is_true = %d, question = %d WHERE id_answer = %d";
+//    private final static String GET_ANSWER_BY_ID = "SELECT * FROM answer WHERE id_answer = %d";
+//    private final static String GET_ANSWER_BY_TITLE = "SELECT * FROM answer WHERE text = '%s'";
+//    private final static String CREATE_ANSWER = "INSERT INTO answer VALUES(s_answer.NEXTVAL, '%s', %d, %d)";
+//    private final static String DELETE_ANSWER = "DELETE answer WHERE id_answer = %d";
+//    private final static String UPDATE_ANSWER =
+//            "UPDATE answer SET text = '%s', is_true = %d, question = %d WHERE id_answer = %d";
 
-    private static Connection connection;
+    private Connection connection;
+    private final Properties properties = new Properties();
 
     @Autowired
     AnswerDAOImpl(
@@ -37,13 +41,19 @@ public class AnswerDAOImpl implements AnswerDAO {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
+        try (FileInputStream fis = new FileInputStream("src/main/resources/sqlScripts.properties")) {
+            properties.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Answer getAnswerById(BigInteger id) {
         Answer answer = new AnswerImpl();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(String.format(SQL_GET_ANSWER_BY_ID, id));
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(String.format(properties.getProperty("GET_ANSWER_BY_ID"), id));
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) return null;
             answer.setValue(resultSet.getString("text"));
@@ -60,7 +70,8 @@ public class AnswerDAOImpl implements AnswerDAO {
     public Answer getAnswerByTitle(String title) {
         Answer answer = new AnswerImpl();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(String.format(SQL_GET_ANSWER_BY_TITLE, title));
+            PreparedStatement preparedStatement = connection.
+                    prepareStatement(String.format(properties.getProperty("GET_ANSWER_BY_TITLE"), title));
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) return null;
             answer.setId(BigInteger.valueOf(resultSet.getInt("id_answer")));
@@ -78,7 +89,7 @@ public class AnswerDAOImpl implements AnswerDAO {
     public void createAnswer(Answer answer) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(String.format(
-                    SQL_CREATE_ANSWER, answer.getValue(), answer.getAnswer() ? 1 : 0, answer.getQuestionId()));
+                    properties.getProperty("CREATE_ANSWER"), answer.getValue(), answer.getAnswer() ? 1 : 0, answer.getQuestionId()));
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -88,7 +99,8 @@ public class AnswerDAOImpl implements AnswerDAO {
     @Override
     public void deleteAnswer(BigInteger id) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(String.format(SQL_DELETE_ANSWER, id));
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(String.format(properties.getProperty("DELETE_ANSWER"), id));
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -99,7 +111,7 @@ public class AnswerDAOImpl implements AnswerDAO {
     public void updateAnswer(Answer answer) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(String.format(
-                    SQL_UPDATE_ANSWER, answer.getValue(), answer.getAnswer() ? 1 : 0, answer.getQuestionId(), answer.getId()));
+                    properties.getProperty("UPDATE_ANSWER"), answer.getValue(), answer.getAnswer() ? 1 : 0, answer.getQuestionId(), answer.getId()));
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();

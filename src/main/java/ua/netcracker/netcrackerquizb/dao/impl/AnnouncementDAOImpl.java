@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnnouncementDAO;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.sql.Date;
@@ -14,9 +16,8 @@ import java.util.*;
 @Repository
 public class AnnouncementDAOImpl implements AnnouncementDAO {
 
-
-
-    private static Connection connection;
+    private Connection connection;
+    private final Properties properties = new Properties();
 
     @Autowired
     public AnnouncementDAOImpl(
@@ -34,31 +35,12 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
+        try (FileInputStream fis = new FileInputStream("src/main/resources/sqlScripts.properties")) {
+            properties.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-    /////////////////////////////////////////////SQL Queries//////////////////////////////////////////////////////////
-
-    private static final String selectAnnouncementsLikedByUser = "SELECT announcement.id_announcement, announcement.title," +
-            " announcement.description, announcement.ownr, " +
-            "announcement.date_create, announcement.address, announcement.likes " +
-            "FROM announcement_participant LEFT JOIN announcement ON " +
-            "announcement_participant.id_announcement = announcement.id_announcement WHERE id_usr=?";
-
-    private static final String deleteAnnouncementById = "DELETE FROM announcement WHERE id_announcement=?";
-
-    private static final String addParticipant = "INSERT INTO announcement_participant VALUES(?, ?)";
-
-    private static final String getPopularAnnouncement = "SELECT * FROM ANNOUNCEMENT ORDER BY likes desc FETCH FIRST ? ROWS ONLY";
-
-    private static final String updateAnnouncement = "UPDATE ANNOUNCEMENT SET title=?, DESCRIPTION=?, ADDRESS=? WHERE ID_ANNOUNCEMENT=?";
-
-    private static final String createNewAnnouncement = "INSERT INTO announcement VALUES(s_announcement.NEXTVAL, ?, ?, ?, ?, ?, ?)";
-
-    private static final String selectAnnouncementByTittle = "SELECT * FROM ANNOUNCEMENT WHERE title=?";
-
-    private static final String getParticipantById = "SELECT * FROM announcement_participant WHERE ID_ANNOUNCEMENT=? AND ID_USR=?";
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public AnnouncementImpl getByTitle(String title) {
@@ -66,7 +48,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
         AnnouncementImpl announcement = null;
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(selectAnnouncementByTittle);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("SELECT_ANNOUNCEMENT_BY_TITLE"));
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -91,7 +73,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
     public void createAnnouncement(Announcement newAnnouncement) {
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(createNewAnnouncement);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("CREATE_ANNOUNCEMENT"));
             preparedStatement.setString(1, newAnnouncement.getTitle());
             preparedStatement.setString(2, newAnnouncement.getDescription());
             preparedStatement.setInt(3, newAnnouncement.getOwner().intValue());
@@ -109,7 +91,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
     public void editAnnouncement(Announcement newAnnouncement) {
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(updateAnnouncement);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("UPDATE_ANNOUNCEMENT"));
             preparedStatement.setString(1, newAnnouncement.getTitle());
             preparedStatement.setString(2, newAnnouncement.getDescription());
             preparedStatement.setString(3, newAnnouncement.getAddress());
@@ -125,7 +107,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
     public void addParticipant(BigInteger id_announcement, BigInteger id_user) {
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(addParticipant);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("ADD_PARTICIPANT"));
             preparedStatement.setInt(1, id_announcement.intValue());
             preparedStatement.setInt(2, id_user.intValue());
             preparedStatement.executeUpdate();
@@ -137,7 +119,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
     @Override
     public void deleteAnnouncement(BigInteger id_announcement) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(deleteAnnouncementById);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("DELETE_ANNOUNCEMENT_BY_ID"));
             preparedStatement.setInt(1, id_announcement.intValue());
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
@@ -150,7 +132,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
         List<Announcement> popularAnnouncement = new ArrayList<>();
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(getPopularAnnouncement);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_POPULAR_ANNOUNCEMENT"));
             preparedStatement.setInt(1, number);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -179,7 +161,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
         Set<Announcement> announcements = new HashSet<>();
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(selectAnnouncementsLikedByUser);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("SELECT_ANNOUNCEMENT_LIKED_BY_USER"));
             preparedStatement.setInt(1, id_user.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -210,7 +192,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
         boolean isRecord = false;
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(getParticipantById);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_PARTICIPANT_BY_ID"));
             preparedStatement.setInt(1, id_announcement.intValue());
             preparedStatement.setInt(2, id_user.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
