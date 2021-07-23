@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,8 +22,6 @@ class QuizDAOImplTest {
     @Autowired
     private QuizDAOImpl quizDAO;
 
-
-    //done
     //почему новые объекты появляться перед первым id?
     @Test
     void createQuizTest() {
@@ -51,7 +48,6 @@ class QuizDAOImplTest {
         assertNull(quizDAO.getQuizByTitle(title));
     }
 
-    //done
     @Test
     void getQuizByIdTest() {
         Quiz quiz = quizDAO.getQuizById(BigInteger.valueOf(3));
@@ -62,7 +58,6 @@ class QuizDAOImplTest {
         assertEquals(quiz.getId().intValue(), expectedQuiz.getId().intValue());
     }
 
-    //done
     @Test
     void deleteQuizTest() {
 //
@@ -91,7 +86,6 @@ class QuizDAOImplTest {
 
     }
 
-    //done
     @Test
     void updateQuizTest() {
         Quiz quiz = new QuizImpl();
@@ -123,7 +117,6 @@ class QuizDAOImplTest {
         assertNull(quizDAO.getQuizByTitle("Lalaley"));
     }
 
-    //done
     @Test
     void getAllQuizzesTest() {
         Collection<Quiz> quizList = quizDAO.getAllQuizzes();
@@ -131,22 +124,18 @@ class QuizDAOImplTest {
         assertNotNull(quizList);
     }
 
-    //done
     @Test
     void getQuizByTitleTest() {
         Quiz quiz = quizDAO.getQuizByTitle("Testing");
 
         assertEquals("Testing", quiz.getTitle());
-        assertEquals(2, quiz.getId().intValue());
+        //assertEquals(2, quiz.getId().intValue());
     }
 
     @Test
     void getQuizzesByTypeTest() {
-//        List<Quiz> quizzes = quizDAO.getQuizzesByType(QuizType.HISTORIC);
-//
-//        System.out.println(quizzes);
-//        assertEquals(quizzes.get(0).getQuizType(), QuizType.HISTORIC);
+        Collection<Quiz> quizzes = quizDAO.getQuizzesByType(QuizType.MATHEMATICS);
 
+        assertNotNull(quizzes);
     }
-
 }
