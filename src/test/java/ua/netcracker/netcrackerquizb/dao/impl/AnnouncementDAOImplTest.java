@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Announcement;
+import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 
 import java.math.BigInteger;
@@ -21,15 +22,18 @@ class AnnouncementDAOImplTest {
 
     @Autowired
     private AnnouncementDAOImpl announcementDAO;
+    @Autowired
+    private UserDAOImpl userDAO;
 
     @Test
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void getPopular() {
 
-        List<Announcement> popularAnnouncement = announcementDAO.getPopular(1);
+        List<Announcement> popularAnnouncement = announcementDAO.getPopular(4);
         assertNotNull(popularAnnouncement);
-        assertNotNull(popularAnnouncement.get(0));
-        assertEquals(1, popularAnnouncement.size());
+        for(Announcement announcement : popularAnnouncement)
+            assertNotNull(announcement);
+        assertEquals(4, popularAnnouncement.size());
     }
 
     @Test
@@ -65,7 +69,15 @@ class AnnouncementDAOImplTest {
 
     @Test
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void getByNullTitle() {
+        assertNull(announcementDAO.getByTitle(""));
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void createAnnouncement() {
+
+        assertNull(announcementDAO.getByTitle("test"));
 
         AnnouncementImpl newAnnouncement = new AnnouncementImpl();
         newAnnouncement.setTitle("test");
@@ -77,6 +89,7 @@ class AnnouncementDAOImplTest {
         announcementDAO.createAnnouncement(newAnnouncement);
 
         AnnouncementImpl testAnnouncement = announcementDAO.getByTitle("test");
+        assertNotNull(testAnnouncement);
         assertEquals(newAnnouncement.getTitle(), testAnnouncement.getTitle());
         assertEquals(newAnnouncement.getDescription(), testAnnouncement.getDescription());
         assertEquals(newAnnouncement.getOwner(), testAnnouncement.getOwner());
@@ -118,6 +131,7 @@ class AnnouncementDAOImplTest {
     @Test
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void deleteAnnouncement() {
+        assertNull(announcementDAO.getByTitle("test"));
 
         AnnouncementImpl newAnnouncement = new AnnouncementImpl();
         newAnnouncement.setTitle("test");
@@ -133,5 +147,34 @@ class AnnouncementDAOImplTest {
 
         announcementDAO.deleteAnnouncement(testAnnouncement.getId());
         assertNull(announcementDAO.getByTitle("test"));
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void getParticipantById() {
+
+        AnnouncementImpl newAnnouncement = new AnnouncementImpl();
+        newAnnouncement.setTitle("test");
+        newAnnouncement.setDescription("testDescription");
+        newAnnouncement.setOwner(BigInteger.ONE);
+        newAnnouncement.setDate(new Date());
+        newAnnouncement.setAddress("testAddress");
+        newAnnouncement.setParticipantsCap(5);
+        announcementDAO.createAnnouncement(newAnnouncement);
+
+        userDAO.createUser("test@gmail.com", "testLastName", "testFirstName", "testPassword", "testCode");
+
+        AnnouncementImpl testAnnouncement = announcementDAO.getByTitle("test");
+        assertNotNull(testAnnouncement);
+
+        User testUser = userDAO.getUserByEmail("test@gmail.com");
+        assertNotNull(testUser);
+
+        announcementDAO.addParticipant(testAnnouncement.getId(), testUser.getId());
+
+        assertTrue(announcementDAO.getParticipantById(testAnnouncement.getId(), testUser.getId()));
+
+        announcementDAO.deleteAnnouncement(testAnnouncement.getId());
+        userDAO.deleteUser(testUser.getId());
     }
 }
