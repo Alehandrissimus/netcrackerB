@@ -6,13 +6,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.User;
-import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
+import ua.netcracker.netcrackerquizb.model.builders.QuizBuilder;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
 import java.math.BigInteger;
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.Collection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,18 +23,22 @@ class QuizDAOImplTest {
 
     @Test
     void createQuizTest() {
-        Quiz quiz = new QuizImpl();
 
         User user = new UserImpl();
         user.setId(BigInteger.valueOf(2));
+
         String title = "New super pooper quiz";
-        quiz.setTitle(title);
-        quiz.setDescription("Horror quiz");
-        quiz.setQuizType(QuizType.SCIENCE);
-        quiz.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
-        quiz.setCreatorId(user.getId());
+        String description = "Horror quiz";
+        Quiz quiz = QuizBuilder.newBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setQuizType(QuizType.SCIENCE)
+                .setCreationDate(new Date(System.currentTimeMillis()))
+                .setCreatorId(user.getId())
+                .build();
 
         quizDAO.createQuiz(quiz);
+
 
         Quiz quizTest = quizDAO.getQuizByTitle(title);
         assertNotNull(quizTest);
@@ -59,23 +62,28 @@ class QuizDAOImplTest {
 
     @Test
     void deleteQuizTest() {
-//
-//        Quiz quiz = quizDAO.getQuizById(BigInteger.valueOf(32));
-//        quizDAO.deleteQuiz(quiz.getId());
-//
-//        assertNull(quizDAO.getQuizById(BigInteger.valueOf(32)));
 
-        Quiz quiz = new QuizImpl();
+//        Quiz quiz1 = quizDAO.getQuizById(BigInteger.valueOf(128));
+//        quizDAO.deleteQuiz(quiz1.getId());
+
+
         User user = new UserImpl();
-        user.setId(BigInteger.TWO);
+        user.setId(BigInteger.valueOf(2));
 
-        quiz.setTitle("newOlo");
-        quiz.setDescription("Horror quiz");
-        quiz.setQuizType(QuizType.SCIENCE);
-        quiz.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
-        quiz.setCreatorId(user.getId());
+        String title = "newOlo";
+        String description = "Horror quiz";
+        Quiz quiz = QuizBuilder.newBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setQuizType(QuizType.SCIENCE)
+                .setCreationDate(new Date(System.currentTimeMillis()))
+                .setCreatorId(user.getId())
+                .build();
+
 
         quizDAO.createQuiz(quiz);
+
+        System.out.println(quiz);
 
         Quiz thisQuiz = quizDAO.getQuizByTitle("newOlo");
         assertNotNull(thisQuiz);
@@ -87,38 +95,46 @@ class QuizDAOImplTest {
 
     @Test
     void updateQuizTest() {
-        Quiz quiz = new QuizImpl();
-        User user = new UserImpl();
-        user.setId(BigInteger.TWO);
 
-        quiz.setTitle("HeyHop");
-        quiz.setDescription("Funny quiz");
-        quiz.setQuizType(QuizType.SCIENCE);
-        quiz.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
-        quiz.setCreatorId(user.getId());
-        quiz.setId(BigInteger.valueOf(7));
+        User user = new UserImpl();
+        user.setId(BigInteger.valueOf(2));
+
+        String title = "HeyHop";
+        String description = "Funny quiz";
+        Quiz quiz = QuizBuilder.newBuilder()
+                .setId(BigInteger.valueOf(11))
+                .setTitle(title)
+                .setDescription(description)
+                .setQuizType(QuizType.SCIENCE)
+                .setCreationDate(new Date(System.currentTimeMillis()))
+                .setCreatorId(user.getId())
+                .build();
 
         quizDAO.createQuiz(quiz);
 
-        Quiz updatedQuiz = quizDAO.getQuizByTitle("HeyHop");
-
-        updatedQuiz.setTitle("Lalaley");
-        updatedQuiz.setDescription("Funny quiz");
-        updatedQuiz.setQuizType(QuizType.HISTORIC);
+        Quiz updatedQuiz = quizDAO.getQuizByTitle(title);
+        updatedQuiz.setTitle("newTitle");
 
         quizDAO.updateQuiz(quiz.getId(), updatedQuiz);
 
-        assertNotEquals(updatedQuiz.getTitle(), quiz.getTitle());
-        assertEquals("Lalaley", updatedQuiz.getTitle());
+        System.out.println(quiz);
+        System.out.println(updatedQuiz);
 
+        assertNotEquals(quiz, updatedQuiz);
+
+        quizDAO.deleteQuiz(quiz.getId());
         quizDAO.deleteQuiz(updatedQuiz.getId());
 
-        assertNull(quizDAO.getQuizByTitle("Lalaley"));
+        System.out.println(quiz);
+        System.out.println(updatedQuiz);
+
+        assertNull(quizDAO.getQuizByTitle("HeyHop"));
+
     }
 
     @Test
     void getAllQuizzesTest() {
-        Collection<Quiz> quizList = quizDAO.getAllQuizzes();
+        List<Quiz> quizList = quizDAO.getAllQuizzes();
 
         assertNotNull(quizList);
     }
@@ -133,8 +149,8 @@ class QuizDAOImplTest {
 
     @Test
     void getQuizzesByTypeTest() {
-        Collection<Quiz> quizzes = quizDAO.getQuizzesByType(QuizType.MATHEMATICS);
-
+        List<Quiz> quizzes = quizDAO.getQuizzesByType(QuizType.MATHEMATICS);
+        System.out.println(quizzes);
         assertNotNull(quizzes);
     }
 }

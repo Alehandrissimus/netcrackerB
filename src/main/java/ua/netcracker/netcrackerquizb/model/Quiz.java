@@ -2,33 +2,32 @@ package ua.netcracker.netcrackerquizb.model;
 
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.Objects;
 
 public interface Quiz {
 
-    BigInteger getId();
-
     void setId(BigInteger id);
 
-    String getTitle();
+    BigInteger getId();
 
     void setTitle(String title);
 
-    String getDescription();
+    String getTitle();
 
     void setDescription(String description);
 
-    QuizType getQuizType();
+    String getDescription();
 
     void setQuizType(QuizType quizType);
 
-    Date getCreationDate();
+    QuizType getQuizType();
 
     void setCreationDate(Date creationDate);
 
-    BigInteger getCreatorId();
+    Date getCreationDate();
 
     void setCreatorId(BigInteger creatorId);
+
+    BigInteger getCreatorId();
 
 }
 

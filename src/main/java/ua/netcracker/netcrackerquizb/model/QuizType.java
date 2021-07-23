@@ -1,8 +1,14 @@
 package ua.netcracker.netcrackerquizb.model;
 
+import java.math.BigInteger;
+
 public enum QuizType {
-    HISTORIC,
-    SCIENCE,
-    GEOGRAPHICAL,
-    MATHEMATICS;
+    HISTORIC (0),
+    SCIENCE (1),
+    GEOGRAPHICAL (2),
+    MATHEMATICS (3);
+
+    QuizType(int i) {
+    }
+
 }

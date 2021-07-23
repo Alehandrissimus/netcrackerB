@@ -4,12 +4,11 @@ import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
 
 public interface QuizDAO {
 
-    void createQuiz(Quiz quiz);
+    BigInteger createQuiz(Quiz quiz);
 
     void updateQuiz(BigInteger id, Quiz updatedQuiz);
 
@@ -17,9 +16,9 @@ public interface QuizDAO {
 
     Quiz getQuizById(BigInteger id);
 
-    Collection<Quiz> getQuizzesByType(QuizType quizType);
+    List<Quiz> getQuizzesByType(QuizType quizType);
 
-    Collection<Quiz> getAllQuizzes();
+    List<Quiz> getAllQuizzes();
 
     Quiz getQuizByTitle(String title);
 
