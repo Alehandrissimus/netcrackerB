@@ -1,11 +1,14 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -45,6 +48,7 @@ public class UserDAOImpl implements UserDAO {
   public static final String USER_DESCRIPTION = "description";
 
   private Connection connection;
+  private final Properties properties = new Properties();
 
   @Autowired
   UserDAOImpl(
@@ -59,15 +63,20 @@ public class UserDAOImpl implements UserDAO {
     }
     try {
       connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    try (FileInputStream fis = new FileInputStream("src/main/resources/sqlScripts.properties")) {
+      properties.load(fis);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
   @Override
   public User getUserById(BigInteger id) {
     User user = null;
-    try (PreparedStatement statement = connection.prepareStatement(SEARCH_USER_BY_ID)) {
+    try (PreparedStatement statement = connection.prepareStatement(properties.getProperty("SEARCH_USER_BY_ID"))) {
       statement.setInt(1, id.intValue());
 
       ResultSet resultSet = statement.executeQuery();

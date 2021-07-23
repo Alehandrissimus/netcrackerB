@@ -136,7 +136,24 @@ public class UserDAOImplTest {
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-  void updateUsersDescription() {
+  void updateExistUsersDescription() {
+    String testDescription = "testDescription";
+    String oldDescriptino = userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim();
+
+    userDAO.updateUsersDescription(BigInteger.valueOf(2), testDescription);
+
+    assertEquals(testDescription, userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
+
+    userDAO.updateUsersDescription(BigInteger.valueOf(2), oldDescriptino);
+
+    assertEquals(oldDescriptino,
+        userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
+  }
+
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void updateNotExistUsersDescription() {
+
   }
 
   @Test
