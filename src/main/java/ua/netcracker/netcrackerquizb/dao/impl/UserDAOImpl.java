@@ -91,10 +91,10 @@ public class UserDAOImpl implements UserDAO {
         user.setEmail(resultSet.getString(USER_EMAIL));
         user.setPassword(resultSet.getString(USER_PASSWORD));
         switch (resultSet.getInt(USER_ROLE)) {
-          case 1:
+          case 0:
             user.setRole(UserRoles.ADMIN);
             break;
-          case 2:
+          case 1:
             user.setRole(UserRoles.USER);
             break;
           default:
@@ -128,10 +128,10 @@ public class UserDAOImpl implements UserDAO {
         user.setEmail(email);
         user.setPassword(resultSet.getString(USER_PASSWORD));
         switch (resultSet.getInt(USER_ROLE)) {
-          case 1:
+          case 0:
             user.setRole(UserRoles.ADMIN);
             break;
-          case 2:
+          case 1:
             user.setRole(UserRoles.USER);
             break;
           default:
@@ -168,7 +168,7 @@ public class UserDAOImpl implements UserDAO {
       statement.setString(3, null);
       statement.setString(4, email);
       statement.setString(5, password);
-      statement.setInt(6, 3);
+      statement.setInt(6, 2);
       statement.setInt(7, 0);
       statement.setString(8, emailCode);
 
@@ -222,10 +222,10 @@ public class UserDAOImpl implements UserDAO {
         user.setEmail(email);
         user.setPassword(password);
         switch (resultSet.getInt(USER_ROLE)) {
-          case 1:
+          case 0:
             user.setRole(UserRoles.ADMIN);
             break;
-          case 2:
+          case 1:
             user.setRole(UserRoles.USER);
             break;
           default:
@@ -270,10 +270,10 @@ public class UserDAOImpl implements UserDAO {
         user.setEmail(resultSet.getString(USER_EMAIL));
         user.setPassword(resultSet.getString(USER_PASSWORD));
         switch (resultSet.getInt(USER_ROLE)) {
-          case 1:
+          case 0:
             user.setRole(UserRoles.ADMIN);
             break;
-          case 2:
+          case 1:
             user.setRole(UserRoles.USER);
             break;
           default:

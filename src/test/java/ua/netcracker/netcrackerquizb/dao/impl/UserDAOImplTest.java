@@ -50,13 +50,28 @@ public class UserDAOImplTest {
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void deleteUser() {
+    assertNull(userDAO.getUserByEmail("test@gmail.co"));
 
+    userDAO.createUser("test@gmail.co", "testLastName", "testFirstName", "testPassword",
+        "testEmailCode");
+    assertNotNull(userDAO.getUserByEmail("test@gmail.co"));
+    userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
+    assertNull(userDAO.getUserByEmail("test@gmail.co"));
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void createUser() {
-//    userDAO.createUser("test@gmail.com", "testLastName", "testFirstName", "testPassword", "testEmailCode");
+    assertNull(userDAO.getUserByEmail("test@gmail.co"));
+
+    userDAO.createUser("test@gmail.co", "testLastName", "testFirstName", "testPassword",
+        "testEmailCode");
+
+    assertNotNull(userDAO.getUserByEmail("test@gmail.co"));
+
+    userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
+
+    assertNull(userDAO.getUserByEmail("test@gmail.co"));
 
   }
 
@@ -142,7 +157,8 @@ public class UserDAOImplTest {
 
     userDAO.updateUsersDescription(BigInteger.valueOf(2), testDescription);
 
-    assertEquals(testDescription, userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
+    assertEquals(testDescription,
+        userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
 
     userDAO.updateUsersDescription(BigInteger.valueOf(2), oldDescriptino);
 
@@ -153,6 +169,16 @@ public class UserDAOImplTest {
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void updateNotExistUsersDescription() {
+    String testDescription = "testDescription";
+
+    userDAO.updateUsersDescription(BigInteger.ZERO, testDescription);
+    try {
+      userDAO.getUserById(BigInteger.ZERO).getDescription();
+
+      fail();
+    } catch (NullPointerException e) {
+      assertTrue(true);
+    }
 
   }
 
