@@ -7,7 +7,6 @@ import ua.netcracker.netcrackerquizb.dao.QuestionDAO;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
-import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
 
 import java.math.BigInteger;

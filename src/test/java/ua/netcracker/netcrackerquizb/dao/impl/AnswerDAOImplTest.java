@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,27 @@ public class AnswerDAOImplTest {
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getAnswerByTitleTest() {
+        Answer answerByTitle = new AnswerImpl();
+        answerByTitle.setValue("Aboba");
+        answerByTitle.setAnswer(true);
+        answerByTitle.setQuestionId(BigInteger.valueOf(1));
+        answerDAO.createAnswer(answerByTitle);
+
+        Answer answerByTitleTest = answerDAO.getAnswerByTitle("Aboba");
+        assertNotNull(answerByTitleTest);
+
+        assertEquals(answerByTitleTest.getAnswer(), answerByTitle.getAnswer());
+        assertEquals(answerByTitleTest.getValue(), answerByTitle.getValue());
+        assertEquals(answerByTitleTest.getQuestionId(), answerByTitle.getQuestionId());
+
+        answerDAO.deleteAnswer(answerByTitleTest.getId());
+        assertNull(answerDAO.getAnswerByTitle("Aboba"));
+
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createAnswerTest() {
         BigInteger questionId = BigInteger.valueOf(1);
         String value = "Antarctica";
@@ -37,12 +59,14 @@ public class AnswerDAOImplTest {
 
         answerDAO.createAnswer(answerImpl);
         Answer anAnswer = answerDAO.getAnswerByTitle(value);
+        assertNotNull(anAnswer);
 
         assertEquals(anAnswer.getValue(), answerImpl.getValue());
         assertEquals(anAnswer.getAnswer(), answerImpl.getAnswer());
         assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
 
         answerDAO.deleteAnswer(anAnswer.getId());
+        assertNull(answerDAO.getAnswerByTitle("Antarctica"));
     }
 
     @Test
@@ -71,6 +95,8 @@ public class AnswerDAOImplTest {
         answerDAO.createAnswer(newAnswer);
 
         Answer testNewAnswer = answerDAO.getAnswerByTitle("Moon");
+        assertNotNull(testNewAnswer);
+
         newAnswer.setId(testNewAnswer.getId());
 
         testNewAnswer.setAnswer(true);
@@ -79,6 +105,7 @@ public class AnswerDAOImplTest {
         answerDAO.updateAnswer(testNewAnswer);
 
         Answer finalAnswer = answerDAO.getAnswerByTitle("Sun");
+        assertNotNull(finalAnswer);
         assertEquals(testNewAnswer.getAnswer(), finalAnswer.getAnswer());
         assertEquals(testNewAnswer.getQuestionId(), finalAnswer.getQuestionId());
         assertEquals(testNewAnswer.getValue(), finalAnswer.getValue());
