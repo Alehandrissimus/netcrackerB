@@ -22,7 +22,6 @@ class QuizDAOImplTest {
     @Autowired
     private QuizDAOImpl quizDAO;
 
-    //почему новые объекты появляться перед первым id?
     @Test
     void createQuizTest() {
         Quiz quiz = new QuizImpl();

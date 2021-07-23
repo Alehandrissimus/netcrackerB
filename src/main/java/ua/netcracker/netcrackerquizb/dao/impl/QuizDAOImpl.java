@@ -8,29 +8,20 @@ import ua.netcracker.netcrackerquizb.model.*;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 @Repository
 public class QuizDAOImpl implements QuizDAO {
 
-    private final static String SQL_SELECT_QUIZ_BY_TYPE = "SELECT * FROM QUIZ WHERE QUIZ_TYPE=? ORDER BY ID_QUIZ";
-    private final static String SQL_SELECT_ALL_QUIZZES = "SELECT * FROM QUIZ ORDER BY ID_QUIZ";
-    private final static String SQL_SELECT_BY_ID = "SELECT * FROM QUIZ WHERE ID_QUIZ=? ORDER BY ID_QUIZ";
-    private final static String SQL_SELECT_BY_TITLE = "SELECT * FROM QUIZ WHERE TITLE=? ORDER BY ID_QUIZ";
-
-
-    private final static String SQL_UPDATE_QUIZ = "UPDATE QUIZ SET TITLE=?, DESCRIPTION=?, " +
-            "CREATION_DATE=?, QUIZ_TYPE=?, CREATOR=? WHERE ID_QUIZ=?";
-
-    private final static String SQL_INSERT_INTO_QUIZ = "INSERT INTO QUIZ VALUES(s_quiz.NEXTVAL, ?, ?, ?, ?, ?)";
-
-    private final static String SQL_DELETE_QUIZ = "DELETE FROM QUIZ WHERE ID_QUIZ=?";
-
     private Connection connection;
+    private final Properties properties = new Properties();
 
     @Autowired
     QuizDAOImpl(
@@ -49,12 +40,18 @@ public class QuizDAOImpl implements QuizDAO {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        try (FileInputStream fis = new FileInputStream("src/main/resources/sqlScripts.properties")) {
+            properties.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public void createQuiz(Quiz quiz) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_INTO_QUIZ)){
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty("INSERT_INTO_QUIZ"))){
 
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
@@ -73,7 +70,8 @@ public class QuizDAOImpl implements QuizDAO {
     @Override
     public void updateQuiz(BigInteger id, Quiz updatedQuiz) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_QUIZ)){
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty("UPDATE_QUIZ"))){
 
             preparedStatement.setString(1, updatedQuiz.getTitle());
             preparedStatement.setString(2, updatedQuiz.getDescription());
@@ -93,7 +91,8 @@ public class QuizDAOImpl implements QuizDAO {
 
     @Override
     public void deleteQuiz(BigInteger id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_QUIZ)){
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty("DELETE_QUIZ_BY_ID"))){
             preparedStatement.setInt(1, id.intValue());
 
             preparedStatement.executeUpdate();
@@ -107,7 +106,8 @@ public class QuizDAOImpl implements QuizDAO {
     @Override
     public Quiz getQuizById(BigInteger id) {
         Quiz quiz = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID)){
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty("SELECT_QUIZ_BY_ID"))){
             preparedStatement.setInt(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -134,7 +134,8 @@ public class QuizDAOImpl implements QuizDAO {
     @Override
     public Collection<Quiz> getAllQuizzes() {
         Collection<Quiz> quizzes = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_QUIZZES)){
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty("SELECT_ALL_QUIZZES"))){
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -160,7 +161,8 @@ public class QuizDAOImpl implements QuizDAO {
     @Override
     public Quiz getQuizByTitle(String title) {
         Quiz quiz = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_TITLE)){
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty("SELECT_QUIZ_BY_TITLE"))){
 
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -187,7 +189,8 @@ public class QuizDAOImpl implements QuizDAO {
 
         Collection<Quiz> quizzes = new ArrayList<>();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_QUIZ_BY_TYPE)){
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty("SELECT_QUIZZES_BY_TYPE"))){
 
             preparedStatement.setInt(1, quizType.ordinal());
 
