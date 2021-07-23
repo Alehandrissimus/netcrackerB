@@ -9,30 +9,19 @@ import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
 import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 @Repository
 public class QuestionDAOImpl implements QuestionDAO {
 
-    private static final String getQuestionById = "SELECT * FROM question WHERE id_question = ?";
-    private static final String getAnswersById = "SELECT * FROM answer WHERE question = ?";
-
-    private static final String createQuestion = "INSERT INTO question VALUES(s_question.NEXTVAL, ?, ?, ?)";
-    private static final String createAnswer = "INSERT INTO answer VALUES(s_answer.NEXTVAL, ?, ?, ?)";
-    private static final String getCreatedId = "SELECT MAX(id_question) FROM (SELECT id_question FROM question WHERE question_name = ?";
-
-    private static final String deleteQuestion = "DELETE FROM question WHERE id_question = ?";
-    private static final String deleteAnswer = "DELETE FROM answer WHERE text = ? AND question = ?";
-    private static final String getQuestionIdByData = "SELECT id_question FROM question WHERE question_name = ? AND quiz = ?";
-
-    private static final String getAllQuestions = "SELECT * FROM question WHERE quiz = ?";
-
-    private static final String updateQuestion = "UPDATE question SET question_name = ?, question_type = ? WHERE id_question = ?";
-
-    private static Connection connection;
+    private Connection connection;
+    private final Properties properties = new Properties();
 
     @Autowired
     QuestionDAOImpl(
@@ -49,15 +38,18 @@ public class QuestionDAOImpl implements QuestionDAO {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } try (FileInputStream fis = new FileInputStream("src/main/resources/sqlScripts.properties")) {
+            properties.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    // нужна коллекция answer
     @Override
     public Question getQuestionById(BigInteger id, Collection<Answer> answers) {
         Question question = new QuestionImpl();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(getQuestionById);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_QUESTION_BY_ID"));
             preparedStatement.setInt(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) return null;
@@ -72,21 +64,6 @@ public class QuestionDAOImpl implements QuestionDAO {
                 }
             }
             question.setId(BigInteger.valueOf(resultSet.getInt("id_question")));
-            /*
-            preparedStatement.clearParameters();
-            preparedStatement = connection.prepareStatement(getAnswersById);
-            preparedStatement.setInt(1, id.intValue());
-            resultSet = preparedStatement.executeQuery();
-
-            Collection<Answer> answers = new ArrayList<>();
-            while (resultSet.next()) {
-                AnswerImpl answer = new AnswerImpl();
-                answer.setValue(resultSet.getString("text"));
-                answer.setAnswer(resultSet.getInt("is_true") == 1);
-                answers.add(answer);
-            }
-
-             */
             question.setAnswers(answers);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -94,48 +71,23 @@ public class QuestionDAOImpl implements QuestionDAO {
         return question;
     }
 
-    //need quiz id
-    //после вызова createQuestion по идее в сервисе идет вызов createAnswer answerDAO
-    //мб нужно вернуть id созданного question?
     @Override
     public void createQuestion(Question question, BigInteger quizId) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(createQuestion);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("CREATE_QUESTION"));
             preparedStatement.setString(1, question.getQuestion());
             preparedStatement.setInt(2, question.getQuestionType().ordinal());
             preparedStatement.setInt(3, quizId.intValue());
             preparedStatement.executeUpdate();
-
-            /*
-            preparedStatement.clearParameters();
-            preparedStatement = connection.prepareStatement(getCreatedId);
-            preparedStatement.setString(1, question.getQuestion());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            int questionId = resultSet.getInt("id_question");
-             */
-
-            /*
-            Collection<Answer> answers = question.getAnswers();
-            for(Answer answer : answers) {
-                preparedStatement.clearParameters();
-                preparedStatement = connection.prepareStatement(createAnswer);
-                preparedStatement.setString(1, answer.getValue());
-                preparedStatement.setInt(2, (answer.isTrue() ? 1 : 0));
-                preparedStatement.setInt(3, questionId);
-                preparedStatement.executeUpdate();
-            }
-             */
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    //т.к. есть возможность удаления идентичного вопроса, нужен quizId
     @Override
     public void deleteQuestion(Question question, BigInteger quizId) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(getQuestionIdByData);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_QUESTION_ID_BY_DATA"));
             preparedStatement.setString(1, question.getQuestion());
             preparedStatement.setInt(2, quizId.intValue());
             preparedStatement.executeQuery();
@@ -144,19 +96,8 @@ public class QuestionDAOImpl implements QuestionDAO {
 
             int questionId = resultSet.getInt("id_question");
 
-            /*
-            Collection<Answer> answers = question.getAnswers();
-            for(Answer answer: answers) {
-                preparedStatement.clearParameters();
-                preparedStatement = connection.prepareStatement(deleteAnswer);
-                preparedStatement.setString(1, answer.getValue());
-                preparedStatement.setInt(2, questionId);
-                preparedStatement.executeUpdate();
-            }
-             */
-
             preparedStatement.clearParameters();
-            preparedStatement = connection.prepareStatement(deleteQuestion);
+            preparedStatement = connection.prepareStatement(properties.getProperty("DELETE_QUESTION"));
             preparedStatement.setInt(1, questionId);
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
@@ -165,13 +106,11 @@ public class QuestionDAOImpl implements QuestionDAO {
 
     }
 
-    //если будем разделять дао в сервисах, чтобы тут не был код, находяжийся в answerDAO,
-    //нужно наверн вернуть в аргах коллекцию answers этого quiz
     @Override
     public Collection<Question> getAllQuestions(BigInteger quizId) {
         Collection<Question> questions = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(getAllQuestions);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_ALL_QUESTIONS"));
             preparedStatement.setInt(1, quizId.intValue());
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -187,21 +126,6 @@ public class QuestionDAOImpl implements QuestionDAO {
                     }
                 }
 
-                /*
-                preparedStatement.clearParameters();
-                preparedStatement = connection.prepareStatement(getAnswersById);
-                preparedStatement.setInt(1, resultSet.getInt("id_question"));
-                ResultSet resultSetAnswer = preparedStatement.executeQuery();
-
-                Collection<Answer> answers = new ArrayList<>();
-                while (resultSetAnswer.next()) {
-                    AnswerImpl answer = new AnswerImpl();
-                    answer.setValue(resultSetAnswer.getString("text"));
-                    answer.setAnswer(resultSetAnswer.getInt("is_true") == 1);
-                    answers.add(answer);
-                }
-                 */
-
                 questions.add(question);
             }
 
@@ -215,7 +139,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public void updateQuestion(Question question) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(updateQuestion);
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("UPDATE_QUESTION"));
             preparedStatement.setString(1, question.getQuestion());
             preparedStatement.setInt(2, question.getQuestionType().ordinal());
             preparedStatement.setInt(3, question.getId().intValue());
