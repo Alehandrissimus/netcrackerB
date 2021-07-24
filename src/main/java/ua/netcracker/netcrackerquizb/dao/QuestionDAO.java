@@ -9,7 +9,7 @@ import java.util.Collection;
 public interface QuestionDAO {
     Question getQuestionById(BigInteger id, Collection<Answer> answers);
 
-    void createQuestion(Question question, BigInteger id);
+    Question createQuestion(Question question, BigInteger id);
 
     void deleteQuestion(Question question, BigInteger id);
 

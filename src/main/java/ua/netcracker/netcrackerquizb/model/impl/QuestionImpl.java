@@ -6,8 +6,39 @@ import ua.netcracker.netcrackerquizb.model.QuestionType;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Objects;
 
 public class QuestionImpl implements Question {
+
+    public QuestionImpl(
+            BigInteger idQuestion,
+            String question,
+            QuestionType questionType,
+            Collection<Answer> answers
+    ) {
+        this.idQuestion = idQuestion;
+        this.question = question;
+        this.questionType = questionType;
+        this.answers = answers;
+    }
+
+    public QuestionImpl(
+            BigInteger idQuestion,
+            String question,
+            QuestionType questionType
+    ) {
+        this.idQuestion = idQuestion;
+        this.question = question;
+        this.questionType = questionType;
+    }
+
+    public QuestionImpl(
+            String question,
+            QuestionType questionType
+    ) {
+        this.question = question;
+        this.questionType = questionType;
+    }
 
     private BigInteger idQuestion;
     private String question;
@@ -63,5 +94,21 @@ public class QuestionImpl implements Question {
                 ", questionType=" + questionType +
                 ", answers=" + answers +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionImpl question1 = (QuestionImpl) o;
+        return Objects.equals(idQuestion, question1.idQuestion) &&
+                question.equals(question1.question) &&
+                questionType == question1.questionType &&
+                Objects.equals(answers, question1.answers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idQuestion, question, questionType, answers);
     }
 }
