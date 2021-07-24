@@ -14,4 +14,13 @@ public interface Announcement {
   Collection<BigInteger> getParticipants();
   int getParticipantsCap();
 
+  void setId(BigInteger id);
+  void setTitle(String title);
+  void setDescription(String description);
+  void setOwner(BigInteger owner);
+  void setDate(Date date);
+  void setAddress(String address);
+  void setParticipants(Collection<BigInteger> participants);
+  void setParticipantsCap(int participantsCap);
+
 }

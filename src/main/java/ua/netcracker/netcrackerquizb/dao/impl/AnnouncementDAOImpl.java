@@ -1,10 +1,12 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnnouncementDAO;
 import ua.netcracker.netcrackerquizb.model.Announcement;
+import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,72 +20,91 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
 
     private Connection connection;
     private final Properties properties = new Properties();
+    private static final Logger log = Logger.getLogger(AnnouncementDAOImpl.class);
+
+    private final String URL;
+    private final String USERNAME;
+    private final String PASSWORD;
 
     @Autowired
     public AnnouncementDAOImpl(
-            @Value("${spring.datasource.url}") String URL,
-            @Value("${spring.datasource.username}") String USERNAME,
-            @Value("${spring.datasource.password}") String PASSWORD
-    ) {
-        try {
-            Class.forName("oracle.jdbc.OracleDriver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
+            @Value(URL_PROPERTY) String URL,
+            @Value(USERNAME_PROPERTY) String USERNAME,
+            @Value(PASSWORD_PROPERTY) String PASSWORD
+    ) throws SQLException, ClassNotFoundException, IOException {
+        this.URL = URL;
+        this.USERNAME = USERNAME;
+        this.PASSWORD = PASSWORD;
+
+        getDataSource(URL, USERNAME, PASSWORD);
+    }
+
+
+    public void setTestConnection() throws SQLException, ClassNotFoundException, IOException {
+        getDataSource(URL, USERNAME + "_TEST", PASSWORD);
+    }
+
+    private void getDataSource(String URL, String USERNAME, String PASSWORD)
+            throws SQLException, ClassNotFoundException, IOException {
+        try (FileInputStream fis = new FileInputStream(PATH_PROPERTY)) {
+            Class.forName(DRIVER_PATH_PROPERTY);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        try (FileInputStream fis = new FileInputStream("src/main/resources/sqlScripts.properties")) {
             properties.load(fis);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Driver error " + e.getMessage());
+            throw new IOException();
+        } catch (ClassNotFoundException e) {
+            log.error("Property file error " + e.getMessage());
+            throw new ClassNotFoundException();
+        } catch (SQLException e) {
+            log.error("Database connection error " + e.getMessage());
+            throw new SQLException();
         }
     }
 
     @Override
-    public AnnouncementImpl getByTitle(String title) {
+    public Announcement getByTitle(String title) {
 
-        AnnouncementImpl announcement = null;
+        Announcement announcement = null;
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("SELECT_ANNOUNCEMENT_BY_TITLE"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_ANNOUNCEMENT_BY_TITLE));
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            if(!resultSet.next()) return null; // throw (notFoundEntry)
 
-                announcement = new AnnouncementImpl();
-                announcement.setId(BigInteger.valueOf(resultSet.getInt("id_announcement")));
-                announcement.setTitle(resultSet.getString("title").trim());
-                announcement.setDescription(resultSet.getString("description").trim());
-                announcement.setOwner(BigInteger.valueOf(resultSet.getInt("ownr")));
-                announcement.setDate(resultSet.getDate("date_create"));
-                announcement.setAddress(resultSet.getString("address").trim());
-                announcement.setParticipantsCap(resultSet.getInt("likes"));
-            }
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+            return new AnnouncementImpl.AnnouncementBuilder()
+                    .setId(BigInteger.valueOf(resultSet.getLong(ID_ANNOUNCEMENT)))
+                    .setTitle(resultSet.getString(TITLE).trim())
+                    .setDescription(resultSet.getString(DESCRIPTION).trim())
+                    .setOwner(BigInteger.valueOf(resultSet.getLong(OWNER)))
+                    .setDate(resultSet.getDate(DATE_CREATE))
+                    .setAddress(resultSet.getString(ADDRESS).trim())
+                    .setParticipantsCap(resultSet.getInt(LIKES))
+                    .build();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
         }
-        return announcement;
     }
 
     @Override
     public void createAnnouncement(Announcement newAnnouncement) {
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("CREATE_ANNOUNCEMENT"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(CREATE_ANNOUNCEMENT));
             preparedStatement.setString(1, newAnnouncement.getTitle());
             preparedStatement.setString(2, newAnnouncement.getDescription());
-            preparedStatement.setInt(3, newAnnouncement.getOwner().intValue());
-            preparedStatement.setDate(4,  new Date(new java.util.Date().getTime())); // need to discus this
+            preparedStatement.setLong(3, newAnnouncement.getOwner().longValue());
+            preparedStatement.setDate(4,  new Date(System.currentTimeMillis()));
             preparedStatement.setString(5, newAnnouncement.getAddress());
             preparedStatement.setInt(6, newAnnouncement.getParticipantsCap());
             preparedStatement.executeUpdate();
 
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -91,118 +112,122 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
     public void editAnnouncement(Announcement newAnnouncement) {
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("UPDATE_ANNOUNCEMENT"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(UPDATE_ANNOUNCEMENT));
             preparedStatement.setString(1, newAnnouncement.getTitle());
             preparedStatement.setString(2, newAnnouncement.getDescription());
             preparedStatement.setString(3, newAnnouncement.getAddress());
-            preparedStatement.setInt(4, newAnnouncement.getId().intValue());
+            preparedStatement.setLong(4, newAnnouncement.getId().longValue());
             preparedStatement.executeUpdate();
 
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
     @Override
-    public void addParticipant(BigInteger id_announcement, BigInteger id_user) {
+    public void addParticipant(BigInteger idAnnouncement, BigInteger idUser) {
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("ADD_PARTICIPANT"));
-            preparedStatement.setInt(1, id_announcement.intValue());
-            preparedStatement.setInt(2, id_user.intValue());
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(ADD_PARTICIPANT));
+            preparedStatement.setLong(1, idAnnouncement.longValue());
+            preparedStatement.setLong(2, idUser.longValue());
             preparedStatement.executeUpdate();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
     @Override
-    public void deleteAnnouncement(BigInteger id_announcement) {
+    public void deleteAnnouncement(BigInteger idAnnouncement) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("DELETE_ANNOUNCEMENT_BY_ID"));
-            preparedStatement.setInt(1, id_announcement.intValue());
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(DELETE_ANNOUNCEMENT_BY_ID));
+            preparedStatement.setLong(1, idAnnouncement.longValue());
             preparedStatement.executeUpdate();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
     @Override
     public List<Announcement> getPopular(int number) {
-        List<Announcement> popularAnnouncement = new ArrayList<>();
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_POPULAR_ANNOUNCEMENT"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_POPULAR_ANNOUNCEMENT));
             preparedStatement.setInt(1, number);
             ResultSet resultSet = preparedStatement.executeQuery();
+            List<Announcement> popularAnnouncement = new ArrayList<>();
 
             while (resultSet.next()) {
-                AnnouncementImpl announcement = new AnnouncementImpl();
-                announcement.setId(BigInteger.valueOf(resultSet.getInt("id_announcement")));
-                announcement.setTitle(resultSet.getString("title").trim());
-                announcement.setDescription(resultSet.getString("description").trim());
-                announcement.setOwner(BigInteger.valueOf(resultSet.getInt("ownr")));
-                announcement.setDate(resultSet.getDate("date_create"));
-                announcement.setAddress(resultSet.getString("address").trim());
-                announcement.setParticipantsCap(resultSet.getInt("likes"));
+
+                Announcement announcement = new AnnouncementImpl.AnnouncementBuilder()
+                        .setId(BigInteger.valueOf(resultSet.getLong(ID_ANNOUNCEMENT)))
+                        .setTitle(resultSet.getString(TITLE).trim())
+                        .setDescription(resultSet.getString(DESCRIPTION).trim())
+                        .setOwner(BigInteger.valueOf(resultSet.getLong(OWNER)))
+                        .setDate(resultSet.getDate(DATE_CREATE))
+                        .setAddress(resultSet.getString(ADDRESS).trim())
+                        .setParticipantsCap(resultSet.getInt(LIKES))
+                        .build();
 
                 popularAnnouncement.add(announcement);
             }
 
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+            return popularAnnouncement;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+
+            return null;
         }
-        return popularAnnouncement;
     }
 
     @Override
-    public Set<Announcement> getLikedByUser(BigInteger id_user) {
-
-        Set<Announcement> announcements = new HashSet<>();
-
+    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("SELECT_ANNOUNCEMENT_LIKED_BY_USER"));
-            preparedStatement.setInt(1, id_user.intValue());
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_ANNOUNCEMENT_LIKED_BY_USER));
+            preparedStatement.setLong(1, idUser.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
+            Set<Announcement> announcements = new HashSet<>();
+
             while (resultSet.next()) {
-                AnnouncementImpl announcement = new AnnouncementImpl();
-                announcement.setId(BigInteger.valueOf(resultSet.getInt("id_announcement")));
-                announcement.setTitle(resultSet.getString("title").trim());
-                announcement.setDescription(resultSet.getString("description").trim());
-                announcement.setOwner(BigInteger.valueOf(resultSet.getInt("ownr")));
-                announcement.setDate(resultSet.getDate("date_create"));
-                announcement.setAddress(resultSet.getString("address").trim());
-                announcement.setParticipantsCap(resultSet.getInt("likes"));
+
+                Announcement announcement = new AnnouncementImpl.AnnouncementBuilder()
+                        .setId(BigInteger.valueOf(resultSet.getLong(ID_ANNOUNCEMENT)))
+                        .setTitle(resultSet.getString(TITLE).trim())
+                        .setDescription(resultSet.getString(DESCRIPTION).trim())
+                        .setOwner(BigInteger.valueOf(resultSet.getLong(OWNER)))
+                        .setDate(resultSet.getDate(DATE_CREATE))
+                        .setAddress(resultSet.getString(ADDRESS).trim())
+                        .setParticipantsCap(resultSet.getInt(LIKES))
+                        .build();
 
                 announcements.add(announcement);
             }
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+            return announcements;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
         }
-        return announcements;
     }
 
-    /**
-     * Returns true if there is a record in the database, false otherwise.
-     */
     @Override
-    public boolean getParticipantById(BigInteger id_announcement, BigInteger id_user) {
+    public boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) {
 
         boolean isRecord = false;
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_PARTICIPANT_BY_ID"));
-            preparedStatement.setInt(1, id_announcement.intValue());
-            preparedStatement.setInt(2, id_user.intValue());
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_PARTICIPANT_BY_ID));
+            preparedStatement.setLong(1, idAnnouncement.longValue());
+            preparedStatement.setLong(2, idUser.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.isBeforeFirst()) {
                 isRecord = true; // if resultSet has an entry
             }
 
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return isRecord;
     }
