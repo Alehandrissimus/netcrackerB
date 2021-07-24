@@ -12,11 +12,11 @@ import java.util.List;
 
 public interface QuizService {
 
-    void createQuiz(Quiz quiz);
+    Quiz createQuiz(Quiz quiz);
 
-    void updateQuiz(BigInteger id, Quiz updatedQuiz);
+    void updateQuiz(Quiz updatedQuiz);
 
-    void deleteQuiz(BigInteger id);
+    void deleteQuiz(Quiz quiz);
 
     Quiz getQuizById(BigInteger id);
 

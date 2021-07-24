@@ -55,15 +55,16 @@ class QuizDAOImplTest {
 
         quizDAO.createQuiz(quiz);
 
-        Quiz quizTest = quizDAO.getQuizByTitle(title);
         log.info("Test Quiz was created");
+
+        Quiz quizTest = quizDAO.getQuizById(quiz.getId());
 
         assertNotNull(quizTest);
         assertEquals(quiz.getTitle(), quizTest.getTitle());
         assertEquals(quiz.getDescription(), quizTest.getDescription());
         assertEquals(quiz.getQuizType(), quizTest.getQuizType());
 
-        quizDAO.deleteQuiz(quizTest.getId());
+        quizDAO.deleteQuiz(quizTest);
         log.info("Test Quiz with id was deleted");
 
         assertNull(quizDAO.getQuizByTitle(title));
@@ -71,15 +72,28 @@ class QuizDAOImplTest {
 
     @Test
     void getQuizByIdTest() {
-        BigInteger id = BigInteger.valueOf(3);
-        String title = "ZNO";
+        User user = new UserImpl();
+        user.setId(BigInteger.valueOf(1));
 
-        Quiz quiz = quizDAO.getQuizById(id);
+        String title = "ZNO";
+        String description = "Historical quiz";
+        Quiz quiz = QuizBuilder.newBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setQuizType(QuizType.SCIENCE)
+                .setCreationDate(new Date(System.currentTimeMillis()))
+                .setCreatorId(user.getId())
+                .build();
+
+        quizDAO.createQuiz(quiz);
+        BigInteger id = BigInteger.valueOf(3);
+
+        Quiz newQuiz = quizDAO.getQuizById(quiz.getId());
         Quiz expectedQuiz = quizDAO.getQuizByTitle(title);
 
         assertNotNull(quiz);
-        assertEquals(quiz.getTitle(), expectedQuiz.getTitle());
-        assertEquals(quiz.getId().intValue(), expectedQuiz.getId().intValue());
+        assertEquals(expectedQuiz.getTitle(), newQuiz.getTitle());
+        assertEquals(expectedQuiz.getId().intValue(), newQuiz.getId().intValue());
 
         log.info("Quiz was found by id: " + id);
     }
@@ -107,13 +121,13 @@ class QuizDAOImplTest {
 
 
         quizDAO.createQuiz(quiz);
+        log.info("Quiz with id " + quiz.getId() + " was created");
 
-
-        Quiz thisQuiz = quizDAO.getQuizByTitle("newOlo");
+        Quiz thisQuiz = quizDAO.getQuizByTitle(title);
         assertNotNull(thisQuiz);
-        log.info("Quiz with id " + thisQuiz.getId() + " was created");
 
-        quizDAO.deleteQuiz(thisQuiz.getId());
+
+        quizDAO.deleteQuiz(thisQuiz);
         log.info("Quiz with id " + thisQuiz.getId() + " was deleted");
         assertNull(quizDAO.getQuizByTitle("newOlo"));
 
@@ -129,7 +143,6 @@ class QuizDAOImplTest {
         String title = "Science quiz";
         String description = "Science quiz";
         Quiz quiz = QuizBuilder.newBuilder()
-                .setId(BigInteger.valueOf(11))
                 .setTitle(title)
                 .setDescription(description)
                 .setQuizType(QuizType.SCIENCE)
@@ -142,14 +155,14 @@ class QuizDAOImplTest {
         Quiz updatedQuiz = quizDAO.getQuizByTitle(title);
         updatedQuiz.setTitle("newTitle");
 
-        quizDAO.updateQuiz(quiz.getId(), updatedQuiz);
+        quizDAO.updateQuiz(updatedQuiz);
 
         log.info("Quiz with id " + quiz.getId() + " was updated");
 
         assertNotEquals(quiz, updatedQuiz);
 
-        quizDAO.deleteQuiz(quiz.getId());
-        quizDAO.deleteQuiz(updatedQuiz.getId());
+        quizDAO.deleteQuiz(quiz);
+        quizDAO.deleteQuiz(updatedQuiz);
 
         assertNull(quizDAO.getQuizByTitle(title));
 
@@ -158,25 +171,49 @@ class QuizDAOImplTest {
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getAllQuizzesTest() {
+        User user = new UserImpl();
+        user.setId(BigInteger.valueOf(1));
+
+        String title = "Science quiz";
+        String description = "Science quiz";
+        Quiz quiz = QuizBuilder.newBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setQuizType(QuizType.SCIENCE)
+                .setCreationDate(new Date(System.currentTimeMillis()))
+                .setCreatorId(user.getId())
+                .build();
+
+        quizDAO.createQuiz(quiz);
+
         List<Quiz> quizList = quizDAO.getAllQuizzes();
 
+        log.info("Get all quizzes in test");
         assertNotNull(quizList);
+
+        quizDAO.deleteQuiz(quiz);
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuizByTitleTest() {
+        String expectedTitle = "Testing";
         Quiz quiz = quizDAO.getQuizByTitle("Testing");
 
-        assertEquals("Testing", quiz.getTitle());
-        //assertEquals(2, quiz.getId().intValue());
+        if (quiz.getId() != null) {
+            assertEquals(expectedTitle, quiz.getTitle());
+        }
+
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuizzesByTypeTest() {
         List<Quiz> quizzes = quizDAO.getQuizzesByType(QuizType.MATHEMATICS);
-        System.out.println(quizzes);
-        assertNotNull(quizzes);
+
+        if(!quizzes.isEmpty()) {
+            assertEquals(QuizType.MATHEMATICS, quizzes.get(0).getQuizType());
+        }
+
     }
 }

@@ -22,18 +22,18 @@ public class QuizServiceImpl implements QuizService {
     private QuizDAO quizDAO;
 
     @Override
-    public void createQuiz(Quiz quiz) {
-        quizDAO.createQuiz(quiz);
+    public Quiz createQuiz(Quiz quiz) {
+        return quizDAO.createQuiz(quiz);
     }
 
     @Override
-    public void updateQuiz(BigInteger id, Quiz updatedQuiz) {
-        quizDAO.updateQuiz(id, updatedQuiz);
+    public void updateQuiz(Quiz updatedQuiz) {
+        quizDAO.updateQuiz(updatedQuiz);
     }
 
     @Override
-    public void deleteQuiz(BigInteger id) {
-        quizDAO.deleteQuiz(id);
+    public void deleteQuiz(Quiz quiz) {
+        quizDAO.deleteQuiz(quiz);
     }
 
     @Override

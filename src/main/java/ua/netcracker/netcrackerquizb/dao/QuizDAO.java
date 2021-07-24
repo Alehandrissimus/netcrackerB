@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface QuizDAO {
 
-    void createQuiz(Quiz quiz);
+    Quiz createQuiz(Quiz quiz);
 
-    void updateQuiz(BigInteger id, Quiz updatedQuiz);
+    void updateQuiz(Quiz quiz);
 
-    void deleteQuiz(BigInteger id) ;
+    void deleteQuiz(Quiz quiz) ;
 
     Quiz getQuizById(BigInteger id);
 

@@ -79,36 +79,53 @@ public class QuizDAOImpl implements QuizDAO {
     }
 
     @Override
-    public void createQuiz(Quiz quiz) {
-        try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty("INSERT_INTO_QUIZ"))){
+    public Quiz createQuiz(Quiz quiz) {
+        try {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(properties.getProperty("INSERT_INTO_QUIZ"));
 
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
             preparedStatement.setDate(3, (Date) quiz.getCreationDate());
             preparedStatement.setInt(4, quiz.getQuizType().ordinal());
             preparedStatement.setInt(5, quiz.getCreatorId().intValue());
-
             preparedStatement.executeUpdate();
+
+            preparedStatement.clearParameters();
+            preparedStatement = connection.prepareStatement(properties.getProperty("GET_QUIZ_ID_BY_DATA"));
+            preparedStatement.setString(1, quiz.getTitle());
+            preparedStatement.setString(2, quiz.getDescription());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            long quizId = resultSet.getLong(ID_QUIZ);
+            quiz.setId(BigInteger.valueOf(quizId));
+
+            return quiz;
+
         } catch (SQLException throwables ) {
             log.error("Quiz cannot be created");
+            return null;
         }
 
     }
 
 
     @Override
-    public void updateQuiz(BigInteger id, Quiz updatedQuiz) {
+    public void updateQuiz(Quiz quiz) {
 
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty("UPDATE_QUIZ"))){
 
-            preparedStatement.setString(1, updatedQuiz.getTitle());
-            preparedStatement.setString(2, updatedQuiz.getDescription());
-            preparedStatement.setDate(3, (Date) updatedQuiz.getCreationDate());
-            preparedStatement.setInt(4, updatedQuiz.getQuizType().ordinal());
-            preparedStatement.setInt(5, updatedQuiz.getCreatorId().intValue());
-            preparedStatement.setLong(6, id.longValue());
+            preparedStatement.setString(1, quiz.getTitle());
+            preparedStatement.setString(2, quiz.getDescription());
+            preparedStatement.setDate(3, (Date) quiz.getCreationDate());
+            preparedStatement.setInt(4, quiz.getQuizType().ordinal());
+            preparedStatement.setInt(5, quiz.getCreatorId().intValue());
+            preparedStatement.setLong(6, quiz.getId().longValue());
 
             preparedStatement.executeUpdate();
 
@@ -120,10 +137,10 @@ public class QuizDAOImpl implements QuizDAO {
 
 
     @Override
-    public void deleteQuiz(BigInteger id) {
+    public void deleteQuiz(Quiz quiz) {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty("DELETE_QUIZ_BY_ID"))){
-            preparedStatement.setLong(1, id.longValue());
+            preparedStatement.setLong(1, quiz.getId().longValue());
 
             preparedStatement.executeUpdate();
 
