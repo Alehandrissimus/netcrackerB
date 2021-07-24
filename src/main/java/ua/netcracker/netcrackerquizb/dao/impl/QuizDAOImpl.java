@@ -1,5 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,16 @@ public class QuizDAOImpl implements QuizDAO {
 
     private Connection connection;
     private final Properties properties = new Properties();
+    private static final Logger log = Logger.getLogger(QuizDAOImpl.class);
+
+    private final String URL;
+    private final String USERNAME;
+    private final String PASSWORD;
+
+    private static final String URL_PROPERTY = "${spring.datasource.url}";
+    private static final String USERNAME_PROPERTY = "${spring.datasource.username}";
+    private static final String PASSWORD_PROPERTY = "${spring.datasource.password}";
+    private static final String DRIVER_PATH = "oracle.jdbc.OracleDriver";
 
     private static final String ID_QUIZ = "ID_QUIZ";
     private static final String TITLE = "TITLE";
@@ -30,26 +41,45 @@ public class QuizDAOImpl implements QuizDAO {
     private static final String CREATOR = "CREATOR";
     private static final String PATH = "src/main/resources/sqlScripts.properties";
 
+
     @Autowired
     QuizDAOImpl(
-            @Value("${spring.datasource.url}") String URL,
-            @Value("${spring.datasource.username}") String USERNAME,
-            @Value("${spring.datasource.password}") String PASSWORD
-    )
-    {
+            @Value(URL_PROPERTY) String URL,
+            @Value(USERNAME_PROPERTY) String USERNAME,
+            @Value(PASSWORD_PROPERTY) String PASSWORD
+    ) throws SQLException, ClassNotFoundException, IOException {
+        this.URL = URL;
+        this.USERNAME = USERNAME;
+        this.PASSWORD = PASSWORD;
+
+        getDataSource(URL, USERNAME, PASSWORD);
+    }
+
+    public void setTestConnection() throws SQLException, ClassNotFoundException, IOException {
+        getDataSource(URL, USERNAME + "_TEST", PASSWORD);
+    }
+
+
+    private void getDataSource(String URL, String USERNAME, String PASSWORD)
+            throws SQLException, ClassNotFoundException, IOException {
         try (FileInputStream fis = new FileInputStream(PATH)) {
-            properties.load(fis);
-
-            Class.forName("oracle.jdbc.OracleDriver");
-
+            Class.forName(DRIVER_PATH);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (IOException | ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+            properties.load(fis);
+        } catch (IOException e) {
+            log.error("Driver error " + e.getMessage());
+            throw new IOException();
+        } catch (ClassNotFoundException e) {
+            log.error("Property file error " + e.getMessage());
+            throw new ClassNotFoundException();
+        } catch (SQLException e) {
+            log.error("Database connection error " + e.getMessage());
+            throw new SQLException();
         }
     }
 
     @Override
-    public BigInteger createQuiz(Quiz quiz) {
+    public void createQuiz(Quiz quiz) {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty("INSERT_INTO_QUIZ"))){
 
@@ -60,12 +90,8 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.setInt(5, quiz.getCreatorId().intValue());
 
             preparedStatement.executeUpdate();
-
-            return quiz.getId();
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return null;
+        } catch (SQLException throwables ) {
+            log.error("Quiz cannot be created");
         }
 
     }
@@ -87,7 +113,7 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.executeUpdate();
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Quiz cannot be updated");
         }
 
     }
@@ -101,8 +127,9 @@ public class QuizDAOImpl implements QuizDAO {
 
             preparedStatement.executeUpdate();
 
+
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Quiz cannot be deleted");
         }
     }
 
@@ -126,7 +153,7 @@ public class QuizDAOImpl implements QuizDAO {
                     .build();
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Quiz cannot be found by id");
             return null;
         }
 
@@ -159,7 +186,7 @@ public class QuizDAOImpl implements QuizDAO {
 
             return quizzes;
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Quizzes cannot be found");
             return null;
         }
 
@@ -186,7 +213,7 @@ public class QuizDAOImpl implements QuizDAO {
                     .build();
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Quiz cannot be found by title");
             return null;
         }
     }
@@ -219,7 +246,8 @@ public class QuizDAOImpl implements QuizDAO {
             return quizzes;
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Quizzes cannot be found by type");
+
             return null;
         }
     }
