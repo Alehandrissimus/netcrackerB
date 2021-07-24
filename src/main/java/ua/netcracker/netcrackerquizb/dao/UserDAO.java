@@ -24,6 +24,8 @@ public interface UserDAO {
 
   User getUserByEmailCode(String code);
 
+  void updateUsersEmailCode(BigInteger id, String newCode);
+
   void activateUser(BigInteger id);
 
 }

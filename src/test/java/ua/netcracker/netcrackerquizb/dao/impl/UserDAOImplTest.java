@@ -1,6 +1,8 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -13,9 +15,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class UserDAOImplTest {
 
-  @Autowired
   private UserDAOImpl userDAO;
   private static final Logger log = Logger.getLogger(UserDAOImplTest.class);
+
+  @Autowired
+  private void setUserDAO(UserDAOImpl userDAO) {
+    this.userDAO = userDAO;
+    try {
+      userDAO.setTestConnection();
+    } catch (IOException | SQLException | ClassNotFoundException e) {
+      log.error("Error while setting test connection " + e.getMessage());
+    }
+  }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
@@ -59,14 +70,10 @@ class UserDAOImplTest {
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void createUser() {
     assertNull(userDAO.getUserByEmail("test@gmail.co"));
-
     userDAO.createUser("test@gmail.co", "testLastName", "testFirstName", "testPassword",
         "testEmailCode");
-
     assertNotNull(userDAO.getUserByEmail("test@gmail.co"));
-
     userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
-
     assertNull(userDAO.getUserByEmail("test@gmail.co"));
 
   }
@@ -117,11 +124,8 @@ class UserDAOImplTest {
     String oldPassword = userDAO.getUserById(BigInteger.ONE).getPassword().trim();
 
     userDAO.updateUsersPassword(BigInteger.ONE, testPassword);
-
     assertEquals(testPassword, userDAO.getUserById(BigInteger.ONE).getPassword().trim());
-
     userDAO.updateUsersPassword(BigInteger.ONE, oldPassword);
-
     assertEquals(oldPassword,
         userDAO.getUserById(BigInteger.ONE).getPassword().trim());
   }
@@ -163,16 +167,15 @@ class UserDAOImplTest {
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void updateExistUsersDescription() {
     String testDescription = "testDescription";
-    String oldDescriptino = userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim();
+    String oldDescription = userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim();
 
     userDAO.updateUsersDescription(BigInteger.valueOf(2), testDescription);
 
     assertEquals(testDescription,
         userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
 
-    userDAO.updateUsersDescription(BigInteger.valueOf(2), oldDescriptino);
-
-    assertEquals(oldDescriptino,
+    userDAO.updateUsersDescription(BigInteger.valueOf(2), oldDescription);
+    assertEquals(oldDescription,
         userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
   }
 
@@ -194,8 +197,30 @@ class UserDAOImplTest {
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void updateExistUsersEmailCode() {
+    String testEmailCode = "testEmailCode";
+    String oldEmailCode = userDAO.getUserById(BigInteger.ONE).getEmailCode();
+
+    userDAO.updateUsersEmailCode(BigInteger.ONE, testEmailCode);
+
+    assertEquals(testEmailCode, userDAO.getUserById(BigInteger.ONE).getEmailCode());
+
+    userDAO.updateUsersEmailCode(BigInteger.ONE, oldEmailCode);
+
+    assertEquals(oldEmailCode,
+        userDAO.getUserById(BigInteger.ONE).getEmailCode());
+  }
+
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void getUserByValidEmailCode() {
+    String oldEmailCode = userDAO.getUserById(BigInteger.ONE).getEmailCode();
+    String testEmailCode = "test";
+    userDAO.updateUsersEmailCode(BigInteger.ONE, testEmailCode);
     assertNotNull(userDAO.getUserByEmailCode(userDAO.getUserById(BigInteger.ONE).getEmailCode()));
+
+    userDAO.updateUsersEmailCode(BigInteger.ONE, oldEmailCode);
+    assertEquals(oldEmailCode, userDAO.getUserById(BigInteger.ONE).getEmailCode());
   }
 
   @Test
