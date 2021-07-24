@@ -74,7 +74,6 @@ public class UserDAOImpl implements UserDAO {
     getDataSource(URL, USERNAME + "_TEST", PASSWORD);
   }
 
-
   private void getDataSource(String URL, String USERNAME, String PASSWORD)
       throws SQLException, ClassNotFoundException, IOException {
     try (FileInputStream fis = new FileInputStream(PATH_PROPERTY)) {

@@ -75,7 +75,6 @@ class UserDAOImplTest {
     assertNotNull(userDAO.getUserByEmail("test@gmail.co"));
     userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
     assertNull(userDAO.getUserByEmail("test@gmail.co"));
-
   }
 
   @Test
