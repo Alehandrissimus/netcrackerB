@@ -2,6 +2,7 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ class UserDAOImplTest {
 
   @Autowired
   private UserDAOImpl userDAO;
+  private static final Logger log = Logger.getLogger(UserDAOImplTest.class);
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
