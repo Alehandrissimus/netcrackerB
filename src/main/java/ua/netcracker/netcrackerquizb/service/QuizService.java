@@ -24,7 +24,7 @@ public interface QuizService {
 
     List<Quiz> getAllQuizzes();
 
-    Quiz getQuizByTitle(String title);
+    List<Quiz> getQuizzesByTitle(String title);
 
     Quiz buildNewQuiz(String title, String description, QuizType quizType, User user);
 

@@ -20,6 +20,6 @@ public interface QuizDAO {
 
     List<Quiz> getAllQuizzes();
 
-    Quiz getQuizByTitle(String title);
+    List<Quiz> getQuizzesByTitle(String title);
 
 }

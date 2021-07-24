@@ -211,26 +211,32 @@ public class QuizDAOImpl implements QuizDAO {
 
 
     @Override
-    public Quiz getQuizByTitle(String title) {
+    public List<Quiz> getQuizzesByTitle(String title) {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty("SELECT_QUIZ_BY_TITLE"))){
 
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if(!resultSet.next()) return null;
+            List<Quiz> quizzes = new ArrayList<>();
 
-            return QuizBuilder.newBuilder()
-                    .setId(BigInteger.valueOf(resultSet.getLong(ID_QUIZ)))
-                    .setTitle(title)
-                    .setDescription(resultSet.getString(DESCRIPTION))
-                    .setQuizType(QuizType.values()[resultSet.getInt(QUIZ_TYPE)])
-                    .setCreationDate(resultSet.getDate(CREATION_DATE))
-                    .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
-                    .build();
+            while (resultSet.next()) {
+
+                Quiz quiz = QuizBuilder.newBuilder()
+                        .setId(BigInteger.valueOf(resultSet.getLong(ID_QUIZ)))
+                        .setTitle(resultSet.getString(TITLE))
+                        .setDescription(resultSet.getString(DESCRIPTION))
+                        .setQuizType(QuizType.values()[resultSet.getInt(QUIZ_TYPE)])
+                        .setCreationDate(resultSet.getDate(CREATION_DATE))
+                        .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
+                        .build();
+
+                quizzes.add(quiz);
+            }
+            return quizzes;
 
         } catch (SQLException throwables) {
-            log.error("Quiz cannot be found by title");
+            log.error("Quizzes cannot be found by title");
             return null;
         }
     }

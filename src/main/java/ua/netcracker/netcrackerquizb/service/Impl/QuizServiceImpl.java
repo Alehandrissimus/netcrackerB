@@ -52,8 +52,8 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz getQuizByTitle(String title) {
-        return quizDAO.getQuizByTitle(title);
+    public List<Quiz> getQuizzesByTitle(String title) {
+        return quizDAO.getQuizzesByTitle(title);
     }
 
     @Override
