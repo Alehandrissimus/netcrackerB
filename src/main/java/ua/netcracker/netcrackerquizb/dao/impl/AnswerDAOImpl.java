@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
+import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.QuestionNotFoundException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 
@@ -64,15 +67,14 @@ public class AnswerDAOImpl implements AnswerDAO {
         }
     }
 
-    //ругается на возвращение null!!!
     @Override
-    public Answer getAnswerById(BigInteger id) {
+    public Answer getAnswerById(BigInteger id) throws DaoLogicException, AnswerDoesNotExistException {
         try  {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(properties.getProperty("GET_ANSWER_BY_ID"));
             preparedStatement.setLong(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(!resultSet.next()) return null;
+            if(!resultSet.next()) throw new AnswerDoesNotExistException();
             return new AnswerImpl(
                     id,
                     resultSet.getString(SQL_ANSWER_TEXT),
@@ -80,28 +82,28 @@ public class AnswerDAOImpl implements AnswerDAO {
                     BigInteger.valueOf(resultSet.getInt(SQL_ANSWER_QUESTION)));
         } catch (SQLException throwable) {
             log.error("SQL Exception while getAnswerById in AnswerDAOImpl ", throwable);
-            return null;
+            throw new DaoLogicException();
         }
 
     }
 
     @Override
-    public BigInteger getLastAnswerIdByTitle(String title) {
+    public BigInteger getLastAnswerIdByTitle(String title) throws DaoLogicException, AnswerDoesNotExistException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_LAST_ANSWER_ID_BY_TITLE"));
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(!resultSet.next()) return null;
+            if(!resultSet.next()) throw new AnswerDoesNotExistException();
             return BigInteger.valueOf(resultSet.getInt(SQL_MAX_ID_ANSWER));
         } catch (SQLException throwable) {
             log.error("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl ", throwable);
-            return null;
+            throw new DaoLogicException();
         }
 
     }
 
     @Override
-    public BigInteger createAnswer(Answer answer) {
+    public BigInteger createAnswer(Answer answer) throws DaoLogicException, AnswerDoesNotExistException {
         try {
             String title = answer.getValue();
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("CREATE_ANSWER"));
@@ -112,23 +114,24 @@ public class AnswerDAOImpl implements AnswerDAO {
             return getLastAnswerIdByTitle(title);
         } catch (SQLException throwable) {
             log.error("SQL Exception while createAnswer in AnswerDAOImpl ", throwable);
-            return null;
+            throw new DaoLogicException();
         }
     }
 
     @Override
-    public void deleteAnswer(BigInteger id) {
+    public void deleteAnswer(BigInteger id) throws DaoLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("DELETE_ANSWER"));
             preparedStatement.setLong(1, id.longValue());
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             log.error("SQL Exception while deleteAnswer in AnswerDAOImpl ", throwable);
+            throw new DaoLogicException();
         }
     }
 
     @Override
-    public BigInteger updateAnswer(Answer answer) {
+    public BigInteger updateAnswer(Answer answer) throws DaoLogicException {
         try {
             BigInteger id = answer.getId();
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("UPDATE_ANSWER"));
@@ -140,7 +143,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             return id;
         } catch (SQLException throwable) {
             log.error("SQL Exception while updateAnswer in AnswerDAOImpl ", throwable);
-            return null;
+            throw new DaoLogicException();
         }
     }
 }

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,90 +36,111 @@ public class AnswerDAOImplTest {
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getAnswerByIdTest() {
-        Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
-        assertNotNull(answer);
-        assertEquals("America", answer.getValue());
+        try {
+            Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
+            assertNotNull(answer);
+            assertEquals("America", answer.getValue());
+        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+            log.error("Error while testing getAnswerByIdTest " + e.getMessage());
+            fail();
+        }
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getLastAnswerIdByTitleTest() {
-        String aboba = "Aboba";
-        Answer answerByTitle = new AnswerImpl(aboba, true, BigInteger.ONE);
-        answerDAO.createAnswer(answerByTitle);
+        try {
+            String aboba = "Aboba";
+            Answer answerByTitle = new AnswerImpl(aboba, true, BigInteger.ONE);
+            answerDAO.createAnswer(answerByTitle);
 
-        BigInteger id = answerDAO.getLastAnswerIdByTitle(aboba);
-        Answer answerByTitleTest = answerDAO.getAnswerById(id);
-        assertNotNull(answerByTitleTest);
+            BigInteger id = answerDAO.getLastAnswerIdByTitle(aboba);
+            Answer answerByTitleTest = answerDAO.getAnswerById(id);
+            assertNotNull(answerByTitleTest);
 
-        assertEquals(answerByTitleTest.getAnswer(), answerByTitle.getAnswer());
-        assertEquals(answerByTitleTest.getValue(), answerByTitle.getValue());
-        assertEquals(answerByTitleTest.getQuestionId(), answerByTitle.getQuestionId());
+            assertEquals(answerByTitleTest.getAnswer(), answerByTitle.getAnswer());
+            assertEquals(answerByTitleTest.getValue(), answerByTitle.getValue());
+            assertEquals(answerByTitleTest.getQuestionId(), answerByTitle.getQuestionId());
 
-        answerDAO.deleteAnswer(id);
-        assertNull(answerDAO.getAnswerById(id));
+            answerDAO.deleteAnswer(id);
+        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+            log.error("Error while testing getLastAnswerIdByTitleTest " + e.getMessage());
+            fail();
+        }
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createAnswerTest() {
-        String antarctica = "Antarctica";
-        Answer answerImpl = new AnswerImpl(antarctica, false, BigInteger.ONE);
+        try {
+            String antarctica = "Antarctica";
+            Answer answerImpl = new AnswerImpl(antarctica, false, BigInteger.ONE);
 
-        answerDAO.createAnswer(answerImpl);
-        BigInteger id = answerDAO.getLastAnswerIdByTitle(antarctica);
-        Answer anAnswer = answerDAO.getAnswerById(id);
-        assertNotNull(anAnswer);
+            answerDAO.createAnswer(answerImpl);
+            BigInteger id = answerDAO.getLastAnswerIdByTitle(antarctica);
+            Answer anAnswer = answerDAO.getAnswerById(id);
+            assertNotNull(anAnswer);
 
-        assertEquals(anAnswer.getValue(), answerImpl.getValue());
-        assertEquals(anAnswer.getAnswer(), answerImpl.getAnswer());
-        assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
+            assertEquals(anAnswer.getValue(), answerImpl.getValue());
+            assertEquals(anAnswer.getAnswer(), answerImpl.getAnswer());
+            assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
 
-        answerDAO.deleteAnswer(id);
-        assertNull(answerDAO.getAnswerById(id));
+            answerDAO.deleteAnswer(id);
+        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+            log.error("Error while testing createAnswerTest " + e.getMessage());
+            fail();
+        }
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void deleteAnswerTest() {
-        String mars = "Mars";
-        Answer ans = new AnswerImpl(mars, false, BigInteger.ONE);
-        answerDAO.createAnswer(ans);
+        try {
+            String mars = "Mars";
+            Answer ans = new AnswerImpl(mars, false, BigInteger.ONE);
+            answerDAO.createAnswer(ans);
 
-        BigInteger id = answerDAO.getLastAnswerIdByTitle(mars);
-        Answer nullAnswer = answerDAO.getAnswerById(id);
-        assertNotNull(nullAnswer);
+            BigInteger id = answerDAO.getLastAnswerIdByTitle(mars);
+            Answer nullAnswer = answerDAO.getAnswerById(id);
+            assertNotNull(nullAnswer);
 
-        answerDAO.deleteAnswer(id);
-        assertNull(answerDAO.getAnswerById(id));
+            answerDAO.deleteAnswer(id);
+        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+            log.error("Error while testing deleteAnswerTest " + e.getMessage());
+            fail();
+        }
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateAnswerTest() {
-        String moon = "Moon";
-        Answer newAnswer = new AnswerImpl(moon, false, BigInteger.TWO);
-        answerDAO.createAnswer(newAnswer);
+        try {
+            String moon = "Moon";
+            Answer newAnswer = new AnswerImpl(moon, false, BigInteger.TWO);
+            answerDAO.createAnswer(newAnswer);
 
-        BigInteger id = answerDAO.getLastAnswerIdByTitle(moon);
-        Answer testNewAnswer = answerDAO.getAnswerById(id);
-        assertNotNull(testNewAnswer);
+            BigInteger id = answerDAO.getLastAnswerIdByTitle(moon);
+            Answer testNewAnswer = answerDAO.getAnswerById(id);
+            assertNotNull(testNewAnswer);
 
-        String sun = "Sun";
-        testNewAnswer.setValue(sun);
-        testNewAnswer.setAnswer(true);
-        testNewAnswer.setQuestionId(BigInteger.valueOf(3));
-        answerDAO.updateAnswer(testNewAnswer);
+            String sun = "Sun";
+            testNewAnswer.setValue(sun);
+            testNewAnswer.setAnswer(true);
+            testNewAnswer.setQuestionId(BigInteger.valueOf(3));
+            answerDAO.updateAnswer(testNewAnswer);
 
-        Answer finalAnswer = answerDAO.getAnswerById(id);
-        assertNotNull(finalAnswer);
+            Answer finalAnswer = answerDAO.getAnswerById(id);
+            assertNotNull(finalAnswer);
 
-        assertEquals(testNewAnswer.getAnswer(), finalAnswer.getAnswer());
-        assertEquals(testNewAnswer.getQuestionId(), finalAnswer.getQuestionId());
-        assertEquals(testNewAnswer.getValue(), finalAnswer.getValue());
+            assertEquals(testNewAnswer.getAnswer(), finalAnswer.getAnswer());
+            assertEquals(testNewAnswer.getQuestionId(), finalAnswer.getQuestionId());
+            assertEquals(testNewAnswer.getValue(), finalAnswer.getValue());
 
-        answerDAO.deleteAnswer(id);
-        assertNull(answerDAO.getAnswerById(id));
+            answerDAO.deleteAnswer(id);
+        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+            log.error("Error while testing updateAnswerTest " + e.getMessage());
+            fail();
+        }
     }
 }
 

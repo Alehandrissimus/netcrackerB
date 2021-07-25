@@ -1,5 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao;
 
+import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 
 import java.math.BigInteger;
@@ -11,13 +13,13 @@ public interface AnswerDAO {
     String SQL_ANSWER_IS_TRUE = "is_true";
     String SQL_ANSWER_QUESTION = "question";
 
-    Answer getAnswerById(BigInteger id);
+    Answer getAnswerById(BigInteger id) throws DaoLogicException, AnswerDoesNotExistException;
 
-    BigInteger getLastAnswerIdByTitle(String title);
+    BigInteger getLastAnswerIdByTitle(String title) throws DaoLogicException, AnswerDoesNotExistException;
 
-    BigInteger createAnswer(Answer answer);
+    BigInteger createAnswer(Answer answer) throws DaoLogicException, AnswerDoesNotExistException;
 
-    void deleteAnswer(BigInteger id);
+    void deleteAnswer(BigInteger id) throws DaoLogicException;
 
-    BigInteger updateAnswer(Answer answer);
+    BigInteger updateAnswer(Answer answer) throws DaoLogicException;
 }
