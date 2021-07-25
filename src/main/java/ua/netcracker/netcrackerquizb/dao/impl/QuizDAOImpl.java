@@ -41,6 +41,15 @@ public class QuizDAOImpl implements QuizDAO {
     private static final String CREATOR = "CREATOR";
     private static final String PATH = "src/main/resources/sqlScripts.properties";
 
+    private static final String INSERT_INTO_QUIZ = "INSERT_INTO_QUIZ";
+    private static final String GET_QUIZ_ID_BY_DATA = "GET_QUIZ_ID_BY_DATA";
+    private static final String UPDATE_QUIZ = "UPDATE_QUIZ";
+    private static final String DELETE_QUIZ = "DELETE_QUIZ";
+    private static final String SELECT_QUIZ_BY_ID = "SELECT_QUIZ_BY_ID";
+    private static final String SELECT_ALL_QUIZZES = "SELECT_ALL_QUIZZES";
+    private static final String SELECT_QUIZZES_BY_TITLE = "SELECT_QUIZZES_BY_TITLE";
+    private static final String SELECT_QUIZZES_BY_TYPE = "SELECT_QUIZZES_BY_TYPE";
+
 
     @Autowired
     QuizDAOImpl(
@@ -82,7 +91,7 @@ public class QuizDAOImpl implements QuizDAO {
     public Quiz createQuiz(Quiz quiz) {
         try {
             PreparedStatement preparedStatement =
-                    connection.prepareStatement(properties.getProperty("INSERT_INTO_QUIZ"));
+                    connection.prepareStatement(properties.getProperty(INSERT_INTO_QUIZ));
 
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
@@ -92,7 +101,7 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.executeUpdate();
 
             preparedStatement.clearParameters();
-            preparedStatement = connection.prepareStatement(properties.getProperty("GET_QUIZ_ID_BY_DATA"));
+            preparedStatement = connection.prepareStatement(properties.getProperty(GET_QUIZ_ID_BY_DATA));
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
 
@@ -107,7 +116,7 @@ public class QuizDAOImpl implements QuizDAO {
             return quiz;
 
         } catch (SQLException throwables ) {
-            log.error("Quiz cannot be created");
+            log.error("SQL Exception while createQuiz in QuizDAOImpl ", throwables);
             return null;
         }
 
@@ -118,7 +127,7 @@ public class QuizDAOImpl implements QuizDAO {
     public void updateQuiz(Quiz quiz) {
 
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty("UPDATE_QUIZ"))){
+                     connection.prepareStatement(properties.getProperty(UPDATE_QUIZ))){
 
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
@@ -130,7 +139,7 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.executeUpdate();
 
         } catch (SQLException throwables) {
-            log.error("Quiz cannot be updated");
+            log.error("SQL Exception while updateQuiz in QuizDAOImpl ", throwables);
         }
 
     }
@@ -139,14 +148,14 @@ public class QuizDAOImpl implements QuizDAO {
     @Override
     public void deleteQuiz(Quiz quiz) {
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty("DELETE_QUIZ_BY_ID"))){
+                     connection.prepareStatement(properties.getProperty(DELETE_QUIZ))){
             preparedStatement.setLong(1, quiz.getId().longValue());
 
             preparedStatement.executeUpdate();
 
 
         } catch (SQLException throwables) {
-            log.error("Quiz cannot be deleted");
+            log.error("SQL Exception while deleteQuiz in QuizDAOImpl ", throwables);
         }
     }
 
@@ -154,7 +163,7 @@ public class QuizDAOImpl implements QuizDAO {
     @Override
     public Quiz getQuizById(BigInteger id) {
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty("SELECT_QUIZ_BY_ID"))){
+                     connection.prepareStatement(properties.getProperty(SELECT_QUIZ_BY_ID))){
             preparedStatement.setLong(1, id.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -170,7 +179,7 @@ public class QuizDAOImpl implements QuizDAO {
                     .build();
 
         } catch (SQLException throwables) {
-            log.error("Quiz cannot be found by id");
+            log.error("SQL Exception while getQuizById in QuizDAOImpl ", throwables);
             return null;
         }
 
@@ -181,7 +190,7 @@ public class QuizDAOImpl implements QuizDAO {
     public List<Quiz> getAllQuizzes() {
 
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty("SELECT_ALL_QUIZZES"))){
+                     connection.prepareStatement(properties.getProperty(SELECT_ALL_QUIZZES))){
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -203,7 +212,7 @@ public class QuizDAOImpl implements QuizDAO {
 
             return quizzes;
         } catch (SQLException throwables) {
-            log.error("Quizzes cannot be found");
+            log.error("SQL Exception while getAllQuizzes in QuizDAOImpl ", throwables);
             return null;
         }
 
@@ -213,7 +222,7 @@ public class QuizDAOImpl implements QuizDAO {
     @Override
     public List<Quiz> getQuizzesByTitle(String title) {
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty("SELECT_QUIZ_BY_TITLE"))){
+                     connection.prepareStatement(properties.getProperty(SELECT_QUIZZES_BY_TITLE))){
 
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -236,7 +245,7 @@ public class QuizDAOImpl implements QuizDAO {
             return quizzes;
 
         } catch (SQLException throwables) {
-            log.error("Quizzes cannot be found by title");
+            log.error("SQL Exception while getQuizzesByTitle in QuizDAOImpl ", throwables);
             return null;
         }
     }
@@ -245,7 +254,7 @@ public class QuizDAOImpl implements QuizDAO {
     public List<Quiz> getQuizzesByType(QuizType quizType) {
 
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty("SELECT_QUIZZES_BY_TYPE"))){
+                     connection.prepareStatement(properties.getProperty(SELECT_QUIZZES_BY_TYPE))){
 
             preparedStatement.setInt(1, quizType.ordinal());
 
@@ -269,7 +278,7 @@ public class QuizDAOImpl implements QuizDAO {
             return quizzes;
 
         } catch (SQLException throwables) {
-            log.error("Quizzes cannot be found by type");
+            log.error("SQL Exception while getQuizzesByType in QuizDAOImpl ", throwables);
 
             return null;
         }
