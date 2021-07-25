@@ -1,5 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
+import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,26 @@ import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 public class AnswerDAOImplTest {
 
-    @Autowired
     private AnswerDAOImpl answerDAO;
+    private static final Logger log = Logger.getLogger(AnswerDAOImplTest.class);
+
+    @Autowired
+    private void setDAO(AnswerDAOImpl answerDAO) {
+        this.answerDAO = answerDAO;
+        try {
+            answerDAO.setTestConnection();
+        } catch (IOException | SQLException | ClassNotFoundException e) {
+            log.error("Error while setting test connection in AnswerDAOImplTest " + e.getMessage());
+        }
+    }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
@@ -28,91 +41,83 @@ public class AnswerDAOImplTest {
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    void getAnswerByTitleTest() {
-        Answer answerByTitle = new AnswerImpl();
-        answerByTitle.setValue("Aboba");
-        answerByTitle.setAnswer(true);
-        answerByTitle.setQuestionId(BigInteger.valueOf(1));
+    void getLastAnswerIdByTitleTest() {
+        String aboba = "Aboba";
+        Answer answerByTitle = new AnswerImpl(aboba, true, BigInteger.ONE);
         answerDAO.createAnswer(answerByTitle);
 
-        Answer answerByTitleTest = answerDAO.getAnswerByTitle("Aboba");
+        BigInteger id = answerDAO.getLastAnswerIdByTitle(aboba);
+        Answer answerByTitleTest = answerDAO.getAnswerById(id);
         assertNotNull(answerByTitleTest);
 
         assertEquals(answerByTitleTest.getAnswer(), answerByTitle.getAnswer());
         assertEquals(answerByTitleTest.getValue(), answerByTitle.getValue());
         assertEquals(answerByTitleTest.getQuestionId(), answerByTitle.getQuestionId());
 
-        answerDAO.deleteAnswer(answerByTitleTest.getId());
-        assertNull(answerDAO.getAnswerByTitle("Aboba"));
-
+        answerDAO.deleteAnswer(id);
+        assertNull(answerDAO.getAnswerById(id));
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createAnswerTest() {
-        BigInteger questionId = BigInteger.valueOf(1);
-        String value = "Antarctica";
-        Answer answerImpl = new AnswerImpl();
-        answerImpl.setValue(value);
-        answerImpl.setAnswer(false);
-        answerImpl.setQuestionId(questionId);
+        String antarctica = "Antarctica";
+        Answer answerImpl = new AnswerImpl(antarctica, false, BigInteger.ONE);
 
         answerDAO.createAnswer(answerImpl);
-        Answer anAnswer = answerDAO.getAnswerByTitle(value);
+        BigInteger id = answerDAO.getLastAnswerIdByTitle(antarctica);
+        Answer anAnswer = answerDAO.getAnswerById(id);
         assertNotNull(anAnswer);
 
         assertEquals(anAnswer.getValue(), answerImpl.getValue());
         assertEquals(anAnswer.getAnswer(), answerImpl.getAnswer());
         assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
 
-        answerDAO.deleteAnswer(anAnswer.getId());
-        assertNull(answerDAO.getAnswerByTitle("Antarctica"));
+        answerDAO.deleteAnswer(id);
+        assertNull(answerDAO.getAnswerById(id));
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void deleteAnswerTest() {
-        Answer ans = new AnswerImpl();
-        ans.setValue("Mars");
-        ans.setQuestionId(BigInteger.valueOf(1));
-        ans.setAnswer(false);
+        String mars = "Mars";
+        Answer ans = new AnswerImpl(mars, false, BigInteger.ONE);
         answerDAO.createAnswer(ans);
 
-        Answer nullAnswer = answerDAO.getAnswerByTitle("Mars");
+        BigInteger id = answerDAO.getLastAnswerIdByTitle(mars);
+        Answer nullAnswer = answerDAO.getAnswerById(id);
         assertNotNull(nullAnswer);
 
-        answerDAO.deleteAnswer(nullAnswer.getId());
-        assertNull(answerDAO.getAnswerByTitle("Mars"));
+        answerDAO.deleteAnswer(id);
+        assertNull(answerDAO.getAnswerById(id));
     }
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateAnswerTest() {
-        Answer newAnswer = new AnswerImpl();
-        newAnswer.setValue("Moon");
-        newAnswer.setAnswer(false);
-        newAnswer.setQuestionId(BigInteger.valueOf(2));
+        String moon = "Moon";
+        Answer newAnswer = new AnswerImpl(moon, false, BigInteger.TWO);
         answerDAO.createAnswer(newAnswer);
 
-        Answer testNewAnswer = answerDAO.getAnswerByTitle("Moon");
+        BigInteger id = answerDAO.getLastAnswerIdByTitle(moon);
+        Answer testNewAnswer = answerDAO.getAnswerById(id);
         assertNotNull(testNewAnswer);
 
-        newAnswer.setId(testNewAnswer.getId());
-
+        String sun = "Sun";
+        testNewAnswer.setValue(sun);
         testNewAnswer.setAnswer(true);
-        testNewAnswer.setValue("Sun");
         testNewAnswer.setQuestionId(BigInteger.valueOf(3));
         answerDAO.updateAnswer(testNewAnswer);
 
-        Answer finalAnswer = answerDAO.getAnswerByTitle("Sun");
+        Answer finalAnswer = answerDAO.getAnswerById(id);
         assertNotNull(finalAnswer);
+
         assertEquals(testNewAnswer.getAnswer(), finalAnswer.getAnswer());
         assertEquals(testNewAnswer.getQuestionId(), finalAnswer.getQuestionId());
         assertEquals(testNewAnswer.getValue(), finalAnswer.getValue());
 
-        answerDAO.deleteAnswer(finalAnswer.getId());
-
-        assertNull(answerDAO.getAnswerByTitle("Sun"));
+        answerDAO.deleteAnswer(id);
+        assertNull(answerDAO.getAnswerById(id));
     }
 }
 
