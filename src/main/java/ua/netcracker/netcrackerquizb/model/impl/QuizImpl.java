@@ -1,4 +1,4 @@
-package ua.netcracker.netcrackerquizb.model.builders;
+package ua.netcracker.netcrackerquizb.model.impl;
 
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
@@ -6,7 +6,7 @@ import ua.netcracker.netcrackerquizb.model.QuizType;
 import java.math.BigInteger;
 import java.util.Date;
 
-public class QuizBuilder implements Quiz{
+public class QuizImpl implements Quiz {
 
     private BigInteger id;
     private String title;
@@ -15,7 +15,7 @@ public class QuizBuilder implements Quiz{
     private Date creationDate;
     private BigInteger creatorId;
 
-    private QuizBuilder() {
+    private QuizImpl() {
     }
 
     @Override
@@ -78,8 +78,8 @@ public class QuizBuilder implements Quiz{
         this.creatorId = creatorId;
     }
 
-    public static Builder newBuilder() {
-        return new QuizBuilder().new Builder();
+    public static Builder QuizBuilder() {
+        return new QuizImpl().new Builder();
     }
 
     @Override
@@ -100,37 +100,37 @@ public class QuizBuilder implements Quiz{
         }
 
         public Builder setId(BigInteger id) {
-            QuizBuilder.this.id = id;
+            QuizImpl.this.id = id;
             return this;
         }
 
         public Builder setTitle(String title) {
-            QuizBuilder.this.title = title;
+            QuizImpl.this.title = title;
             return this;
         }
 
         public Builder setDescription(String description) {
-            QuizBuilder.this.description = description;
+            QuizImpl.this.description = description;
             return this;
         }
 
         public Builder setQuizType(QuizType quizType) {
-            QuizBuilder.this.quizType = quizType;
+            QuizImpl.this.quizType = quizType;
             return this;
         }
 
         public Builder setCreationDate(Date creationDate) {
-            QuizBuilder.this.creationDate = creationDate;
+            QuizImpl.this.creationDate = creationDate;
             return this;
         }
 
         public Builder setCreatorId(BigInteger creatorId) {
-            QuizBuilder.this.creatorId = creatorId;
+            QuizImpl.this.creatorId = creatorId;
             return this;
         }
 
-        public QuizBuilder build() {
-            return QuizBuilder.this;
+        public QuizImpl build() {
+            return QuizImpl.this;
         }
     }
 
