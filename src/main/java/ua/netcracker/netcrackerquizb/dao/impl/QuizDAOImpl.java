@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.QuizDAO;
+import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.*;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
@@ -50,6 +53,8 @@ public class QuizDAOImpl implements QuizDAO {
     private static final String SELECT_QUIZZES_BY_TITLE = "SELECT_QUIZZES_BY_TITLE";
     private static final String SELECT_QUIZZES_BY_TYPE = "SELECT_QUIZZES_BY_TYPE";
 
+    private static final String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
+
 
     @Autowired
     QuizDAOImpl(
@@ -88,7 +93,7 @@ public class QuizDAOImpl implements QuizDAO {
     }
 
     @Override
-    public Quiz createQuiz(Quiz quiz) {
+    public Quiz createQuiz(Quiz quiz) throws DaoLogicException, UserDoesNotExistException {
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(properties.getProperty(INSERT_INTO_QUIZ));
@@ -108,7 +113,7 @@ public class QuizDAOImpl implements QuizDAO {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                return null;
+                throw new DaoLogicException();
             }
 
             long quizId = resultSet.getLong(ID_QUIZ);
@@ -116,16 +121,16 @@ public class QuizDAOImpl implements QuizDAO {
 
             return quiz;
 
-        } catch (SQLException throwables) {
-            log.error("SQL Exception while createQuiz in QuizDAOImpl ", throwables);
-            return null;
+        } catch (SQLException e) {
+            log.error("SQL Exception while createQuiz in QuizDAOImpl " + e.getMessage());
+            throw new DaoLogicException();
         }
 
     }
 
 
     @Override
-    public void updateQuiz(Quiz quiz) {
+    public void updateQuiz(Quiz quiz) throws QuizDoesNotExistException, DaoLogicException {
 
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(UPDATE_QUIZ))) {
@@ -139,35 +144,37 @@ public class QuizDAOImpl implements QuizDAO {
 
             preparedStatement.executeUpdate();
 
-        } catch (SQLException throwables) {
-            log.error("SQL Exception while updateQuiz in QuizDAOImpl ", throwables);
+        } catch (SQLException e) {
+            log.error("SQL Exception while updateQuiz in QuizDAOImpl " + e.getMessage());
+            throw new DaoLogicException();
         }
 
     }
 
 
     @Override
-    public void deleteQuiz(Quiz quiz) {
+    public void deleteQuiz(Quiz quiz) throws QuizDoesNotExistException, DaoLogicException {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(DELETE_QUIZ))) {
             preparedStatement.setLong(1, quiz.getId().longValue());
 
             preparedStatement.executeUpdate();
 
-        } catch (SQLException throwables) {
-            log.error("SQL Exception while deleteQuiz in QuizDAOImpl ", throwables);
+        } catch (SQLException e) {
+            log.error("SQL Exception while deleteQuiz in QuizDAOImpl " + e.getMessage());
+            throw new DaoLogicException();
         }
     }
 
 
     @Override
-    public Quiz getQuizById(BigInteger id) {
+    public Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DaoLogicException {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(SELECT_QUIZ_BY_ID))) {
             preparedStatement.setLong(1, id.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (!resultSet.next()) return null;
+            if (!resultSet.next()) throw new QuizDoesNotExistException();
 
             return QuizImpl.QuizBuilder()
                     .setId(id)
@@ -178,16 +185,16 @@ public class QuizDAOImpl implements QuizDAO {
                     .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
                     .build();
 
-        } catch (SQLException throwables) {
-            log.error("SQL Exception while getQuizById in QuizDAOImpl ", throwables);
-            return null;
+        } catch (SQLException e) {
+            log.error("SQL Exception while getQuizById in QuizDAOImpl " + e.getMessage());
+            throw new DaoLogicException();
         }
 
     }
 
 
     @Override
-    public List<Quiz> getAllQuizzes() {
+    public List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DaoLogicException {
 
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(SELECT_ALL_QUIZZES))) {
@@ -211,16 +218,16 @@ public class QuizDAOImpl implements QuizDAO {
             }
 
             return quizzes;
-        } catch (SQLException throwables) {
-            log.error("SQL Exception while getAllQuizzes in QuizDAOImpl ", throwables);
-            return null;
+        } catch (SQLException e) {
+            log.error("SQL Exception while getAllQuizzes in QuizDAOImpl " + e.getMessage());
+            throw new DaoLogicException();
         }
 
     }
 
 
     @Override
-    public List<Quiz> getQuizzesByTitle(String title) {
+    public List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DaoLogicException {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(SELECT_QUIZZES_BY_TITLE))) {
 
@@ -244,14 +251,14 @@ public class QuizDAOImpl implements QuizDAO {
             }
             return quizzes;
 
-        } catch (SQLException throwables) {
-            log.error("SQL Exception while getQuizzesByTitle in QuizDAOImpl ", throwables);
-            return null;
+        } catch (SQLException e) {
+            log.error("SQL Exception while getQuizzesByTitle in QuizDAOImpl " + e.getMessage());
+            throw new DaoLogicException();
         }
     }
 
     @Override
-    public List<Quiz> getQuizzesByType(QuizType quizType) {
+    public List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DaoLogicException {
 
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(SELECT_QUIZZES_BY_TYPE))) {
@@ -277,10 +284,9 @@ public class QuizDAOImpl implements QuizDAO {
 
             return quizzes;
 
-        } catch (SQLException throwables) {
-            log.error("SQL Exception while getQuizzesByType in QuizDAOImpl ", throwables);
-
-            return null;
+        } catch (SQLException e) {
+            log.error("SQL Exception while getQuizzesByType in QuizDAOImpl " + e.getMessage());
+            throw new DaoLogicException();
         }
     }
 }
