@@ -36,10 +36,10 @@ class UserDAOImplTest {
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void getUserByNullId() {
     try {
-      assertNull(userDAO.getUserById(BigInteger.ZERO));
-    } catch (UserDoesNotExistException | DaoLogicException e) {
-      log.error("Error while testing getUserByNullId " + e.getMessage());
+      userDAO.getUserById(BigInteger.ZERO);
       fail();
+    } catch (UserDoesNotExistException | DaoLogicException e) {
+      assertTrue(true);
     }
   }
 
@@ -58,10 +58,10 @@ class UserDAOImplTest {
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void getUserByNullEmail() {
     try {
-      assertNull(userDAO.getUserByEmail(""));
-    } catch (UserDoesNotExistException | DaoLogicException e) {
-      log.error("Error while testing getUserByNullEmail " + e.getMessage());
+      userDAO.getUserByEmail("");
       fail();
+    } catch (UserDoesNotExistException | DaoLogicException e) {
+      assertTrue(true);
     }
   }
 
@@ -82,7 +82,12 @@ class UserDAOImplTest {
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void deleteUser() {
     try {
-      assertNull(userDAO.getUserByEmail("test@gmail.co"));
+      try {
+        userDAO.getUserByEmail("test@gmail.co");
+      } catch (UserDoesNotExistException e) {
+        assertTrue(true);
+      }
+
       userDAO.createUser(
           new UserImpl.UserBuilder()
               .setFirstName("testFirstName")
@@ -95,7 +100,12 @@ class UserDAOImplTest {
 
       assertNotNull(userDAO.getUserByEmail("test@gmail.co"));
       userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
-      assertNull(userDAO.getUserByEmail("test@gmail.co"));
+      try {
+        userDAO.getUserByEmail("test@gmail.co");
+      } catch (UserDoesNotExistException e) {
+        assertTrue(true);
+      }
+
     } catch (UserDoesNotExistException | DaoLogicException e) {
       log.error("Error while testing deleteUser " + e.getMessage());
       fail();
@@ -106,7 +116,11 @@ class UserDAOImplTest {
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void createUser() {
     try {
-      assertNull(userDAO.getUserByEmail("test@gmail.co"));
+      try {
+        userDAO.getUserByEmail("test@gmail.co");
+      } catch (UserDoesNotExistException e) {
+        assertTrue(true);
+      }
       userDAO.createUser(
           new UserImpl.UserBuilder()
               .setFirstName("testFirstName")
@@ -119,7 +133,12 @@ class UserDAOImplTest {
       assertNotNull(userDAO.getUserByEmail("test@gmail.co"));
 
       userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
-      assertNull(userDAO.getUserByEmail("test@gmail.co"));
+      try {
+        userDAO.getUserByEmail("test@gmail.co");
+      } catch (UserDoesNotExistException e) {
+        assertTrue(true);
+      }
+
     } catch (UserDoesNotExistException | DaoLogicException e) {
       log.error("Error while testing createUser " + e.getMessage());
       fail();
