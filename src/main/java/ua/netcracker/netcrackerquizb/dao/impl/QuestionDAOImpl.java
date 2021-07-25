@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.QuestionDAO;
+import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.QuestionNotFoundException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
@@ -76,13 +78,13 @@ public class QuestionDAOImpl implements QuestionDAO {
 
 
     @Override
-    public Question getQuestionById(BigInteger questionId, Collection<Answer> answers) {
+    public Question getQuestionById(BigInteger questionId, Collection<Answer> answers) throws QuestionNotFoundException, DaoLogicException {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty("GET_QUESTION_BY_ID"))) {
             preparedStatement.setLong(1, questionId.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                return null;
+                throw new QuestionNotFoundException();
             }
 
             return new QuestionImpl(
@@ -93,12 +95,12 @@ public class QuestionDAOImpl implements QuestionDAO {
             );
         } catch (SQLException throwable) {
             log.error("SQL Exception while getQuestionById in QuestionDAOImpl ", throwable);
-            return null;
+            throw new DaoLogicException();
         }
     }
 
     @Override
-    public Question createQuestion(Question question, BigInteger quizId) {
+    public Question createQuestion(Question question, BigInteger quizId) throws QuestionNotFoundException, DaoLogicException {
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(properties.getProperty("CREATE_QUESTION"));
@@ -113,7 +115,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             preparedStatement.setLong(2, quizId.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                return null;
+                throw new QuestionNotFoundException();
             }
 
             long questionId = resultSet.getLong(questionIdColumn);
@@ -122,12 +124,12 @@ public class QuestionDAOImpl implements QuestionDAO {
             return question;
         } catch (SQLException throwable) {
             log.error("SQL Exception while createQuestion in QuestionDAOImpl ", throwable);
-            return null;
+            throw new DaoLogicException();
         }
     }
 
     @Override
-    public void deleteQuestion(Question question, BigInteger quizId) {
+    public void deleteQuestion(Question question, BigInteger quizId) throws QuestionNotFoundException, DaoLogicException {
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(properties.getProperty("GET_QUESTION_ID_BY_DATA"));
@@ -136,7 +138,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                return;
+                throw new QuestionNotFoundException();
             }
 
             long questionId = resultSet.getLong(questionIdColumn);
@@ -147,18 +149,19 @@ public class QuestionDAOImpl implements QuestionDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             log.error("SQL Exception while deleteQuestion in QuestionDAOImpl ", throwable);
+            throw new DaoLogicException();
         }
     }
 
     @Override
-    public Collection<Question> getAllQuestions(BigInteger quizId) {
+    public Collection<Question> getAllQuestions(BigInteger quizId) throws QuestionNotFoundException, DaoLogicException {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty("GET_ALL_QUESTIONS"))) {
             preparedStatement.setLong(1, quizId.longValue());
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                return null;
+                throw new QuestionNotFoundException();
             }
 
             Collection<Question> questions = new ArrayList<>();
@@ -172,12 +175,12 @@ public class QuestionDAOImpl implements QuestionDAO {
             return questions;
         } catch (SQLException throwable) {
             log.error("SQL Exception while getAllQuestions in QuestionDAOImpl ", throwable);
-            return null;
+            throw new DaoLogicException();
         }
     }
 
     @Override
-    public void updateQuestion(Question question) {
+    public void updateQuestion(Question question) throws DaoLogicException {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty("UPDATE_QUESTION"))) {
             preparedStatement.setString(1, question.getQuestion());
@@ -186,6 +189,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             log.error("SQL Exception while updateQuestion in QuestionDAOImpl ", throwable);
+            throw new DaoLogicException();
         }
     }
 }
