@@ -97,7 +97,7 @@ public class UserDAOImpl implements UserDAO {
           .build();
 
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
   }
@@ -131,7 +131,7 @@ public class UserDAOImpl implements UserDAO {
           .build();
 
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
   }
@@ -143,7 +143,7 @@ public class UserDAOImpl implements UserDAO {
       statement.setLong(1, id.longValue());
       statement.executeUpdate();
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
   }
@@ -163,7 +163,7 @@ public class UserDAOImpl implements UserDAO {
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
 
@@ -180,7 +180,7 @@ public class UserDAOImpl implements UserDAO {
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
 
@@ -195,7 +195,7 @@ public class UserDAOImpl implements UserDAO {
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
 
@@ -235,7 +235,7 @@ public class UserDAOImpl implements UserDAO {
           .build();
 
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
 
@@ -251,7 +251,7 @@ public class UserDAOImpl implements UserDAO {
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
   }
@@ -265,7 +265,7 @@ public class UserDAOImpl implements UserDAO {
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
   }
@@ -297,7 +297,7 @@ public class UserDAOImpl implements UserDAO {
           .build();
 
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
 
@@ -311,7 +311,7 @@ public class UserDAOImpl implements UserDAO {
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      log.error("Dao logic exception " + e.getMessage());
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
 

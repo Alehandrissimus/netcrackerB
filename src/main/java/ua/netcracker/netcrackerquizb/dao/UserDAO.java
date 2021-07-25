@@ -59,6 +59,8 @@ public interface UserDAO {
   String UPDATE_USER_ACTIVE = "UPDATE_USER_ACTIVE";
   String SEARCH_USER_BY_EMAIL = "SEARCH_USER_BY_EMAIL";
 
+  String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
+
   int TRUE_SQL = 1;
 
 }
