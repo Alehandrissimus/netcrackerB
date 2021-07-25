@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.User;
-import ua.netcracker.netcrackerquizb.model.builders.QuizBuilder;
+import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ class QuizDAOImplTest {
         String description = "Historical quiz";
         QuizType quizType = QuizType.HISTORIC;
 
-        Quiz quiz = QuizBuilder.newBuilder()
+        Quiz quiz = QuizImpl.QuizBuilder()
                 .setTitle(title)
                 .setDescription(description)
                 .setQuizType(quizType)
@@ -69,21 +69,23 @@ class QuizDAOImplTest {
     }
 
     @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuizByIdTest() {
         User user = new UserImpl();
         user.setId(BigInteger.valueOf(1));
 
         String title = "ZNO";
-        String description = "Historical quiz";
+        String description = "Science quiz";
         QuizType quizType = QuizType.SCIENCE;
 
-        Quiz quiz = QuizBuilder.newBuilder()
+        Quiz quiz = QuizImpl.QuizBuilder()
                 .setTitle(title)
                 .setDescription(description)
                 .setQuizType(quizType)
                 .setCreationDate(new Date(System.currentTimeMillis()))
                 .setCreatorId(user.getId())
                 .build();
+
 
         quizDAO.createQuiz(quiz);
 
@@ -105,7 +107,7 @@ class QuizDAOImplTest {
     void deleteQuizTest() {
 
 //        Quiz quiz1 = quizDAO.getQuizById(BigInteger.valueOf(128));
-//        quizDAO.deleteQuiz(quiz1.getId());
+//        quizDAO.deleteQuiz(quiz1);
 
         User user = new UserImpl();
         user.setId(BigInteger.valueOf(1));
@@ -113,7 +115,7 @@ class QuizDAOImplTest {
         String title = "newOlo";
         String description = "Horror quiz";
         QuizType quizType = QuizType.SCIENCE;
-        Quiz quiz = QuizBuilder.newBuilder()
+        Quiz quiz = QuizImpl.QuizBuilder()
                 .setTitle(title)
                 .setDescription(description)
                 .setQuizType(quizType)
@@ -123,6 +125,7 @@ class QuizDAOImplTest {
 
         quizDAO.createQuiz(quiz);
         log.info("Quiz with id " + quiz.getId() + " was created");
+        Quiz newQuiz = quizDAO.getQuizById(quiz.getId());
 
         assertNotNull(quiz);
 
@@ -140,10 +143,10 @@ class QuizDAOImplTest {
         User user = new UserImpl();
         user.setId(BigInteger.valueOf(1));
 
-        String title = "Science quiz";
-        String description = "Science quiz";
-        QuizType quizType = QuizType.SCIENCE;
-        Quiz quiz = QuizBuilder.newBuilder()
+        String title = "Geographical quiz";
+        String description = "Geographical quiz";
+        QuizType quizType = QuizType.GEOGRAPHICAL;
+        Quiz quiz = QuizImpl.QuizBuilder()
                 .setTitle(title)
                 .setDescription(description)
                 .setQuizType(quizType)
@@ -153,16 +156,18 @@ class QuizDAOImplTest {
 
         quizDAO.createQuiz(quiz);
         log.info("Quiz with id " + quiz.getId() + " was created");
+        Quiz updatedQuiz = quizDAO.getQuizById(quiz.getId());
 
-        quiz.setTitle("newTitle");
-        quiz.setDescription("description of new Quiz");
+        updatedQuiz.setTitle("newTitle");
+        updatedQuiz.setDescription("description of new Quiz");
 
-        quizDAO.updateQuiz(quiz);
-        log.info("Quiz with id " + quiz.getId() + " was updated");
+        quizDAO.updateQuiz(updatedQuiz);
+        log.info("Quiz with id " + updatedQuiz.getId() + " was updated");
 
-        assertNotEquals(title, quiz.getTitle());
-        assertNotEquals(description, quiz.getDescription());
+        assertNotEquals(quiz.getTitle(), updatedQuiz.getTitle());
+        assertNotEquals(quiz.getDescription(), updatedQuiz.getDescription());
 
+        quizDAO.deleteQuiz(updatedQuiz);
         quizDAO.deleteQuiz(quiz);
         log.info("Quiz with id " + quiz.getId() + " was deleted");
 
@@ -172,29 +177,15 @@ class QuizDAOImplTest {
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getAllQuizzesTest() {
-        User user = new UserImpl();
-        user.setId(BigInteger.valueOf(1));
-
-        String title = "Geographical quiz";
-        String description = "Geographical quiz";
-        QuizType quizType = QuizType.GEOGRAPHICAL;
-
-        Quiz quiz = QuizBuilder.newBuilder()
-                .setTitle(title)
-                .setDescription(description)
-                .setQuizType(quizType)
-                .setCreationDate(new Date(System.currentTimeMillis()))
-                .setCreatorId(user.getId())
-                .build();
-
-        quizDAO.createQuiz(quiz);
 
         List<Quiz> quizList = quizDAO.getAllQuizzes();
 
-        log.info("Get all quizzes in test");
-        assertNotNull(quizList);
+        if (!quizList.isEmpty()) {
+            assertNotNull(quizList);
+        }
 
-        quizDAO.deleteQuiz(quiz);
+        log.info("Get all quizzes in test");
+
     }
 
     @Test
@@ -202,8 +193,8 @@ class QuizDAOImplTest {
     void getQuizzesByTitleTest() {
         String title = "ZNO";
         List<Quiz> quizzes = quizDAO.getQuizzesByTitle(title);
-
-        if(!quizzes.isEmpty()) {
+        log.info("Get quizzes by title in test");
+        if (!quizzes.isEmpty()) {
             assertEquals(title, quizzes.get(0).getTitle());
         }
 
@@ -215,7 +206,7 @@ class QuizDAOImplTest {
         QuizType quizType = QuizType.MATHEMATICS;
         List<Quiz> quizzes = quizDAO.getQuizzesByType(quizType);
 
-        if(!quizzes.isEmpty()) {
+        if (!quizzes.isEmpty()) {
             assertEquals(quizType, quizzes.get(0).getQuizType());
         }
 
