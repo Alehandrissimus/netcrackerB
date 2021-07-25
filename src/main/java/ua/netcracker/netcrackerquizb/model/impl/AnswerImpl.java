@@ -11,6 +11,19 @@ public class AnswerImpl implements Answer {
     private Boolean answer;
     private BigInteger questionId;
 
+    public AnswerImpl(String value, Boolean answer, BigInteger questionId) {
+        this.value = value;
+        this.answer = answer;
+        this.questionId = questionId;
+    }
+
+    public AnswerImpl(BigInteger id, String value, Boolean answer, BigInteger questionId) {
+        this.id = id;
+        this.value = value;
+        this.answer = answer;
+        this.questionId = questionId;
+    }
+
     @Override
     public String getValue() {
         return value;
