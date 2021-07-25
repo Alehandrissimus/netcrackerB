@@ -8,6 +8,10 @@ import ua.netcracker.netcrackerquizb.model.UserRoles;
 
 public class UserImpl implements User {
 
+  private UserImpl() {
+
+  }
+
   private BigInteger id;
   private String firstName;
   private String lastName;
@@ -20,24 +24,98 @@ public class UserImpl implements User {
   private Set<Quiz> accomplishedQuizes;
   private String emailCode;
 
+  public static class UserBuilder {
+
+    private final UserImpl newUser;
+
+    public UserBuilder() {
+      newUser = new UserImpl();
+    }
+
+    public UserBuilder setId(BigInteger id) {
+      newUser.id = id;
+      return this;
+    }
+
+    public UserBuilder setFirstName(String firstName) {
+      newUser.firstName = firstName;
+      return this;
+    }
+
+    public UserBuilder setLastName(String lastName) {
+      newUser.lastName = lastName;
+      return this;
+    }
+
+    public UserBuilder setEmail(String email) {
+      newUser.email = email;
+      return this;
+    }
+
+    public UserBuilder setPassword(String password) {
+      newUser.password = password;
+      return this;
+    }
+
+    public UserBuilder setRole(UserRoles role) {
+      newUser.role = role;
+      return this;
+    }
+
+    public UserBuilder setDescription(String description) {
+      newUser.description = description;
+      return this;
+    }
+
+    public UserBuilder setActive(boolean active) {
+      newUser.active = active;
+      return this;
+    }
+
+    public UserBuilder setFavoriteQuizes(Set<Quiz> favoriteQuizes) {
+      newUser.favoriteQuizes = favoriteQuizes;
+      return this;
+    }
+
+    public UserBuilder setAccomplishedQuizes(Set<Quiz> accomplishedQuizes) {
+      newUser.accomplishedQuizes = accomplishedQuizes;
+      return this;
+    }
+
+    public UserBuilder setEmailCode(String emailCode) {
+      newUser.emailCode = emailCode;
+      return this;
+    }
+
+    public User build() {
+      return newUser;
+    }
+
+  }
+
+  @Override
   public Set<Quiz> getAllFavoriteQuizes() {
     return favoriteQuizes;
   }
 
+  @Override
   public Set<Quiz> getAllAccomplishedQuizes() {
     return favoriteQuizes;
   }
 
+  @Override
   public void addFavoriteQuiz(Quiz quiz) {
     favoriteQuizes.add(quiz);
   }
 
+  @Override
   public void addAccomplishedQuiz(Quiz quiz) {
     accomplishedQuizes.add(quiz);
   }
 
-  public void removeFavoriteQuiz(BigInteger id) {
-    favoriteQuizes.remove(id);
+  @Override
+  public void removeFavoriteQuiz(Quiz quiz) {
+    favoriteQuizes.remove(quiz);
   }
 
   @Override

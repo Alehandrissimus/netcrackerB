@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserDAO;
+import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
+import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.model.UserActive;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
@@ -28,34 +32,6 @@ public class UserDAOImpl implements UserDAO {
   private final String URL;
   private final String USERNAME;
   private final String PASSWORD;
-
-  private static final String URL_PROPERTY = "${spring.datasource.url}";
-  private static final String USERNAME_PROPERTY = "${spring.datasource.username}";
-  private static final String PASSWORD_PROPERTY = "${spring.datasource.password}";
-  private static final String PATH_PROPERTY = "src/main/resources/sqlScripts.properties";
-  private static final String DRIVER_PATH_PROPERTY = "oracle.jdbc.OracleDriver";
-  private static final String SEARCH_USER_BY_ID = "SEARCH_USER_BY_ID";
-  private static final String USER_FIRST_NAME = "USER_FIRST_NAME";
-  private static final String USER_LAST_NAME = "USER_LAST_NAME";
-  private static final String USER_EMAIL = "USER_EMAIL";
-  private static final String USER_PASSWORD = "USER_PASSWORD";
-  private static final String USER_ROLE = "USER_ROLE";
-  private static final String USER_ACTIVE = "USER_ACTIVE";
-  private static final String USER_EMAIL_CODE = "USER_EMAIL_CODE";
-
-  private static final String USER_DESCRIPTION = "USER_DESCRIPTION";
-  private static final String USER_ID = "USER_ID";
-  private static final String DELETE_USER_BY_ID = "DELETE_USER_BY_ID";
-  private static final String CREATE_USER = "CREATE_USER";
-  private static final String UPDATE_USER_NAME = "UPDATE_USER_NAME";
-  private static final String UPDATE_USER_PASSWORD = "UPDATE_USER_PASSWORD";
-  private static final String SEARCH_USER_AUTHORIZE = "SEARCH_USER_AUTHORIZE";
-  private static final String UPDATE_USER_DESCRIPTION = "UPDATE_USER_DESCRIPTION";
-  private static final String UPDATE_USER_EMAIL_CODE = "UPDATE_USER_EMAIL_CODE";
-  private static final String SEARCH_USER_BY_EMAIL_CODE = "SEARCH_USER_BY_EMAIL_CODE";
-  private static final String UPDATE_USER_ACTIVE = "UPDATE_USER_ACTIVE";
-  private static final String SEARCH_USER_BY_EMAIL = "SEARCH_USER_BY_EMAIL";
-
 
   @Autowired
   UserDAOImpl(
@@ -76,6 +52,7 @@ public class UserDAOImpl implements UserDAO {
 
   private void getDataSource(String URL, String USERNAME, String PASSWORD)
       throws SQLException, ClassNotFoundException, IOException {
+
     try (FileInputStream fis = new FileInputStream(PATH_PROPERTY)) {
       Class.forName(DRIVER_PATH_PROPERTY);
       connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -93,249 +70,249 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public User getUserById(BigInteger id) {
-    User user = null;
+  public User getUserById(BigInteger id) throws UserDoesNotExistException, DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_BY_ID))) {
-      statement.setInt(1, id.intValue());
+
+      statement.setLong(1, id.longValue());
 
       ResultSet resultSet = statement.executeQuery();
 
-      if (resultSet.next()) {
-        user = new UserImpl();
-        user.setId(id);
-        user.setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)));
-        user.setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)));
-        user.setEmail(resultSet.getString(properties.getProperty(USER_EMAIL)));
-        user.setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)));
-        switch (resultSet.getInt(properties.getProperty(USER_ROLE))) {
-          case 0:
-            user.setRole(UserRoles.ADMIN);
-            break;
-          case 1:
-            user.setRole(UserRoles.USER);
-            break;
-          default:
-            user.setRole(UserRoles.UNVERIFIED);
-        }
-        user.setActive(resultSet.getInt(properties.getProperty(USER_ACTIVE)) == 1);
-        user.setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)));
-        user.setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)));
+      if (!resultSet.next()) {
+        throw new UserDoesNotExistException();
       }
+
+      return new UserImpl.UserBuilder()
+          .setId(id)
+          .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
+          .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
+          .setEmail(resultSet.getString(properties.getProperty(USER_EMAIL)))
+          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
+          .setRole(
+              UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
+          .setActive(
+              resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
+          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
+          .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
+          .build();
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return user;
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
-    return user;
   }
 
   @Override
-  public User getUserByEmail(String email) {
-    User user = null;
+  public User getUserByEmail(String email) throws UserDoesNotExistException, DaoLogicException {
+
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_BY_EMAIL))) {
+
       statement.setString(1, email);
 
       ResultSet resultSet = statement.executeQuery();
 
-      if (resultSet.next()) {
-        user = new UserImpl();
-        user.setId(BigInteger.valueOf(resultSet.getLong(properties.getProperty(USER_ID))));
-        user.setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)));
-        user.setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)));
-        user.setEmail(email);
-        user.setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)));
-        switch (resultSet.getInt(properties.getProperty(USER_ROLE))) {
-          case 0:
-            user.setRole(UserRoles.ADMIN);
-            break;
-          case 1:
-            user.setRole(UserRoles.USER);
-            break;
-          default:
-            user.setRole(UserRoles.UNVERIFIED);
-        }
-        user.setActive(resultSet.getInt(properties.getProperty(USER_ACTIVE)) == 1);
-        user.setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)));
-        user.setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)));
+      if (!resultSet.next()) {
+        throw new UserDoesNotExistException();
       }
+
+      return new UserImpl.UserBuilder()
+          .setId(BigInteger.valueOf(resultSet.getLong(properties.getProperty(USER_ID))))
+          .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
+          .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
+          .setEmail(email)
+          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
+          .setRole(
+              UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
+          .setActive(
+              resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
+          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
+          .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
+          .build();
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return user;
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
-    return user;
   }
 
   @Override
-  public void deleteUser(BigInteger id) {
+  public void deleteUser(BigInteger id) throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(DELETE_USER_BY_ID))) {
-      statement.setInt(1, id.intValue());
+      statement.setLong(1, id.longValue());
       statement.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
   }
 
   @Override
-  public void createUser(String email, String lastName, String firstName, String password,
-      String emailCode) {
+  public void createUser(User user) throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(CREATE_USER))) {
-      statement.setString(1, firstName);
-      statement.setString(2, lastName);
-      statement.setString(3, null);
-      statement.setString(4, email);
-      statement.setString(5, password);
-      statement.setInt(6, 2);
-      statement.setInt(7, 0);
-      statement.setString(8, emailCode);
+      statement.setString(1, user.getFirstName());
+      statement.setString(2, user.getLastName());
+      statement.setString(3, user.getDescription());
+      statement.setString(4, user.getEmail());
+      statement.setString(5, user.getPassword());
+      statement.setInt(6, UserRoles.UNVERIFIED.ordinal());
+      statement.setInt(7, UserActive.NOT_ACTIVE.ordinal());
+      statement.setString(8, user.getEmailCode());
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
 
   }
 
   @Override
-  public void updateUsersName(BigInteger id, String newFirstName, String newLastName) {
+  public void updateUsersFullName(BigInteger id, String newFirstName, String newLastName)
+      throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_NAME))) {
       statement.setString(1, newFirstName);
       statement.setString(2, newLastName);
-      statement.setInt(3, id.intValue());
+      statement.setLong(3, id.longValue());
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
 
   }
 
   @Override
-  public void updateUsersPassword(BigInteger id, String newPassword) {
+  public void updateUsersPassword(BigInteger id, String newPassword) throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_PASSWORD))) {
       statement.setString(1, newPassword);
-      statement.setInt(2, id.intValue());
+      statement.setLong(2, id.longValue());
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
 
   }
 
   @Override
-  public User getAuthorizeUser(String email, String password) {
-    User user = null;
+  public User getAuthorizeUser(String email, String password)
+      throws UserDoesNotExistException, UserDoesNotConfirmedEmailException, DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_AUTHORIZE))) {
       statement.setString(1, email);
       statement.setString(2, password);
 
       ResultSet resultSet = statement.executeQuery();
-      if (resultSet.next()) {
-        user = new UserImpl();
-        user.setId(BigInteger.valueOf(resultSet.getLong(properties.getProperty(USER_ID))));
-        user.setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)));
-        user.setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)));
-        user.setEmail(email);
-        user.setPassword(password);
-        switch (resultSet.getInt(properties.getProperty(USER_ROLE))) {
-          case 0:
-            user.setRole(UserRoles.ADMIN);
-            break;
-          case 1:
-            user.setRole(UserRoles.USER);
-            break;
-          default:
-            user.setRole(UserRoles.UNVERIFIED);
-        }
-        user.setActive(resultSet.getInt(properties.getProperty(USER_ACTIVE)) == 1);
-        user.setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)));
-        user.setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)));
+
+      if (!resultSet.next()) {
+        throw new UserDoesNotExistException();
       }
+
+      if (resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.NOT_ACTIVE
+          .ordinal()) {
+        throw new UserDoesNotConfirmedEmailException();
+      }
+
+      return new UserImpl.UserBuilder()
+          .setId(BigInteger.valueOf(resultSet.getLong(properties.getProperty(USER_ID))))
+          .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
+          .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
+          .setEmail(email)
+          .setPassword(password)
+          .setRole(
+              UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
+          .setActive(
+              resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
+          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
+          .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
+          .build();
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return user;
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
-    return user;
+
   }
 
   @Override
-  public void updateUsersDescription(BigInteger id, String newDescription) {
+  public void updateUsersDescription(BigInteger id, String newDescription)
+      throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_DESCRIPTION))) {
       statement.setString(1, newDescription);
-      statement.setInt(2, id.intValue());
+      statement.setLong(2, id.longValue());
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
   }
 
   @Override
-  public void updateUsersEmailCode(BigInteger id, String newCode) {
+  public void updateUsersEmailCode(BigInteger id, String newCode) throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_EMAIL_CODE))) {
       statement.setString(1, newCode);
-      statement.setInt(2, id.intValue());
+      statement.setLong(2, id.longValue());
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
   }
 
   @Override
-  public User getUserByEmailCode(String code) {
-    User user = null;
+  public User getUserByEmailCode(String code) throws UserDoesNotExistException, DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_BY_EMAIL_CODE))) {
       statement.setString(1, code);
 
       ResultSet resultSet = statement.executeQuery();
 
-      if (resultSet.next()) {
-        user = new UserImpl();
-        user.setId(BigInteger.valueOf(resultSet.getLong(properties.getProperty(USER_ID))));
-        user.setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)));
-        user.setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)));
-        user.setEmail(resultSet.getString(properties.getProperty(USER_EMAIL)));
-        user.setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)));
-        switch (resultSet.getInt(properties.getProperty(USER_ROLE))) {
-          case 0:
-            user.setRole(UserRoles.ADMIN);
-            break;
-          case 1:
-            user.setRole(UserRoles.USER);
-            break;
-          default:
-            user.setRole(UserRoles.UNVERIFIED);
-        }
-        user.setActive(resultSet.getInt(properties.getProperty(USER_ACTIVE)) == 1);
-        user.setEmailCode(code);
-        user.setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)));
+      if (!resultSet.next()) {
+        throw new UserDoesNotExistException();
       }
+
+      return new UserImpl.UserBuilder()
+          .setId(BigInteger.valueOf(resultSet.getLong(properties.getProperty(USER_ID))))
+          .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
+          .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
+          .setEmail(resultSet.getString(properties.getProperty(USER_EMAIL)))
+          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
+          .setRole(
+              UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
+          .setActive(
+              resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
+          .setEmailCode(code)
+          .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
+          .build();
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return user;
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
-    return user;
+
   }
 
   @Override
-  public void activateUser(BigInteger id) {
+  public void activateUser(BigInteger id) throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_ACTIVE))) {
-      statement.setInt(1, id.intValue());
+      statement.setLong(1, id.longValue());
 
       statement.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Dao logic exception " + e.getMessage());
+      throw new DaoLogicException();
     }
 
   }

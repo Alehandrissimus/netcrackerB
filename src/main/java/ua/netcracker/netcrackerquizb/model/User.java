@@ -50,4 +50,14 @@ public interface User {
   String getDescription();
 
   void setDescription(String description);
+
+  Set<Quiz> getAllFavoriteQuizes();
+
+  Set<Quiz> getAllAccomplishedQuizes();
+
+  void addFavoriteQuiz(Quiz quiz);
+
+  void addAccomplishedQuiz(Quiz quiz);
+
+  void removeFavoriteQuiz(Quiz quiz);
 }
