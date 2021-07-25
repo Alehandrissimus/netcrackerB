@@ -1,7 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
 import org.apache.log4j.Logger;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void getQuestionByIdTest() {
         Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
         assertNotNull(question);
@@ -44,7 +43,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void createQuestionTest() {
         BigInteger quizId = BigInteger.valueOf(1);
         String questionText = "Where is?";
@@ -69,7 +68,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void getQuestionsByQuizTest() {
         Collection<Question> questions = questionDAO.getAllQuestions(BigInteger.valueOf(1));
         for (Question question : questions) {
@@ -78,7 +77,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void updateQuestionTest() {
         BigInteger questionId = BigInteger.valueOf(3);
         Question questionOld = questionDAO.getQuestionById(questionId, new ArrayList<>());
@@ -96,7 +95,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void getQuestionReturningNull() {
         Question question = questionDAO.getQuestionById(BigInteger.valueOf(-1), new ArrayList<>());
         assertNull(question);
