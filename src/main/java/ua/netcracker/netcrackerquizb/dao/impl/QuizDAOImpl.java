@@ -96,14 +96,15 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
             preparedStatement.setDate(3, (Date) quiz.getCreationDate());
-            preparedStatement.setInt(4, quiz.getQuizType().ordinal());
-            preparedStatement.setInt(5, quiz.getCreatorId().intValue());
+            preparedStatement.setLong(4, quiz.getQuizType().ordinal());
+            preparedStatement.setLong(5, quiz.getCreatorId().longValue());
             preparedStatement.executeUpdate();
 
             preparedStatement.clearParameters();
             preparedStatement = connection.prepareStatement(properties.getProperty(GET_QUIZ_ID_BY_DATA));
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
+            preparedStatement.setLong(3, quiz.getQuizType().ordinal());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
@@ -132,8 +133,8 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.setString(1, quiz.getTitle());
             preparedStatement.setString(2, quiz.getDescription());
             preparedStatement.setDate(3, (Date) quiz.getCreationDate());
-            preparedStatement.setInt(4, quiz.getQuizType().ordinal());
-            preparedStatement.setInt(5, quiz.getCreatorId().intValue());
+            preparedStatement.setLong(4, quiz.getQuizType().ordinal());
+            preparedStatement.setLong(5, quiz.getCreatorId().longValue());
             preparedStatement.setLong(6, quiz.getId().longValue());
 
             preparedStatement.executeUpdate();
@@ -256,7 +257,7 @@ public class QuizDAOImpl implements QuizDAO {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(SELECT_QUIZZES_BY_TYPE))){
 
-            preparedStatement.setInt(1, quizType.ordinal());
+            preparedStatement.setLong(1, quizType.ordinal());
 
             ResultSet resultSet = preparedStatement.executeQuery();
 

@@ -45,7 +45,7 @@ class QuizDAOImplTest {
 
         String title = "History Quiz";
         String description = "Historical quiz";
-        QuizType quizType = QuizType.SCIENCE;
+        QuizType quizType = QuizType.HISTORIC;
 
         Quiz quiz = QuizBuilder.newBuilder()
                 .setTitle(title)
@@ -66,19 +66,6 @@ class QuizDAOImplTest {
         quizDAO.deleteQuiz(quiz);
         log.info("Test Quiz with id: " + quiz.getId() + " was deleted");
 
-//        Quiz quizTest = quizDAO.getQuizById(quiz.getId());
-//        log.info("Test Quiz with id: " + quizTest.getId() + " was created");
-//
-//        assertNotNull(quizTest);
-//        assertEquals(quiz.getTitle(), quizTest.getTitle());
-//        assertEquals(quiz.getDescription(), quizTest.getDescription());
-//        assertEquals(quiz.getQuizType(), quizTest.getQuizType());
-//
-//        quizDAO.deleteQuiz(quizTest);
-//        quizDAO.deleteQuiz(quiz);
-//        log.info("Test Quiz with id: " + quizTest.getId() + " was deleted");
-//
-//        assertNull(quizDAO.getQuizById(quizTest.getId()));
     }
 
     @Test
@@ -188,9 +175,9 @@ class QuizDAOImplTest {
         User user = new UserImpl();
         user.setId(BigInteger.valueOf(1));
 
-        String title = "Science quiz";
-        String description = "Science quiz";
-        QuizType quizType = QuizType.SCIENCE;
+        String title = "Geographical quiz";
+        String description = "Geographical quiz";
+        QuizType quizType = QuizType.GEOGRAPHICAL;
 
         Quiz quiz = QuizBuilder.newBuilder()
                 .setTitle(title)
