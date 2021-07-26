@@ -1,6 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao;
 
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuestionDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.Question;
@@ -16,14 +16,14 @@ public interface QuestionDAO {
     final String questionTypeColumn = "question_type";
     final String questionQuizIdColumn = "quiz";
 
-    Question getQuestionById(BigInteger id, Collection<Answer> answers) throws QuestionDoesNotExistException, DaoLogicException;
+    Question getQuestionById(BigInteger id, Collection<Answer> answers) throws QuestionDoesNotExistException, DAOLogicException;
 
-    Question createQuestion(Question question, BigInteger id) throws QuestionDoesNotExistException, DaoLogicException;
+    Question createQuestion(Question question, BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
 
-    void deleteQuestion(Question question, BigInteger id) throws QuestionDoesNotExistException, DaoLogicException;
+    void deleteQuestion(Question question, BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
 
-    Collection<Question> getAllQuestions(BigInteger id) throws QuestionDoesNotExistException, DaoLogicException;
+    Collection<Question> getAllQuestions(BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
 
-    void updateQuestion(Question question) throws DaoLogicException;
+    void updateQuestion(Question question) throws DAOLogicException;
 
 }
