@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,12 +88,12 @@ public class UserDAOImpl implements UserDAO {
           .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
           .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
           .setEmail(resultSet.getString(properties.getProperty(USER_EMAIL)))
-          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
+//          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
           .setRole(
               UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
           .setActive(
               resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
-          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
+//          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
@@ -121,12 +122,12 @@ public class UserDAOImpl implements UserDAO {
           .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
           .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
           .setEmail(email)
-          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
+//          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
           .setRole(
               UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
           .setActive(
               resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
-          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
+//          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
@@ -162,11 +163,12 @@ public class UserDAOImpl implements UserDAO {
       statement.setString(8, user.getEmailCode());
 
       statement.executeUpdate();
+
+
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }
-
   }
 
   @Override
@@ -225,12 +227,12 @@ public class UserDAOImpl implements UserDAO {
           .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
           .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
           .setEmail(email)
-          .setPassword(password)
+//          .setPassword(password)
           .setRole(
               UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
           .setActive(
               resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
-          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
+//          .setEmailCode(resultSet.getString(properties.getProperty(USER_EMAIL_CODE)))
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
@@ -287,12 +289,12 @@ public class UserDAOImpl implements UserDAO {
           .setFirstName(resultSet.getString(properties.getProperty(USER_FIRST_NAME)))
           .setLastName(resultSet.getString(properties.getProperty(USER_LAST_NAME)))
           .setEmail(resultSet.getString(properties.getProperty(USER_EMAIL)))
-          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
+//          .setPassword(resultSet.getString(properties.getProperty(USER_PASSWORD)))
           .setRole(
               UserRoles.convertFromIntToRole(resultSet.getInt(properties.getProperty(USER_ROLE))))
           .setActive(
               resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.ACTIVE.ordinal())
-          .setEmailCode(code)
+//          .setEmailCode(code)
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
@@ -302,6 +304,26 @@ public class UserDAOImpl implements UserDAO {
     }
 
   }
+
+  @Override
+  public boolean comparisonOfPasswords(BigInteger id, String checkPassword)
+      throws DaoLogicException {
+    try (PreparedStatement statement = connection
+        .prepareStatement(properties.getProperty(CHECK_USER_PASSWORD))) {
+
+      statement.setLong(1, id.longValue());
+      statement.setString(2, checkPassword);
+
+      ResultSet resultSet = statement.executeQuery();
+
+      return resultSet.next();
+    } catch (SQLException e) {
+      log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
+      throw new DaoLogicException();
+
+    }
+  }
+
 
   @Override
   public void activateUser(BigInteger id) throws DaoLogicException {

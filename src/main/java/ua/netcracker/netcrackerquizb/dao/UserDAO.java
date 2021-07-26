@@ -30,6 +30,8 @@ public interface UserDAO {
 
   void updateUsersEmailCode(BigInteger id, String newCode) throws DaoLogicException;
 
+  boolean comparisonOfPasswords(BigInteger id, String checkPassword) throws DaoLogicException;
+
   void activateUser(BigInteger id) throws DaoLogicException;
 
   String URL_PROPERTY = "${spring.datasource.url}";
@@ -58,6 +60,7 @@ public interface UserDAO {
   String SEARCH_USER_BY_EMAIL_CODE = "SEARCH_USER_BY_EMAIL_CODE";
   String UPDATE_USER_ACTIVE = "UPDATE_USER_ACTIVE";
   String SEARCH_USER_BY_EMAIL = "SEARCH_USER_BY_EMAIL";
+  String CHECK_USER_PASSWORD = "CHECK_USER_PASSWORD";
 
   String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
 
