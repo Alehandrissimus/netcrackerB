@@ -192,7 +192,6 @@ class UserDAOImplTest {
     } catch (UserDoesNotExistException e) {
       assertTrue(true);
     }
-
   }
 
 
@@ -205,7 +204,7 @@ class UserDAOImplTest {
       userDAO.updateUsersPassword(BigInteger.ONE, testPassword);
       assertTrue(userDAO.comparisonOfPasswords(BigInteger.ONE, testPassword));
 
-    } catch (DaoLogicException e) {
+    } catch (DaoLogicException | UserDoesNotExistException e) {
       log.error("Error while testing updateUsersPassword " + e.getMessage());
       fail();
     }
@@ -219,12 +218,8 @@ class UserDAOImplTest {
     try {
       userDAO.updateUsersPassword(BigInteger.ZERO, testPassword);
 
-      try {
-        userDAO.getUserById(BigInteger.ZERO).getPassword();
-        fail();
-      } catch (UserDoesNotExistException e) {
-        assertTrue(true);
-      }
+    } catch (UserDoesNotExistException e) {
+      assertTrue(true);
     } catch (DaoLogicException e) {
       log.error("Error while testing updateNotExistUsersPassword " + e.getMessage());
       fail();
@@ -234,33 +229,29 @@ class UserDAOImplTest {
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void getAuthorizeActiveUser() {
-//    try {
-//      userDAO.activateUser(BigInteger.ONE);
-//      assertNotNull(userDAO.getAuthorizeUser("abobuba@gmail.com", "passhash"));
-//    } catch (DaoLogicException | UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
-//      log.error("Error while testing getAuthorizeActiveUser " + e.getMessage());
-//      fail();
-//    }
+    try {
+      userDAO.activateUser(BigInteger.ONE);
+      userDAO.updateUsersPassword(BigInteger.ONE, "testPassword");
+      userDAO.getAuthorizeUser(userDAO.getUserById(BigInteger.ONE).getEmail(), "testPassword");
+    } catch (DaoLogicException | UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
+      log.error("Error while testing getAuthorizeActiveUser " + e.getMessage());
+      fail();
+    }
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void getAuthorizeNotActiveUser() {
-//    try {
-//      userDAO.createUser(
-//          new UserImpl.UserBuilder().setFirstName("test").setLastName("test").setEmail("test")
-//              .setPassword("test").build());
-//      try {
-//        assertNull(userDAO.getAuthorizeUser("test", "test"));
-//      } catch (UserDoesNotConfirmedEmailException e) {
-//        assertTrue(true);
-//      }
-//
-//      userDAO.deleteUser(userDAO.getUserByEmail("test").getId());
-//    } catch (DaoLogicException | UserDoesNotExistException e) {
-//      log.error("Error while testing getAuthorizeNotActiveUser " + e.getMessage());
-//      fail();
-//    }
+    try {
+      userDAO.disactivateUser(BigInteger.ONE);
+      userDAO.updateUsersPassword(BigInteger.ONE, "testPassword");
+      userDAO.getAuthorizeUser(userDAO.getUserById(BigInteger.ONE).getEmail(), "testPassword");
+    } catch (UserDoesNotConfirmedEmailException e) {
+      assertTrue(true);
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing getAuthorizeNotActiveUser " + e.getMessage());
+      fail();
+    }
   }
 
   @Test
@@ -269,7 +260,7 @@ class UserDAOImplTest {
     try {
       userDAO.updateUsersPassword(BigInteger.ONE, "testPassword");
       assertTrue(userDAO.comparisonOfPasswords(BigInteger.ONE, "testPassword"));
-    } catch (DaoLogicException e) {
+    } catch (DaoLogicException | UserDoesNotExistException e) {
       log.error("Error while testing comparisonOfPasswordsTest " + e.getMessage());
       fail();
     }
@@ -279,87 +270,161 @@ class UserDAOImplTest {
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void updateExistUsersDescription() {
-//    String testDescription = "testDescription";
-//    String oldDescription = userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim();
-//
-//    userDAO.updateUsersDescription(BigInteger.valueOf(2), testDescription);
-//
-//    assertEquals(testDescription,
-//        userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
-//
-//    userDAO.updateUsersDescription(BigInteger.valueOf(2), oldDescription);
-//    assertEquals(oldDescription,
-//        userDAO.getUserById(BigInteger.valueOf(2)).getDescription().trim());
+    try {
+      String testDescription = "testDescription";
+      userDAO.updateUsersDescription(BigInteger.ONE, testDescription);
+      assertEquals(testDescription,
+          userDAO.getUserById(BigInteger.ONE).getDescription());
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing updateExistUsersDescription " + e.getMessage());
+      fail();
+    }
+
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void updateNotExistUsersDescription() {
-//    String testDescription = "testDescription";
-//
-//    userDAO.updateUsersDescription(BigInteger.ZERO, testDescription);
-//    try {
-//      userDAO.getUserById(BigInteger.ZERO).getDescription();
-//
-//      fail();
-//    } catch (NullPointerException e) {
-//      assertTrue(true);
-//    }
+    String testDescription = "testDescription";
+
+    try {
+      userDAO.updateUsersDescription(BigInteger.ZERO, testDescription);
+
+    } catch (UserDoesNotExistException e) {
+      assertTrue(true);
+    } catch (DaoLogicException e) {
+      log.error("Error while testing updateNotExistUsersDescription " + e.getMessage());
+      fail();
+    }
+
 
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void updateExistUsersEmailCode() {
-//    String testEmailCode = "testEmailCode";
-//    String oldEmailCode = userDAO.getUserById(BigInteger.ONE).getEmailCode();
-//
-//    userDAO.updateUsersEmailCode(BigInteger.ONE, testEmailCode);
-//
-//    assertEquals(testEmailCode, userDAO.getUserById(BigInteger.ONE).getEmailCode());
-//
-//    userDAO.updateUsersEmailCode(BigInteger.ONE, oldEmailCode);
-//
-//    assertEquals(oldEmailCode,
-//        userDAO.getUserById(BigInteger.ONE).getEmailCode());
+    try {
+      String testEmailCode = "test";
+      userDAO.updateUsersEmailCode(BigInteger.ONE, testEmailCode);
+      assertEquals(BigInteger.ONE, userDAO.getUserByEmailCode(testEmailCode).getId());
+
+      String newEmailCode = "newTest";
+      userDAO.updateUsersEmailCode(BigInteger.ONE, newEmailCode);
+      assertEquals(BigInteger.ONE, userDAO.getUserByEmailCode(newEmailCode).getId());
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing updateExistUsersEmailCode " + e.getMessage());
+      fail();
+    }
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void getUserByValidEmailCode() {
-//    String oldEmailCode = userDAO.getUserById(BigInteger.ONE).getEmailCode();
-//    String testEmailCode = "test";
-//    userDAO.updateUsersEmailCode(BigInteger.ONE, testEmailCode);
-//    assertNotNull(userDAO.getUserByEmailCode(userDAO.getUserById(BigInteger.ONE).getEmailCode()));
-//
-//    userDAO.updateUsersEmailCode(BigInteger.ONE, oldEmailCode);
-//    assertEquals(oldEmailCode, userDAO.getUserById(BigInteger.ONE).getEmailCode());
+
+    try {
+      String testEmailCode = "test";
+      userDAO.updateUsersEmailCode(BigInteger.ONE, testEmailCode);
+      assertEquals(BigInteger.ONE, userDAO.getUserByEmailCode(testEmailCode).getId());
+
+      String newEmailCode = "newTest";
+      userDAO.updateUsersEmailCode(BigInteger.ONE, newEmailCode);
+      assertEquals(BigInteger.ONE, userDAO.getUserByEmailCode(newEmailCode).getId());
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing getUserByValidEmailCode " + e.getMessage());
+      fail();
+    }
+
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void getUserByInvalidEmailCode() {
-//    assertNull(userDAO.getUserByEmailCode("notActiveCode"));
+    try {
+      userDAO.getUserByEmailCode("notActiveCode");
+      fail();
+    } catch (UserDoesNotExistException e) {
+      assertTrue(true);
+    } catch (DaoLogicException e) {
+      log.error("Error while testing getUserByInvalidEmailCode " + e.getMessage());
+      fail();
+    }
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void activateUnverifiedUser() {
-//    userDAO.createUser("test@gmail.co", "testLastName", "testFirstName", "testPassword",
-//        "testEmailCode");
-//
-//    userDAO.activateUser(userDAO.getUserByEmail("test@gmail.co").getId());
-//
-//    assertTrue(userDAO.getUserByEmail("test@gmail.co").isActive());
-//
-//    userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.co").getId());
+    try {
+      userDAO.createUser(
+          new UserImpl.UserBuilder()
+              .setEmail("test@gmail.c")
+              .setLastName("testLastName")
+              .setFirstName("testFirstName")
+              .setPassword("testPassword")
+              .setEmailCode("testEmailCode")
+              .build());
+
+      userDAO.activateUser(userDAO.getUserByEmail("test@gmail.c").getId());
+
+      assertTrue(userDAO.getUserByEmail("test@gmail.c").isActive());
+
+      userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
+
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing activateUnverifiedUser " + e.getMessage());
+      fail();
+    }
+
   }
 
   @Test
   @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   void activateVerifiedUser() {
-//    userDAO.activateUser(BigInteger.ONE);
-//
-//    assertTrue(userDAO.getUserById(BigInteger.ONE).isActive());
+    try {
+      userDAO.activateUser(BigInteger.ONE);
+      assertTrue(userDAO.getUserById(BigInteger.ONE).isActive());
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing activateVerifiedUser " + e.getMessage());
+      fail();
+    }
+
   }
+
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void disactivateVerifiedUser() {
+    try {
+      userDAO.disactivateUser(BigInteger.ONE);
+      assertFalse(userDAO.getUserById(BigInteger.ONE).isActive());
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing activateVerifiedUser " + e.getMessage());
+      fail();
+    }
+
+  }
+
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void disactivateUnverifiedUser() {
+    try {
+      userDAO.createUser(
+          new UserImpl.UserBuilder()
+              .setEmail("test@gmail.c")
+              .setLastName("testLastName")
+              .setFirstName("testFirstName")
+              .setPassword("testPassword")
+              .setEmailCode("testEmailCode")
+              .build());
+
+      userDAO.disactivateUser(userDAO.getUserByEmail("test@gmail.c").getId());
+
+      assertFalse(userDAO.getUserByEmail("test@gmail.c").isActive());
+
+      userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
+
+    } catch (DaoLogicException | UserDoesNotExistException e) {
+      log.error("Error while testing activateUnverifiedUser " + e.getMessage());
+      fail();
+    }
+  }
+
 }

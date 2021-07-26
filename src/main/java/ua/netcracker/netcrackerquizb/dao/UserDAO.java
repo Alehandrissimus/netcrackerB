@@ -17,22 +17,27 @@ public interface UserDAO {
   void createUser(User user) throws DaoLogicException;
 
   void updateUsersFullName(BigInteger id, String newFirstName, String newLastName)
-      throws DaoLogicException;
+      throws DaoLogicException, UserDoesNotExistException;
 
-  void updateUsersPassword(BigInteger id, String newPassword) throws DaoLogicException;
+  void updateUsersPassword(BigInteger id, String newPassword)
+      throws DaoLogicException, UserDoesNotExistException;
 
   User getAuthorizeUser(String email, String password)
       throws UserDoesNotExistException, UserDoesNotConfirmedEmailException, DaoLogicException;
 
-  void updateUsersDescription(BigInteger id, String newDescription) throws DaoLogicException;
+  void updateUsersDescription(BigInteger id, String newDescription)
+      throws DaoLogicException, UserDoesNotExistException;
 
   User getUserByEmailCode(String code) throws UserDoesNotExistException, DaoLogicException;
 
-  void updateUsersEmailCode(BigInteger id, String newCode) throws DaoLogicException;
+  void updateUsersEmailCode(BigInteger id, String newCode)
+      throws DaoLogicException, UserDoesNotExistException;
 
   boolean comparisonOfPasswords(BigInteger id, String checkPassword) throws DaoLogicException;
 
-  void activateUser(BigInteger id) throws DaoLogicException;
+  boolean activateUser(BigInteger id) throws DaoLogicException, UserDoesNotExistException;
+
+  boolean disactivateUser(BigInteger id) throws DaoLogicException, UserDoesNotExistException;
 
   String URL_PROPERTY = "${spring.datasource.url}";
   String USERNAME_PROPERTY = "${spring.datasource.username}";
@@ -59,6 +64,7 @@ public interface UserDAO {
   String UPDATE_USER_EMAIL_CODE = "UPDATE_USER_EMAIL_CODE";
   String SEARCH_USER_BY_EMAIL_CODE = "SEARCH_USER_BY_EMAIL_CODE";
   String UPDATE_USER_ACTIVE = "UPDATE_USER_ACTIVE";
+  String UPDATE_USER_DISACTIVE = "UPDATE_USER_DISACTIVE";
   String SEARCH_USER_BY_EMAIL = "SEARCH_USER_BY_EMAIL";
   String CHECK_USER_PASSWORD = "CHECK_USER_PASSWORD";
 
