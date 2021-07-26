@@ -20,7 +20,7 @@ public class DAOUtil {
 //  private DAOUtil() {
 //  }
 //
-//  public static Connection setTestConnection(String URL, String USERNAME, String PASSWORD, Properties properties)
+//  public static Connection setTestConnection()
 //      throws DAOConfigException {
 //    return getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties, true);
 //  }

@@ -22,6 +22,7 @@ import ua.netcracker.netcrackerquizb.model.UserActive;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
+import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
 @Repository
 public class UserDAOImpl implements UserDAO {

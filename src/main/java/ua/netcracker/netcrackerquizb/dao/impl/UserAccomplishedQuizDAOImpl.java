@@ -2,14 +2,17 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import ua.netcracker.netcrackerquizb.dao.UserAccomplishedQuizDAO;
+import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 
 public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
 
@@ -58,5 +61,28 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
   }
 
 
+  @Override
+  public Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id) {
+    return null;
+  }
 
+  @Override
+  public Set<QuizAccomplishedImpl> getFavoriteQuizesByUser(BigInteger id) {
+    return null;
+  }
+
+  @Override
+  public void addFavoriteQuiz(QuizAccomplishedImpl quiz) {
+
+  }
+
+  @Override
+  public void addAccomplishedQuiz(QuizAccomplishedImpl quiz) {
+
+  }
+
+  @Override
+  public void removeFavoriteQuiz(QuizAccomplishedImpl quiz) {
+
+  }
 }
