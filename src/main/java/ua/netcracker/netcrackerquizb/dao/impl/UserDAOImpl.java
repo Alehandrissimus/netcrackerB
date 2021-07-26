@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserDAO;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
@@ -21,6 +22,7 @@ import ua.netcracker.netcrackerquizb.model.UserActive;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
+import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -38,12 +40,13 @@ public class UserDAOImpl implements UserDAO {
       @Value(URL_PROPERTY) String URL,
       @Value(USERNAME_PROPERTY) String USERNAME,
       @Value(PASSWORD_PROPERTY) String PASSWORD
-  ) throws SQLException, ClassNotFoundException, IOException {
+  ) throws SQLException, ClassNotFoundException, IOException, DAOConfigException {
     this.URL = URL;
     this.USERNAME = USERNAME;
     this.PASSWORD = PASSWORD;
 
     getDataSource(URL, USERNAME, PASSWORD);
+//    connection = DAOUtil.getDataSource(URL, USERNAME, PASSWORD, properties, false);
   }
 
   public void setTestConnection() throws SQLException, ClassNotFoundException, IOException {
@@ -149,7 +152,7 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public void createUser(User user) throws DaoLogicException {
+  public BigInteger createUser(User user) throws DaoLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(CREATE_USER))) {
       statement.setString(1, user.getFirstName());
@@ -165,8 +168,9 @@ public class UserDAOImpl implements UserDAO {
         throw new DaoLogicException();
       }
 
+      return getUserByEmail(user.getEmail()).getId();
 
-    } catch (SQLException e) {
+    } catch (SQLException | UserDoesNotExistException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DaoLogicException();
     }

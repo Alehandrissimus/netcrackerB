@@ -14,7 +14,7 @@ public interface UserDAO {
 
   void deleteUser(BigInteger id) throws DaoLogicException;
 
-  void createUser(User user) throws DaoLogicException;
+  BigInteger createUser(User user) throws DaoLogicException;
 
   void updateUsersFullName(BigInteger id, String newFirstName, String newLastName)
       throws DaoLogicException, UserDoesNotExistException;

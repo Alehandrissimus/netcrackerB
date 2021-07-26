@@ -51,10 +51,6 @@ public interface User {
 
   void setDescription(String description);
 
-  Set<Quiz> getAllFavoriteQuizes();
-
-  Set<Quiz> getAllAccomplishedQuizes();
-
   void addFavoriteQuiz(Quiz quiz);
 
   void addAccomplishedQuiz(Quiz quiz);

@@ -13,6 +13,7 @@ import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
+import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +28,7 @@ class UserDAOImplTest {
     this.userDAO = userDAO;
     try {
       userDAO.setTestConnection();
+//      DAOUtil.setTestConnection()
     } catch (IOException | SQLException | ClassNotFoundException e) {
       log.error("Error while setting test connection " + e.getMessage());
       fail();

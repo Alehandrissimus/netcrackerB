@@ -25,12 +25,12 @@ public class UserImpl implements User {
   }
 
   @Override
-  public Set<Quiz> getAllFavoriteQuizes() {
-    return favoriteQuizes;
+  public Set<Quiz> getAccomplishedQuizes() {
+    return accomplishedQuizes;
   }
 
   @Override
-  public Set<Quiz> getAllAccomplishedQuizes() {
+  public Set<Quiz> getFavoriteQuizes() {
     return favoriteQuizes;
   }
 
@@ -47,6 +47,16 @@ public class UserImpl implements User {
   @Override
   public void removeFavoriteQuiz(Quiz quiz) {
     favoriteQuizes.remove(quiz);
+  }
+
+  @Override
+  public void setFavoriteQuizes(Set<Quiz> favoriteQuizes) {
+    this.favoriteQuizes = favoriteQuizes;
+  }
+
+  @Override
+  public void setAccomplishedQuizes(Set<Quiz> accomplishedQuizes) {
+    this.accomplishedQuizes = accomplishedQuizes;
   }
 
   @Override
@@ -96,16 +106,6 @@ public class UserImpl implements User {
   }
 
   @Override
-  public void setFavoriteQuizes(Set<Quiz> favoriteQuizes) {
-    this.favoriteQuizes = favoriteQuizes;
-  }
-
-  @Override
-  public void setAccomplishedQuizes(Set<Quiz> accomplishedQuizes) {
-    this.accomplishedQuizes = accomplishedQuizes;
-  }
-
-  @Override
   public BigInteger getId() {
     return id;
   }
@@ -138,16 +138,6 @@ public class UserImpl implements User {
   @Override
   public boolean isActive() {
     return active;
-  }
-
-  @Override
-  public Set<Quiz> getAccomplishedQuizes() {
-    return accomplishedQuizes;
-  }
-
-  @Override
-  public Set<Quiz> getFavoriteQuizes() {
-    return favoriteQuizes;
   }
 
   @Override
