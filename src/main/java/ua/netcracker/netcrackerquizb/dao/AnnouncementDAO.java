@@ -1,5 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao;
 
+import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
+import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import java.math.BigInteger;
 import java.util.List;
@@ -15,13 +17,12 @@ public interface AnnouncementDAO {
     String PASSWORD_PROPERTY = "${spring.datasource.password}";
 
     String SELECT_ANNOUNCEMENT_BY_TITLE = "SELECT_ANNOUNCEMENT_BY_TITLE";
+    String SELECT_SET_ANNOUNCEMENT_BY_TITLE = "SELECT_SET_ANNOUNCEMENT_BY_TITLE";
     String CREATE_ANNOUNCEMENT = "CREATE_ANNOUNCEMENT";
     String UPDATE_ANNOUNCEMENT = "UPDATE_ANNOUNCEMENT";
-    String ADD_PARTICIPANT = "ADD_PARTICIPANT";
     String DELETE_ANNOUNCEMENT_BY_ID = "DELETE_ANNOUNCEMENT_BY_ID";
     String GET_POPULAR_ANNOUNCEMENT = "GET_POPULAR_ANNOUNCEMENT";
-    String SELECT_ANNOUNCEMENT_LIKED_BY_USER = "SELECT_ANNOUNCEMENT_LIKED_BY_USER";
-    String GET_PARTICIPANT_BY_ID = "GET_PARTICIPANT_BY_ID";
+    String GET_ANNOUNCEMENT_BY_ID = "GET_ANNOUNCEMENT_BY_ID";
 
     String ID_ANNOUNCEMENT = "ID_ANNOUNCEMENT";
     String TITLE = "TITLE";
@@ -31,21 +32,20 @@ public interface AnnouncementDAO {
     String ADDRESS = "ADDRESS";
     String LIKES = "LIKES";
 
+    String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
 
-    void deleteAnnouncement(BigInteger idAnnouncement);
+    Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExist, DaoLogicException;
 
-    void createAnnouncement(Announcement newAnnouncement);
+    void deleteAnnouncement(BigInteger idAnnouncement) throws DaoLogicException;
 
-    void editAnnouncement(Announcement newAnnouncement);
+    BigInteger createAnnouncement(Announcement newAnnouncement) throws DaoLogicException;
 
-    void addParticipant(BigInteger idAnnouncement, BigInteger idUser);
+    void editAnnouncement(Announcement newAnnouncement) throws DaoLogicException;
 
-    boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser);
+    Announcement getByTitle(String title) throws AnnouncementDoesNotExist, DaoLogicException;
 
-    Announcement getByTitle(String title);
+    Set<Announcement> getSetByTitle(String title) throws AnnouncementDoesNotExist, DaoLogicException;
 
-    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser);
-
-    List<Announcement> getPopular(int number);
+    List<Announcement> getPopular(int number) throws AnnouncementDoesNotExist, DaoLogicException;
 
 }
