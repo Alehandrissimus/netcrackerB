@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +40,7 @@ public class AnswerDAOImplTest {
             Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
             assertNotNull(answer);
             assertEquals("America", answer.getValue());
-        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+        } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing getAnswerByIdTest " + e.getMessage());
             fail();
         }
@@ -63,7 +63,7 @@ public class AnswerDAOImplTest {
             assertEquals(answerByTitleTest.getQuestionId(), answerByTitle.getQuestionId());
 
             answerDAO.deleteAnswer(id);
-        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+        } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing getLastAnswerIdByTitleTest " + e.getMessage());
             fail();
         }
@@ -86,7 +86,7 @@ public class AnswerDAOImplTest {
             assertEquals(anAnswer.getQuestionId(), answerImpl.getQuestionId());
 
             answerDAO.deleteAnswer(id);
-        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+        } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing createAnswerTest " + e.getMessage());
             fail();
         }
@@ -105,7 +105,7 @@ public class AnswerDAOImplTest {
             assertNotNull(nullAnswer);
 
             answerDAO.deleteAnswer(id);
-        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+        } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing deleteAnswerTest " + e.getMessage());
             fail();
         }
@@ -137,7 +137,7 @@ public class AnswerDAOImplTest {
             assertEquals(testNewAnswer.getValue(), finalAnswer.getValue());
 
             answerDAO.deleteAnswer(id);
-        } catch (DaoLogicException | AnswerDoesNotExistException e) {
+        } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing updateAnswerTest " + e.getMessage());
             fail();
         }

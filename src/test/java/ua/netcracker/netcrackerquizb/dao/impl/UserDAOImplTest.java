@@ -9,11 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
-import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,7 +40,7 @@ class UserDAOImplTest {
     try {
       userDAO.getUserById(BigInteger.ZERO);
       fail();
-    } catch (UserDoesNotExistException | DaoLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException e) {
       assertTrue(true);
     }
   }
@@ -51,7 +50,7 @@ class UserDAOImplTest {
   void getUserByAdminId() {
     try {
       assertNotNull(userDAO.getUserById(BigInteger.ONE));
-    } catch (UserDoesNotExistException | DaoLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException e) {
       log.error("Error while testing getUserByAdminId " + e.getMessage());
       fail();
     }
@@ -63,7 +62,7 @@ class UserDAOImplTest {
     try {
       userDAO.getUserByEmail(null);
       fail();
-    } catch (UserDoesNotExistException | DaoLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException e) {
       assertTrue(true);
     }
   }
@@ -75,7 +74,7 @@ class UserDAOImplTest {
       assertNotNull(userDAO.getUserByEmail(
           userDAO.getUserById(BigInteger.ONE).getEmail()
       ));
-    } catch (UserDoesNotExistException | DaoLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException e) {
       log.error("Error while testing getUserByAdminEmail " + e.getMessage());
       fail();
     }
@@ -109,7 +108,7 @@ class UserDAOImplTest {
         assertTrue(true);
       }
 
-    } catch (UserDoesNotExistException | DaoLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException e) {
       log.error("Error while testing deleteUser " + e.getMessage());
       fail();
     }
@@ -143,7 +142,7 @@ class UserDAOImplTest {
         assertTrue(true);
       }
 
-    } catch (UserDoesNotExistException | DaoLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException e) {
       log.error("Error while testing createUser " + e.getMessage());
       fail();
     }
@@ -171,7 +170,7 @@ class UserDAOImplTest {
       assertEquals(oldLastName + " " + oldFirstName,
           userDAO.getUserById(BigInteger.ONE).getFullName().trim());
 
-    } catch (UserDoesNotExistException | DaoLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException e) {
       log.error("Error while testing updateExistUsersName " + e.getMessage());
       fail();
     }
@@ -188,7 +187,7 @@ class UserDAOImplTest {
       userDAO.updateUsersFullName(BigInteger.ZERO, testFirstName, testLastName);
 
       userDAO.getUserById(BigInteger.ZERO).getFullName();
-    } catch (DaoLogicException e) {
+    } catch (DAOLogicException e) {
       log.error("Error while testing updateNotExistUsersName " + e.getMessage());
       fail();
     } catch (UserDoesNotExistException e) {
@@ -206,7 +205,7 @@ class UserDAOImplTest {
       userDAO.updateUsersPassword(BigInteger.ONE, testPassword);
       assertTrue(userDAO.comparisonOfPasswords(BigInteger.ONE, testPassword));
 
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing updateUsersPassword " + e.getMessage());
       fail();
     }
@@ -222,7 +221,7 @@ class UserDAOImplTest {
 
     } catch (UserDoesNotExistException e) {
       assertTrue(true);
-    } catch (DaoLogicException e) {
+    } catch (DAOLogicException e) {
       log.error("Error while testing updateNotExistUsersPassword " + e.getMessage());
       fail();
     }
@@ -235,7 +234,7 @@ class UserDAOImplTest {
       userDAO.activateUser(BigInteger.ONE);
       userDAO.updateUsersPassword(BigInteger.ONE, "testPassword");
       userDAO.getAuthorizeUser(userDAO.getUserById(BigInteger.ONE).getEmail(), "testPassword");
-    } catch (DaoLogicException | UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
+    } catch (DAOLogicException | UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
       log.error("Error while testing getAuthorizeActiveUser " + e.getMessage());
       fail();
     }
@@ -250,7 +249,7 @@ class UserDAOImplTest {
       userDAO.getAuthorizeUser(userDAO.getUserById(BigInteger.ONE).getEmail(), "testPassword");
     } catch (UserDoesNotConfirmedEmailException e) {
       assertTrue(true);
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing getAuthorizeNotActiveUser " + e.getMessage());
       fail();
     }
@@ -262,7 +261,7 @@ class UserDAOImplTest {
     try {
       userDAO.updateUsersPassword(BigInteger.ONE, "testPassword");
       assertTrue(userDAO.comparisonOfPasswords(BigInteger.ONE, "testPassword"));
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing comparisonOfPasswordsTest " + e.getMessage());
       fail();
     }
@@ -277,7 +276,7 @@ class UserDAOImplTest {
       userDAO.updateUsersDescription(BigInteger.ONE, testDescription);
       assertEquals(testDescription,
           userDAO.getUserById(BigInteger.ONE).getDescription());
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing updateExistUsersDescription " + e.getMessage());
       fail();
     }
@@ -294,7 +293,7 @@ class UserDAOImplTest {
 
     } catch (UserDoesNotExistException e) {
       assertTrue(true);
-    } catch (DaoLogicException e) {
+    } catch (DAOLogicException e) {
       log.error("Error while testing updateNotExistUsersDescription " + e.getMessage());
       fail();
     }
@@ -313,7 +312,7 @@ class UserDAOImplTest {
       String newEmailCode = "newTest";
       userDAO.updateUsersEmailCode(BigInteger.ONE, newEmailCode);
       assertEquals(BigInteger.ONE, userDAO.getUserByEmailCode(newEmailCode).getId());
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing updateExistUsersEmailCode " + e.getMessage());
       fail();
     }
@@ -331,7 +330,7 @@ class UserDAOImplTest {
       String newEmailCode = "newTest";
       userDAO.updateUsersEmailCode(BigInteger.ONE, newEmailCode);
       assertEquals(BigInteger.ONE, userDAO.getUserByEmailCode(newEmailCode).getId());
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing getUserByValidEmailCode " + e.getMessage());
       fail();
     }
@@ -346,7 +345,7 @@ class UserDAOImplTest {
       fail();
     } catch (UserDoesNotExistException e) {
       assertTrue(true);
-    } catch (DaoLogicException e) {
+    } catch (DAOLogicException e) {
       log.error("Error while testing getUserByInvalidEmailCode " + e.getMessage());
       fail();
     }
@@ -371,7 +370,7 @@ class UserDAOImplTest {
 
       userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
 
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing activateUnverifiedUser " + e.getMessage());
       fail();
     }
@@ -384,7 +383,7 @@ class UserDAOImplTest {
     try {
       userDAO.activateUser(BigInteger.ONE);
       assertTrue(userDAO.getUserById(BigInteger.ONE).isActive());
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing activateVerifiedUser " + e.getMessage());
       fail();
     }
@@ -397,7 +396,7 @@ class UserDAOImplTest {
     try {
       userDAO.disactivateUser(BigInteger.ONE);
       assertFalse(userDAO.getUserById(BigInteger.ONE).isActive());
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing activateVerifiedUser " + e.getMessage());
       fail();
     }
@@ -423,7 +422,7 @@ class UserDAOImplTest {
 
       userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
 
-    } catch (DaoLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException e) {
       log.error("Error while testing activateUnverifiedUser " + e.getMessage());
       fail();
     }

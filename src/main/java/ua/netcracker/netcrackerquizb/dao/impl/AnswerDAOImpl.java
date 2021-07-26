@@ -3,12 +3,10 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
 import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
-import ua.netcracker.netcrackerquizb.exception.QuestionNotFoundException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 
@@ -68,7 +66,7 @@ public class AnswerDAOImpl implements AnswerDAO {
     }
 
     @Override
-    public Answer getAnswerById(BigInteger id) throws DaoLogicException, AnswerDoesNotExistException {
+    public Answer getAnswerById(BigInteger id) throws DAOLogicException, AnswerDoesNotExistException {
         try  {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(properties.getProperty("GET_ANSWER_BY_ID"));
@@ -82,13 +80,13 @@ public class AnswerDAOImpl implements AnswerDAO {
                     BigInteger.valueOf(resultSet.getInt(SQL_ANSWER_QUESTION)));
         } catch (SQLException throwable) {
             log.error("SQL Exception while getAnswerById in AnswerDAOImpl ", throwable);
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
 
     }
 
     @Override
-    public BigInteger getLastAnswerIdByTitle(String title) throws DaoLogicException, AnswerDoesNotExistException {
+    public BigInteger getLastAnswerIdByTitle(String title) throws DAOLogicException, AnswerDoesNotExistException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_LAST_ANSWER_ID_BY_TITLE"));
             preparedStatement.setString(1, title);
@@ -97,13 +95,13 @@ public class AnswerDAOImpl implements AnswerDAO {
             return BigInteger.valueOf(resultSet.getInt(SQL_MAX_ID_ANSWER));
         } catch (SQLException throwable) {
             log.error("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl ", throwable);
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
 
     }
 
     @Override
-    public BigInteger createAnswer(Answer answer) throws DaoLogicException, AnswerDoesNotExistException {
+    public BigInteger createAnswer(Answer answer) throws DAOLogicException, AnswerDoesNotExistException {
         try {
             String title = answer.getValue();
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("CREATE_ANSWER"));
@@ -114,24 +112,24 @@ public class AnswerDAOImpl implements AnswerDAO {
             return getLastAnswerIdByTitle(title);
         } catch (SQLException throwable) {
             log.error("SQL Exception while createAnswer in AnswerDAOImpl ", throwable);
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public void deleteAnswer(BigInteger id) throws DaoLogicException {
+    public void deleteAnswer(BigInteger id) throws DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("DELETE_ANSWER"));
             preparedStatement.setLong(1, id.longValue());
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             log.error("SQL Exception while deleteAnswer in AnswerDAOImpl ", throwable);
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public BigInteger updateAnswer(Answer answer) throws DaoLogicException {
+    public BigInteger updateAnswer(Answer answer) throws DAOLogicException {
         try {
             BigInteger id = answer.getId();
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("UPDATE_ANSWER"));
@@ -143,7 +141,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             return id;
         } catch (SQLException throwable) {
             log.error("SQL Exception while updateAnswer in AnswerDAOImpl ", throwable);
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 }

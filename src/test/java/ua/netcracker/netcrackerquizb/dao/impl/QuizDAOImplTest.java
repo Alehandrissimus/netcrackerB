@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
@@ -70,7 +70,7 @@ class QuizDAOImplTest {
 
             quizDAO.deleteQuiz(quiz);
             log.info("Test Quiz with id: " + quiz.getId() + " was deleted");
-        } catch (QuizDoesNotExistException | UserDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing createQuiz " + e.getMessage());
             fail();
         }
@@ -90,7 +90,7 @@ class QuizDAOImplTest {
 
             log.info("Quiz was found by id: " + quiz.getId());
 
-        } catch (QuizDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing getQuizById " + e.getMessage());
             fail();
         }
@@ -126,7 +126,7 @@ class QuizDAOImplTest {
             quizDAO.deleteQuiz(quiz);
             log.info("Quiz with id " + quiz.getId() + " was deleted");
 
-        } catch (QuizDoesNotExistException | UserDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing deleteQuiz " + e.getMessage());
             fail();
         }
@@ -147,7 +147,7 @@ class QuizDAOImplTest {
 
             assertNotEquals(quiz.getCreationDate(), updatedQuiz.getCreationDate());
 
-        } catch (QuizDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing updateQuiz " + e.getMessage());
             fail();
         }
@@ -164,7 +164,7 @@ class QuizDAOImplTest {
             }
 
             log.info("Get all quizzes in test");
-        } catch (QuizDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing getAllQuizzes " + e.getMessage());
             fail();
         }
@@ -182,7 +182,7 @@ class QuizDAOImplTest {
             if (!quizzes.isEmpty()) {
                 assertEquals(title, quizzes.get(0).getTitle());
             }
-        } catch (QuizDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing getQuizzesByTitle " + e.getMessage());
             fail();
         }
@@ -200,7 +200,7 @@ class QuizDAOImplTest {
             if (!quizzes.isEmpty()) {
                 assertEquals(quizType, quizzes.get(0).getQuizType());
             }
-        } catch (QuizDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing getQuizzesByType " + e.getMessage());
             fail();
         }

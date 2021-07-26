@@ -15,14 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserDAO;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.UserActive;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
-import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -73,7 +72,7 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public User getUserById(BigInteger id) throws UserDoesNotExistException, DaoLogicException {
+  public User getUserById(BigInteger id) throws UserDoesNotExistException, DAOLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_BY_ID))) {
 
@@ -101,12 +100,12 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
   }
 
   @Override
-  public User getUserByEmail(String email) throws UserDoesNotExistException, DaoLogicException {
+  public User getUserByEmail(String email) throws UserDoesNotExistException, DAOLogicException {
 
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_BY_EMAIL))) {
@@ -135,24 +134,24 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
   }
 
   @Override
-  public void deleteUser(BigInteger id) throws DaoLogicException {
+  public void deleteUser(BigInteger id) throws DAOLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(DELETE_USER_BY_ID))) {
       statement.setLong(1, id.longValue());
       statement.executeUpdate();
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
   }
 
   @Override
-  public BigInteger createUser(User user) throws DaoLogicException {
+  public BigInteger createUser(User user) throws DAOLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(CREATE_USER))) {
       statement.setString(1, user.getFirstName());
@@ -165,20 +164,20 @@ public class UserDAOImpl implements UserDAO {
       statement.setString(8, user.getEmailCode());
 
       if (statement.executeUpdate() != 1) {
-        throw new DaoLogicException();
+        throw new DAOLogicException();
       }
 
       return getUserByEmail(user.getEmail()).getId();
 
     } catch (SQLException | UserDoesNotExistException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
   }
 
   @Override
   public void updateUsersFullName(BigInteger id, String newFirstName, String newLastName)
-      throws DaoLogicException, UserDoesNotExistException {
+      throws DAOLogicException, UserDoesNotExistException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_NAME))) {
       statement.setString(1, newFirstName);
@@ -190,14 +189,14 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
 
   }
 
   @Override
   public void updateUsersPassword(BigInteger id, String newPassword)
-      throws DaoLogicException, UserDoesNotExistException {
+      throws DAOLogicException, UserDoesNotExistException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_PASSWORD))) {
       statement.setString(1, newPassword);
@@ -208,14 +207,14 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
 
   }
 
   @Override
   public User getAuthorizeUser(String email, String password)
-      throws UserDoesNotExistException, UserDoesNotConfirmedEmailException, DaoLogicException {
+      throws UserDoesNotExistException, UserDoesNotConfirmedEmailException, DAOLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_AUTHORIZE))) {
       statement.setString(1, email);
@@ -248,14 +247,14 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
 
   }
 
   @Override
   public void updateUsersDescription(BigInteger id, String newDescription)
-      throws DaoLogicException, UserDoesNotExistException {
+      throws DAOLogicException, UserDoesNotExistException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_DESCRIPTION))) {
       statement.setString(1, newDescription);
@@ -266,13 +265,13 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
   }
 
   @Override
   public void updateUsersEmailCode(BigInteger id, String newCode)
-      throws DaoLogicException, UserDoesNotExistException {
+      throws DAOLogicException, UserDoesNotExistException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_EMAIL_CODE))) {
       statement.setString(1, newCode);
@@ -283,12 +282,12 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
   }
 
   @Override
-  public User getUserByEmailCode(String code) throws UserDoesNotExistException, DaoLogicException {
+  public User getUserByEmailCode(String code) throws UserDoesNotExistException, DAOLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_USER_BY_EMAIL_CODE))) {
       statement.setString(1, code);
@@ -315,14 +314,14 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
 
   }
 
   @Override
   public boolean comparisonOfPasswords(BigInteger id, String checkPassword)
-      throws DaoLogicException {
+      throws DAOLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(CHECK_USER_PASSWORD))) {
 
@@ -334,14 +333,14 @@ public class UserDAOImpl implements UserDAO {
       return resultSet.next();
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
 
     }
   }
 
 
   @Override
-  public boolean activateUser(BigInteger id) throws DaoLogicException, UserDoesNotExistException {
+  public boolean activateUser(BigInteger id) throws DAOLogicException, UserDoesNotExistException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_ACTIVE))) {
       statement.setLong(1, id.longValue());
@@ -350,13 +349,13 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
 
   }
 
   @Override
-  public boolean disactivateUser(BigInteger id) throws DaoLogicException {
+  public boolean disactivateUser(BigInteger id) throws DAOLogicException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(UPDATE_USER_DISACTIVE))) {
       statement.setLong(1, id.longValue());
@@ -365,7 +364,7 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DaoLogicException();
+      throw new DAOLogicException();
     }
 
   }

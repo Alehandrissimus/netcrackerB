@@ -3,7 +3,7 @@ package ua.netcracker.netcrackerquizb.service.Impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.QuizDAO;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
@@ -23,37 +23,37 @@ public class QuizServiceImpl implements QuizService {
     private QuizDAO quizDAO;
 
     @Override
-    public Quiz createQuiz(Quiz quiz) throws DaoLogicException, UserDoesNotExistException {
+    public Quiz createQuiz(Quiz quiz) throws DAOLogicException, UserDoesNotExistException {
         return quizDAO.createQuiz(quiz);
     }
 
     @Override
-    public void updateQuiz(Quiz updatedQuiz) throws QuizDoesNotExistException, DaoLogicException {
+    public void updateQuiz(Quiz updatedQuiz) throws QuizDoesNotExistException, DAOLogicException {
         quizDAO.updateQuiz(updatedQuiz);
     }
 
     @Override
-    public void deleteQuiz(Quiz quiz) throws QuizDoesNotExistException, DaoLogicException {
+    public void deleteQuiz(Quiz quiz) throws QuizDoesNotExistException, DAOLogicException {
         quizDAO.deleteQuiz(quiz);
     }
 
     @Override
-    public Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DaoLogicException {
+    public Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DAOLogicException {
         return quizDAO.getQuizById(id);
     }
 
     @Override
-    public List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DaoLogicException {
+    public List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DAOLogicException {
         return quizDAO.getQuizzesByType(quizType);
     }
 
     @Override
-    public List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DaoLogicException {
+    public List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException {
         return quizDAO.getAllQuizzes();
     }
 
     @Override
-    public List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DaoLogicException {
+    public List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException {
         return quizDAO.getQuizzesByTitle(title);
     }
 

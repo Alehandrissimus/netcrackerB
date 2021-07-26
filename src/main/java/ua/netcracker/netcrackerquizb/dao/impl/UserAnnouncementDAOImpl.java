@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserAnnouncementDAO;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.User;
@@ -73,7 +73,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
     }
 
     @Override
-    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExist, DaoLogicException {
+    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExist, DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_ANNOUNCEMENT_LIKED_BY_USER));
             preparedStatement.setLong(1, idUser.longValue());
@@ -102,7 +102,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
     }
 
     @Override
-    public Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DaoLogicException {
+    public Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DAOLogicException {
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_USERS_LIKED_ANNOUNCEMENT));
@@ -131,12 +131,12 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
             return users;
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) throws DaoLogicException{
+    public boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_PARTICIPANT_BY_ID));
             preparedStatement.setLong(1, idAnnouncement.longValue());
@@ -147,13 +147,13 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
             }
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
         return false;
     }
 
     @Override
-    public void addParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DaoLogicException{
+    public void addParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(ADD_PARTICIPANT));
             preparedStatement.setLong(1, idAnnouncement.longValue());
@@ -161,7 +161,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 }
