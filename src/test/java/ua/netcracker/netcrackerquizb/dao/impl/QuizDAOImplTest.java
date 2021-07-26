@@ -35,9 +35,10 @@ class QuizDAOImplTest {
         try {
             quizDAO.setTestConnection();
         } catch (IOException | SQLException | ClassNotFoundException e) {
-            log.error("Error while setting test connection " + e.getMessage());
+            log.error("Error while setting test connection ", e);
         }
     }
+
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
@@ -51,7 +52,6 @@ class QuizDAOImplTest {
             String title = "History Quiz";
             String description = "Historical quiz";
             QuizType quizType = QuizType.HISTORIC;
-
             Quiz quiz = QuizImpl.QuizBuilder()
                     .setTitle(title)
                     .setDescription(description)
@@ -61,17 +61,17 @@ class QuizDAOImplTest {
                     .build();
 
             quizDAO.createQuiz(quiz);
-            log.info("Test Quiz with id: " + quiz.getId() + " was created");
+            log.info("Quiz with id " + quiz.getId() + " was created");
 
-            assertNotNull(quiz);
-            assertEquals(title, quiz.getTitle());
-            assertEquals(description, quiz.getDescription());
-            assertEquals(quizType, quiz.getQuizType());
+            Quiz newQuiz = quizDAO.getQuizById(quiz.getId());
 
-            quizDAO.deleteQuiz(quiz);
-            log.info("Test Quiz with id: " + quiz.getId() + " was deleted");
+            assertNotNull(newQuiz);
+            assertEquals(title, newQuiz.getTitle());
+
+            quizDAO.deleteQuiz(newQuiz);
+            log.info("Test Quiz with id: " + newQuiz.getId() + " was deleted");
         } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing createQuiz " + e.getMessage());
+            log.error("Error while testing createQuiz ", e);
             fail();
         }
 
@@ -91,7 +91,7 @@ class QuizDAOImplTest {
             log.info("Quiz was found by id: " + quiz.getId());
 
         } catch (QuizDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing getQuizById " + e.getMessage());
+            log.error("Error while testing getQuizById ", e);
             fail();
         }
     }
@@ -121,13 +121,15 @@ class QuizDAOImplTest {
             quizDAO.createQuiz(quiz);
             log.info("Quiz with id " + quiz.getId() + " was created");
 
-            assertNotNull(quiz);
+            Quiz newQuiz = quizDAO.getQuizById(quiz.getId());
 
-            quizDAO.deleteQuiz(quiz);
-            log.info("Quiz with id " + quiz.getId() + " was deleted");
+            assertNotNull(newQuiz);
+
+            quizDAO.deleteQuiz(newQuiz);
+            log.info("Quiz with id " + newQuiz.getId() + " was deleted");
 
         } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing deleteQuiz " + e.getMessage());
+            log.error("Error while testing deleteQuiz ", e);
             fail();
         }
 
@@ -148,7 +150,7 @@ class QuizDAOImplTest {
             assertNotEquals(quiz.getCreationDate(), updatedQuiz.getCreationDate());
 
         } catch (QuizDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing updateQuiz " + e.getMessage());
+            log.error("Error while testing updateQuiz ", e);
             fail();
         }
     }
@@ -165,7 +167,7 @@ class QuizDAOImplTest {
 
             log.info("Get all quizzes in test");
         } catch (QuizDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing getAllQuizzes " + e.getMessage());
+            log.error("Error while testing getAllQuizzes ", e);
             fail();
         }
 
@@ -183,7 +185,7 @@ class QuizDAOImplTest {
                 assertEquals(title, quizzes.get(0).getTitle());
             }
         } catch (QuizDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing getQuizzesByTitle " + e.getMessage());
+            log.error("Error while testing getQuizzesByTitle ", e);
             fail();
         }
 
@@ -201,7 +203,7 @@ class QuizDAOImplTest {
                 assertEquals(quizType, quizzes.get(0).getQuizType());
             }
         } catch (QuizDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing getQuizzesByType " + e.getMessage());
+            log.error("Error while testing getQuizzesByType ", e);
             fail();
         }
     }
