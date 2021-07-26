@@ -70,7 +70,8 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(!resultSet.isBeforeFirst()){
-                throw new AnnouncementDoesNotExist();
+                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getByTitle");
+                throw new AnnouncementDoesNotExist(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             resultSet.next();
             return new AnnouncementImpl.AnnouncementBuilder()
@@ -85,7 +86,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
 
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 
@@ -96,7 +97,8 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.setString(1, title + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                throw new AnnouncementDoesNotExist();
+                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getSetByTitle");
+                throw new AnnouncementDoesNotExist(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             Set<Announcement> announcements = new HashSet<>();
             while (resultSet.next()) {
@@ -114,7 +116,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             return announcements;
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 
@@ -140,7 +142,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
 
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 
@@ -157,7 +159,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
 
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 
@@ -169,7 +171,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 
@@ -181,7 +183,8 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.setInt(1, number);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                throw new AnnouncementDoesNotExist();
+                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getPopular");
+                throw new AnnouncementDoesNotExist(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             List<Announcement> popularAnnouncement = new ArrayList<>();
             while (resultSet.next()) {
@@ -200,7 +203,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             return popularAnnouncement;
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 
@@ -211,7 +214,8 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.setLong(1, idAnnouncement.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                throw new AnnouncementDoesNotExist();
+                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getAnnouncementById");
+                throw new AnnouncementDoesNotExist(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             resultSet.next();
             return new AnnouncementImpl.AnnouncementBuilder()
@@ -225,8 +229,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
                     .build();
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throwables.printStackTrace();
-            throw new DAOLogicException();
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 }

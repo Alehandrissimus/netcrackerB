@@ -33,6 +33,8 @@ public interface AnnouncementDAO {
     String LIKES = "LIKES";
 
     String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
+    String ANNOUNCEMENT_NOT_FOUND_EXCEPTION = "Announcement does not exist!";
+    String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
 
     Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExist, DAOLogicException;
 
