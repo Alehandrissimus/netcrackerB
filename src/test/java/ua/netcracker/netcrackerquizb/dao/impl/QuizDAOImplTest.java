@@ -82,40 +82,18 @@ class QuizDAOImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuizByIdTest() {
         try {
-            User user = new UserImpl.UserBuilder()
-                    .setId(BigInteger.valueOf(1))
-                    .build();
 
-            String title = "ZNO";
-            String description = "Science quiz";
-            QuizType quizType = QuizType.SCIENCE;
-
-            Quiz quiz = QuizImpl.QuizBuilder()
-                    .setTitle(title)
-                    .setDescription(description)
-                    .setQuizType(quizType)
-                    .setCreationDate(new Date(System.currentTimeMillis()))
-                    .setCreatorId(user.getId())
-                    .build();
-
-            quizDAO.createQuiz(quiz);
-
-            Quiz newQuiz = quizDAO.getQuizById(quiz.getId());
+            Quiz quiz = quizDAO.getQuizById(BigInteger.valueOf(1));
 
             assertNotNull(quiz);
-            assertEquals(quiz.getTitle(), newQuiz.getTitle());
-            assertEquals(quiz.getId().intValue(), newQuiz.getId().intValue());
+            assertEquals(1, quiz.getId().intValue());
 
-            log.info("Quiz was found by id: " + newQuiz.getId());
+            log.info("Quiz was found by id: " + quiz.getId());
 
-            quizDAO.deleteQuiz(newQuiz);
-            quizDAO.deleteQuiz(quiz);
-        } catch (QuizDoesNotExistException | UserDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | DaoLogicException e) {
             log.error("Error while testing getQuizById " + e.getMessage());
             fail();
         }
-
-
     }
 
     @Test
@@ -148,7 +126,6 @@ class QuizDAOImplTest {
             quizDAO.deleteQuiz(quiz);
             log.info("Quiz with id " + quiz.getId() + " was deleted");
 
-
         } catch (QuizDoesNotExistException | UserDoesNotExistException | DaoLogicException e) {
             log.error("Error while testing deleteQuiz " + e.getMessage());
             fail();
@@ -160,44 +137,20 @@ class QuizDAOImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateQuizTest() {
         try {
-            User user = new UserImpl.UserBuilder()
-                    .setId(BigInteger.valueOf(1))
-                    .build();
-
-            String title = "Geographical quiz";
-            String description = "Geographical quiz";
-            QuizType quizType = QuizType.GEOGRAPHICAL;
-            Quiz quiz = QuizImpl.QuizBuilder()
-                    .setTitle(title)
-                    .setDescription(description)
-                    .setQuizType(quizType)
-                    .setCreationDate(new Date(System.currentTimeMillis()))
-                    .setCreatorId(user.getId())
-                    .build();
-
-            quizDAO.createQuiz(quiz);
-            log.info("Quiz with id " + quiz.getId() + " was created");
+            Quiz quiz = quizDAO.getQuizById(BigInteger.valueOf(1));
             Quiz updatedQuiz = quizDAO.getQuizById(quiz.getId());
 
-            updatedQuiz.setTitle("newTitle");
-            updatedQuiz.setDescription("description of new Quiz");
+            updatedQuiz.setCreationDate(new Date(System.currentTimeMillis()));
 
             quizDAO.updateQuiz(updatedQuiz);
             log.info("Quiz with id " + updatedQuiz.getId() + " was updated");
 
-            assertNotEquals(quiz.getTitle(), updatedQuiz.getTitle());
-            assertNotEquals(quiz.getDescription(), updatedQuiz.getDescription());
+            assertNotEquals(quiz.getCreationDate(), updatedQuiz.getCreationDate());
 
-            quizDAO.deleteQuiz(updatedQuiz);
-            quizDAO.deleteQuiz(quiz);
-            log.info("Quiz with id " + quiz.getId() + " was deleted");
-
-
-        } catch (QuizDoesNotExistException | UserDoesNotExistException | DaoLogicException e) {
+        } catch (QuizDoesNotExistException | DaoLogicException e) {
             log.error("Error while testing updateQuiz " + e.getMessage());
             fail();
         }
-
     }
 
     @Test
