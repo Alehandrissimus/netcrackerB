@@ -113,6 +113,7 @@ public class QuizDAOImpl implements QuizDAO {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
+                log.error("Throw DAOLogicException while createQuiz in QuizDAOImpl");
                 throw new DaoLogicException();
             }
 
@@ -174,7 +175,10 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.setLong(1, id.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (!resultSet.next()) throw new QuizDoesNotExistException();
+            if (!resultSet.next()) {
+                log.error("Throw DAOLogicException while getQuizById in QuizDAOImpl");
+                throw new QuizDoesNotExistException();
+            }
 
             return QuizImpl.QuizBuilder()
                     .setId(id)

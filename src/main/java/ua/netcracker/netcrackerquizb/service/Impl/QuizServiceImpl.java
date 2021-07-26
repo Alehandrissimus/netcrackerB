@@ -67,9 +67,4 @@ public class QuizServiceImpl implements QuizService {
                 .setCreatorId(user.getId())
                 .build();
     }
-
-    @Override
-    public void validateQuiz(Quiz quiz) {
-
-    }
 }
