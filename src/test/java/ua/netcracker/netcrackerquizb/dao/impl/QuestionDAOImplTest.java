@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
-import ua.netcracker.netcrackerquizb.exception.QuestionNotFoundException;
+import ua.netcracker.netcrackerquizb.exception.QuestionDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
 import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -43,7 +44,7 @@ class QuestionDAOImplTest {
             Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
             assertNotNull(question);
             assertEquals("Ukraine location?", question.getQuestion());
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DaoLogicException | QuestionDoesNotExistException e) {
             log.error("Error while testing getQuestionByIdTest " + e.getMessage());
             fail();
         }
@@ -54,25 +55,28 @@ class QuestionDAOImplTest {
     void createQuestionTest() {
         try {
             BigInteger quizId = BigInteger.valueOf(1);
-            String questionText = "Where is?";
+            String questionText = "" + new Random().nextInt(500000);
             Question questionModel = new QuestionImpl(
                     questionText,
                     QuestionType.TRUE_FALSE
             );
+
+            log.info("questiontext = "+questionText);
 
             questionDAO.createQuestion(questionModel, quizId);
 
             boolean isFound = false;
             Collection<Question> questions = questionDAO.getAllQuestions(quizId);
             for (Question question : questions) {
-                if (question.getQuestion().equals(questionText)) {
+                if (question.getQuestion().equals(""+questionText)) {
                     isFound = true;
+                    log.info("found");
                 }
             }
             assertTrue(isFound);
 
             questionDAO.deleteQuestion(questionModel, quizId);
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DaoLogicException | QuestionDoesNotExistException e) {
             log.error("Error while testing createQuestionTest " + e.getMessage());
             fail();
         }
@@ -86,7 +90,7 @@ class QuestionDAOImplTest {
             for (Question question : questions) {
                 assertNotNull(question.getQuestion());
             }
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DaoLogicException | QuestionDoesNotExistException e) {
             log.error("Error while testing getQuestionsByQuizTest " + e.getMessage());
             fail();
         }
@@ -109,7 +113,7 @@ class QuestionDAOImplTest {
             questionDAO.updateQuestion(questionOld);
             assertEquals(questionGot.getQuestion(), questionNew.getQuestion());
             assertEquals(questionGot.getQuestionType(), questionNew.getQuestionType());
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DaoLogicException | QuestionDoesNotExistException e) {
             log.error("Error while testing updateQuestionTest " + e.getMessage());
             fail();
         }

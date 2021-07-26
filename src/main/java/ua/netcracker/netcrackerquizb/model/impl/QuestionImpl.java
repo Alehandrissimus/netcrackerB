@@ -95,20 +95,4 @@ public class QuestionImpl implements Question {
                 ", answers=" + answers +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        QuestionImpl question1 = (QuestionImpl) o;
-        return Objects.equals(idQuestion, question1.idQuestion) &&
-                question.equals(question1.question) &&
-                questionType == question1.questionType &&
-                Objects.equals(answers, question1.answers);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idQuestion, question, questionType, answers);
-    }
 }
