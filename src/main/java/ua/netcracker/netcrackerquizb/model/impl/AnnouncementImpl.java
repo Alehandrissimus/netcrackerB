@@ -8,7 +8,6 @@ import ua.netcracker.netcrackerquizb.model.Announcement;
 public class AnnouncementImpl implements Announcement {
 
   private AnnouncementImpl() {
-
   }
 
   private BigInteger id;
@@ -20,97 +19,34 @@ public class AnnouncementImpl implements Announcement {
   private Collection<BigInteger> participants;
   private int participantsCap;
 
-  public static class AnnouncementBuilder {
-
-    private final AnnouncementImpl newAnnouncement;
-
-    public AnnouncementBuilder(){
-      newAnnouncement = new AnnouncementImpl();
-    }
-
-    public AnnouncementBuilder setId(BigInteger id){
-      newAnnouncement.id = id;
-      return this;
-    }
-
-    public AnnouncementBuilder setTitle(String title){
-      newAnnouncement.title = title;
-      return this;
-    }
-
-    public AnnouncementBuilder setDescription(String description){
-      newAnnouncement.description = description;
-      return this;
-    }
-
-    public AnnouncementBuilder setOwner(BigInteger owner){
-      newAnnouncement.owner = owner;
-      return this;
-    }
-
-    public AnnouncementBuilder setDate(Date date){
-      newAnnouncement.date = date;
-      return this;
-    }
-
-    public AnnouncementBuilder setAddress(String address){
-      newAnnouncement.address = address;
-      return this;
-    }
-
-    public AnnouncementBuilder setParticipants(Collection<BigInteger> participants){
-      newAnnouncement.participants = participants;
-      return this;
-    }
-
-    public AnnouncementBuilder setParticipantsCap(int participantsCap){
-      newAnnouncement.participantsCap = participantsCap;
-      return this;
-    }
-
-
-    public Announcement build(){
-      return newAnnouncement;
-    }
-
-  }
-
-
   @Override
   public BigInteger getId() {
     return id;
   }
-
   @Override
   public String getTitle() {
     return title;
   }
-
   @Override
   public String getDescription() {
     return description;
   }
-
   @Override
   public BigInteger getOwner() {
     return owner;
   }
-
   @Override
   public Date getDate() {
     return date;
   }
-
   @Override
   public String getAddress() {
     return address;
   }
-
   @Override
   public Collection<BigInteger> getParticipants() {
     return participants;
   }
-
   @Override
   public int getParticipantsCap() {
     return participantsCap;
@@ -147,5 +83,48 @@ public class AnnouncementImpl implements Announcement {
   @Override
   public void setParticipantsCap(int participantsCap) {
     this.participantsCap = participantsCap;
+  }
+
+  public static class AnnouncementBuilder {
+
+    private final AnnouncementImpl newAnnouncement;
+    public AnnouncementBuilder(){
+      newAnnouncement = new AnnouncementImpl();
+    }
+    public AnnouncementBuilder setId(BigInteger id){
+      newAnnouncement.id = id;
+      return this;
+    }
+    public AnnouncementBuilder setTitle(String title){
+      newAnnouncement.title = title;
+      return this;
+    }
+    public AnnouncementBuilder setDescription(String description){
+      newAnnouncement.description = description;
+      return this;
+    }
+    public AnnouncementBuilder setOwner(BigInteger owner) {
+      newAnnouncement.owner = owner;
+      return this;
+    }
+    public AnnouncementBuilder setDate(Date date) {
+      newAnnouncement.date = date;
+      return this;
+    }
+    public AnnouncementBuilder setAddress(String address){
+      newAnnouncement.address = address;
+      return this;
+    }
+    public AnnouncementBuilder setParticipants(Collection<BigInteger> participants){
+      newAnnouncement.participants = participants;
+      return this;
+    }
+    public AnnouncementBuilder setParticipantsCap(int participantsCap){
+      newAnnouncement.participantsCap = participantsCap;
+      return this;
+    }
+    public Announcement build(){
+      return newAnnouncement;
+    }
   }
 }
