@@ -1,7 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.User;
@@ -25,12 +25,12 @@ public interface UserAnnouncementDAO {
     String USER_EMAIL_CODE = "USER_EMAIL_CODE";
     String USER_DESCRIPTION = "USER_DESCRIPTION";
 
-    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExist, DaoLogicException;
+    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExist, DAOLogicException;
 
-    Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DaoLogicException;
+    Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DAOLogicException;
 
-    boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) throws DaoLogicException;
+    boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
 
-    void addParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DaoLogicException;
+    void addParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
 
 }

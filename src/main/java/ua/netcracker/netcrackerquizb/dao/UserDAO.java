@@ -1,43 +1,43 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import java.math.BigInteger;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.User;
 
 public interface UserDAO {
 
-  User getUserById(BigInteger id) throws UserDoesNotExistException, DaoLogicException;
+  User getUserById(BigInteger id) throws UserDoesNotExistException, DAOLogicException;
 
-  User getUserByEmail(String email) throws UserDoesNotExistException, DaoLogicException;
+  User getUserByEmail(String email) throws UserDoesNotExistException, DAOLogicException;
 
-  void deleteUser(BigInteger id) throws DaoLogicException;
+  void deleteUser(BigInteger id) throws DAOLogicException;
 
-  BigInteger createUser(User user) throws DaoLogicException;
+  BigInteger createUser(User user) throws DAOLogicException;
 
   void updateUsersFullName(BigInteger id, String newFirstName, String newLastName)
-      throws DaoLogicException, UserDoesNotExistException;
+      throws DAOLogicException, UserDoesNotExistException;
 
   void updateUsersPassword(BigInteger id, String newPassword)
-      throws DaoLogicException, UserDoesNotExistException;
+      throws DAOLogicException, UserDoesNotExistException;
 
   User getAuthorizeUser(String email, String password)
-      throws UserDoesNotExistException, UserDoesNotConfirmedEmailException, DaoLogicException;
+      throws UserDoesNotExistException, UserDoesNotConfirmedEmailException, DAOLogicException;
 
   void updateUsersDescription(BigInteger id, String newDescription)
-      throws DaoLogicException, UserDoesNotExistException;
+      throws DAOLogicException, UserDoesNotExistException;
 
-  User getUserByEmailCode(String code) throws UserDoesNotExistException, DaoLogicException;
+  User getUserByEmailCode(String code) throws UserDoesNotExistException, DAOLogicException;
 
   void updateUsersEmailCode(BigInteger id, String newCode)
-      throws DaoLogicException, UserDoesNotExistException;
+      throws DAOLogicException, UserDoesNotExistException;
 
-  boolean comparisonOfPasswords(BigInteger id, String checkPassword) throws DaoLogicException;
+  boolean comparisonOfPasswords(BigInteger id, String checkPassword) throws DAOLogicException;
 
-  boolean activateUser(BigInteger id) throws DaoLogicException, UserDoesNotExistException;
+  boolean activateUser(BigInteger id) throws DAOLogicException, UserDoesNotExistException;
 
-  boolean disactivateUser(BigInteger id) throws DaoLogicException, UserDoesNotExistException;
+  boolean disactivateUser(BigInteger id) throws DAOLogicException, UserDoesNotExistException;
 
   String URL_PROPERTY = "${spring.datasource.url}";
   String USERNAME_PROPERTY = "${spring.datasource.username}";

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnnouncementDAO;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import java.io.FileInputStream;
@@ -63,7 +63,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
     }
 
     @Override
-    public Announcement getByTitle(String title) throws AnnouncementDoesNotExist, DaoLogicException {
+    public Announcement getByTitle(String title) throws AnnouncementDoesNotExist, DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_ANNOUNCEMENT_BY_TITLE));
             preparedStatement.setString(1, title);
@@ -85,12 +85,12 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
 
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public Set<Announcement> getSetByTitle(String title) throws AnnouncementDoesNotExist, DaoLogicException {
+    public Set<Announcement> getSetByTitle(String title) throws AnnouncementDoesNotExist, DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_SET_ANNOUNCEMENT_BY_TITLE));
             preparedStatement.setString(1, title + "%");
@@ -114,12 +114,12 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             return announcements;
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public BigInteger createAnnouncement(Announcement newAnnouncement) throws DaoLogicException {
+    public BigInteger createAnnouncement(Announcement newAnnouncement) throws DAOLogicException {
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(CREATE_ANNOUNCEMENT), new String[]{ID_ANNOUNCEMENT});
@@ -140,12 +140,12 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
 
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public void editAnnouncement(Announcement newAnnouncement) throws DaoLogicException {
+    public void editAnnouncement(Announcement newAnnouncement) throws DAOLogicException {
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(UPDATE_ANNOUNCEMENT));
@@ -157,24 +157,24 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
 
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public void deleteAnnouncement(BigInteger idAnnouncement) throws DaoLogicException{
+    public void deleteAnnouncement(BigInteger idAnnouncement) throws DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(DELETE_ANNOUNCEMENT_BY_ID));
             preparedStatement.setLong(1, idAnnouncement.longValue());
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public List<Announcement> getPopular(int number) throws AnnouncementDoesNotExist, DaoLogicException {
+    public List<Announcement> getPopular(int number) throws AnnouncementDoesNotExist, DAOLogicException {
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_POPULAR_ANNOUNCEMENT));
@@ -200,12 +200,12 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             return popularAnnouncement;
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 
     @Override
-    public Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExist, DaoLogicException {
+    public Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExist, DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_ANNOUNCEMENT_BY_ID));
             preparedStatement.setLong(1, idAnnouncement.longValue());
@@ -226,7 +226,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
             throwables.printStackTrace();
-            throw new DaoLogicException();
+            throw new DAOLogicException();
         }
     }
 }

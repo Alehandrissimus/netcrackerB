@@ -1,7 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import java.math.BigInteger;
 import java.util.List;
@@ -34,18 +34,18 @@ public interface AnnouncementDAO {
 
     String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
 
-    Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExist, DaoLogicException;
+    Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExist, DAOLogicException;
 
-    void deleteAnnouncement(BigInteger idAnnouncement) throws DaoLogicException;
+    void deleteAnnouncement(BigInteger idAnnouncement) throws DAOLogicException;
 
-    BigInteger createAnnouncement(Announcement newAnnouncement) throws DaoLogicException;
+    BigInteger createAnnouncement(Announcement newAnnouncement) throws DAOLogicException;
 
-    void editAnnouncement(Announcement newAnnouncement) throws DaoLogicException;
+    void editAnnouncement(Announcement newAnnouncement) throws DAOLogicException;
 
-    Announcement getByTitle(String title) throws AnnouncementDoesNotExist, DaoLogicException;
+    Announcement getByTitle(String title) throws AnnouncementDoesNotExist, DAOLogicException;
 
-    Set<Announcement> getSetByTitle(String title) throws AnnouncementDoesNotExist, DaoLogicException;
+    Set<Announcement> getSetByTitle(String title) throws AnnouncementDoesNotExist, DAOLogicException;
 
-    List<Announcement> getPopular(int number) throws AnnouncementDoesNotExist, DaoLogicException;
+    List<Announcement> getPopular(int number) throws AnnouncementDoesNotExist, DAOLogicException;
 
 }

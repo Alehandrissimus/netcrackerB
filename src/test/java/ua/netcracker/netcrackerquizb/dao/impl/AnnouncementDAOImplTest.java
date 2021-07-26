@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import java.io.IOException;
@@ -55,7 +55,7 @@ class AnnouncementDAOImplTest {
             for(Announcement announcement : popularAnnouncement)
                 assertNotNull(announcement);
             assertEquals(4, popularAnnouncement.size());
-        } catch (AnnouncementDoesNotExist | DaoLogicException e) {
+        } catch (AnnouncementDoesNotExist | DAOLogicException e) {
             log.error("Error while testing getPopular" + e.getMessage());
             fail();
         }
@@ -81,7 +81,7 @@ class AnnouncementDAOImplTest {
             assertEquals(TEST_TITLE, announcement.getTitle());
             announcementDAO.deleteAnnouncement(announcement.getId());
             System.out.println("deleted");
-        } catch (AnnouncementDoesNotExist | DaoLogicException e) {
+        } catch (AnnouncementDoesNotExist | DAOLogicException e) {
             log.error("Error while testing getByTitle " + e.getMessage());
             fail();
         }
@@ -102,7 +102,7 @@ class AnnouncementDAOImplTest {
             BigInteger idAnnouncement = announcementDAO.createAnnouncement(newAnnouncement);
             assertTrue(idAnnouncement.intValue() > 0);
             announcementDAO.deleteAnnouncement(idAnnouncement);
-        } catch (DaoLogicException e) {
+        } catch (DAOLogicException e) {
             log.error("Error while testing createAnnouncement " + e.getMessage());
             fail();
         }
@@ -133,7 +133,7 @@ class AnnouncementDAOImplTest {
             assertEquals(announcement.getDescription(), testAnnouncement.getDescription());
             assertEquals(announcement.getAddress(), testAnnouncement.getAddress());
             announcementDAO.deleteAnnouncement(idAnnouncement);
-        } catch (DaoLogicException | AnnouncementDoesNotExist e) {
+        } catch (DAOLogicException | AnnouncementDoesNotExist e) {
             log.error("Error while testing editAnnouncement " + e.getMessage());
             fail();
         }
@@ -159,7 +159,7 @@ class AnnouncementDAOImplTest {
             AnnouncementDoesNotExist thrown = assertThrows(AnnouncementDoesNotExist.class, () ->
                 announcementDAO.getAnnouncementById(idAnnouncement));
             assertNotNull(thrown);
-        } catch (DaoLogicException | AnnouncementDoesNotExist e) {
+        } catch (DAOLogicException | AnnouncementDoesNotExist e) {
             e.printStackTrace();
             log.error("Error while testing deleteAnnouncement " + e.getMessage());
             fail();
@@ -171,7 +171,7 @@ class AnnouncementDAOImplTest {
     void getAnnouncementById() {
         try {
             assertNotNull(announcementDAO.getAnnouncementById(BigInteger.ONE));
-        } catch (AnnouncementDoesNotExist | DaoLogicException e) {
+        } catch (AnnouncementDoesNotExist | DAOLogicException e) {
             log.error("Error while testing getAnnouncementById " + e.getMessage());
             fail();
         }
@@ -186,7 +186,7 @@ class AnnouncementDAOImplTest {
             for(Announcement announcement : announcements){
                 assertNotNull(announcement);
             }
-        } catch (AnnouncementDoesNotExist | DaoLogicException e) {
+        } catch (AnnouncementDoesNotExist | DAOLogicException e) {
             log.error("Error while testing getSetByTitle " + e.getMessage());
             fail();
         }

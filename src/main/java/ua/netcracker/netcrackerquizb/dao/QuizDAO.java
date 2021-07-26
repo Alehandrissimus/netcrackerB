@@ -1,6 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao;
 
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
@@ -11,18 +11,18 @@ import java.util.List;
 
 public interface QuizDAO {
 
-    Quiz createQuiz(Quiz quiz) throws DaoLogicException, UserDoesNotExistException;
+    Quiz createQuiz(Quiz quiz) throws DAOLogicException, UserDoesNotExistException;
 
-    void updateQuiz(Quiz quiz) throws QuizDoesNotExistException, DaoLogicException;
+    void updateQuiz(Quiz quiz) throws QuizDoesNotExistException, DAOLogicException;
 
-    void deleteQuiz(Quiz quiz) throws QuizDoesNotExistException, DaoLogicException;
+    void deleteQuiz(Quiz quiz) throws QuizDoesNotExistException, DAOLogicException;
 
-    Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DaoLogicException;
+    Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DaoLogicException;
+    List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DaoLogicException;
+    List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DaoLogicException;
+    List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException;
 
 }

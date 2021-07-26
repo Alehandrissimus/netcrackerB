@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ua.netcracker.netcrackerquizb.exception.DaoLogicException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuestionNotFoundException;
 import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
@@ -43,7 +43,7 @@ class QuestionDAOImplTest {
             Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
             assertNotNull(question);
             assertEquals("Ukraine location?", question.getQuestion());
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DAOLogicException | QuestionNotFoundException e) {
             log.error("Error while testing getQuestionByIdTest " + e.getMessage());
             fail();
         }
@@ -72,7 +72,7 @@ class QuestionDAOImplTest {
             assertTrue(isFound);
 
             questionDAO.deleteQuestion(questionModel, quizId);
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DAOLogicException | QuestionNotFoundException e) {
             log.error("Error while testing createQuestionTest " + e.getMessage());
             fail();
         }
@@ -86,7 +86,7 @@ class QuestionDAOImplTest {
             for (Question question : questions) {
                 assertNotNull(question.getQuestion());
             }
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DAOLogicException | QuestionNotFoundException e) {
             log.error("Error while testing getQuestionsByQuizTest " + e.getMessage());
             fail();
         }
@@ -109,7 +109,7 @@ class QuestionDAOImplTest {
             questionDAO.updateQuestion(questionOld);
             assertEquals(questionGot.getQuestion(), questionNew.getQuestion());
             assertEquals(questionGot.getQuestionType(), questionNew.getQuestionType());
-        } catch (DaoLogicException | QuestionNotFoundException e) {
+        } catch (DAOLogicException | QuestionNotFoundException e) {
             log.error("Error while testing updateQuestionTest " + e.getMessage());
             fail();
         }
