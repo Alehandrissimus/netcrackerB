@@ -72,7 +72,9 @@ public class AnswerDAOImpl implements AnswerDAO {
                     connection.prepareStatement(properties.getProperty("GET_ANSWER_BY_ID"));
             preparedStatement.setLong(1, id.intValue());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(!resultSet.next()) throw new AnswerDoesNotExistException();
+            if(!resultSet.next()) {
+                throw new AnswerDoesNotExistException("getAnswerById() does not found answer with id = " + id);
+            }
             return new AnswerImpl(
                     id,
                     resultSet.getString(SQL_ANSWER_TEXT),
@@ -80,7 +82,7 @@ public class AnswerDAOImpl implements AnswerDAO {
                     BigInteger.valueOf(resultSet.getInt(SQL_ANSWER_QUESTION)));
         } catch (SQLException throwable) {
             log.error("SQL Exception while getAnswerById in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
         }
 
     }
@@ -91,11 +93,13 @@ public class AnswerDAOImpl implements AnswerDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_LAST_ANSWER_ID_BY_TITLE"));
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(!resultSet.next()) throw new AnswerDoesNotExistException();
+            if(!resultSet.next()) {
+                throw new AnswerDoesNotExistException("getLastAnswerIdByTitle() does not found answer with title = " + title);
+            }
             return BigInteger.valueOf(resultSet.getInt(SQL_MAX_ID_ANSWER));
         } catch (SQLException throwable) {
             log.error("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
         }
 
     }
@@ -112,7 +116,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             return getLastAnswerIdByTitle(title);
         } catch (SQLException throwable) {
             log.error("SQL Exception while createAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
         }
     }
 
@@ -124,7 +128,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             log.error("SQL Exception while deleteAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
         }
     }
 
@@ -141,7 +145,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             return id;
         } catch (SQLException throwable) {
             log.error("SQL Exception while updateAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
         }
     }
 }
