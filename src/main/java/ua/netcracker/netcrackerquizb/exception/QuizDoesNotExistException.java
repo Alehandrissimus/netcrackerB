@@ -1,8 +1,11 @@
 package ua.netcracker.netcrackerquizb.exception;
 
 public class QuizDoesNotExistException extends Exception {
-    @Override
-    public String toString() {
-        return "Quiz does not exist!\n" + super.toString();
+    public QuizDoesNotExistException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public QuizDoesNotExistException(String message) {
+        super(message);
     }
 }

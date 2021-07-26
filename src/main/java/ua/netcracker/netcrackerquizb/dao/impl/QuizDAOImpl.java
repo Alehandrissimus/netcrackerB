@@ -114,7 +114,7 @@ public class QuizDAOImpl implements QuizDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
                 log.error("Throw DAOLogicException while createQuiz in QuizDAOImpl");
-                throw new DAOLogicException();
+                throw new DAOLogicException("Throw DAOLogicException while createQuiz in QuizDAOImpl");
             }
 
             long quizId = resultSet.getLong(ID_QUIZ);
@@ -124,7 +124,7 @@ public class QuizDAOImpl implements QuizDAO {
 
         } catch (SQLException e) {
             log.error("SQL Exception while createQuiz in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while createQuiz in QuizDAOImpl ", e);
         }
 
     }
@@ -147,7 +147,7 @@ public class QuizDAOImpl implements QuizDAO {
 
         } catch (SQLException e) {
             log.error("SQL Exception while updateQuiz in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while updateQuiz in QuizDAOImpl ", e);
         }
 
     }
@@ -163,7 +163,7 @@ public class QuizDAOImpl implements QuizDAO {
 
         } catch (SQLException e) {
             log.error("SQL Exception while deleteQuiz in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while deleteQuiz in QuizDAOImpl ", e);
         }
     }
 
@@ -177,7 +177,7 @@ public class QuizDAOImpl implements QuizDAO {
 
             if (!resultSet.next()) {
                 log.error("Throw DAOLogicException while getQuizById in QuizDAOImpl");
-                throw new QuizDoesNotExistException();
+                throw new QuizDoesNotExistException("Throw QuizDoesNotExistException while getQuizById in QuizDAOImpl");
             }
 
             return QuizImpl.QuizBuilder()
@@ -191,7 +191,7 @@ public class QuizDAOImpl implements QuizDAO {
 
         } catch (SQLException e) {
             log.error("SQL Exception while getQuizById in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getQuizById in QuizDAOImpl ", e);
         }
 
     }
@@ -224,7 +224,7 @@ public class QuizDAOImpl implements QuizDAO {
             return quizzes;
         } catch (SQLException e) {
             log.error("SQL Exception while getAllQuizzes in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getAllQuizzes in QuizDAOImpl ", e);
         }
 
     }
@@ -257,7 +257,7 @@ public class QuizDAOImpl implements QuizDAO {
 
         } catch (SQLException e) {
             log.error("SQL Exception while getQuizzesByTitle in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getQuizzesByTitle in QuizDAOImpl ", e);
         }
     }
 
@@ -290,7 +290,7 @@ public class QuizDAOImpl implements QuizDAO {
 
         } catch (SQLException e) {
             log.error("SQL Exception while getQuizzesByType in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException();
+            throw new DAOLogicException("SQL Exception while getQuizzesByType in QuizDAOImpl ", e);
         }
     }
 }
