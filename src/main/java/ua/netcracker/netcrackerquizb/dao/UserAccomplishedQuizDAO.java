@@ -14,9 +14,14 @@ public interface UserAccomplishedQuizDAO {
   String DRIVER_PATH_PROPERTY = "oracle.jdbc.OracleDriver";
 
   Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id);
+
   Set<QuizAccomplishedImpl> getFavoriteQuizesByUser(BigInteger id);
+
   void addFavoriteQuiz(QuizAccomplishedImpl quiz);
+
   void addAccomplishedQuiz(QuizAccomplishedImpl quiz);
+
   void removeFavoriteQuiz(QuizAccomplishedImpl quiz);
 
+  String SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID = "SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID";
 }

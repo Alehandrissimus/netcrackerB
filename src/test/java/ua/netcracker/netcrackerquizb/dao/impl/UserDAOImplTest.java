@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
@@ -27,8 +28,7 @@ class UserDAOImplTest {
     this.userDAO = userDAO;
     try {
       userDAO.setTestConnection();
-//      DAOUtil.setTestConnection()
-    } catch (IOException | SQLException | ClassNotFoundException e) {
+    } catch (DAOConfigException e) {
       log.error("Error while setting test connection " + e.getMessage());
       fail();
     }

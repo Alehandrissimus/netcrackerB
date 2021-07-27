@@ -1,10 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,37 +37,23 @@ public class UserDAOImpl implements UserDAO {
       @Value(URL_PROPERTY) String URL,
       @Value(USERNAME_PROPERTY) String USERNAME,
       @Value(PASSWORD_PROPERTY) String PASSWORD
-  ) throws SQLException, ClassNotFoundException, IOException, DAOConfigException {
+  ) throws DAOConfigException {
     this.URL = URL;
     this.USERNAME = USERNAME;
     this.PASSWORD = PASSWORD;
 
-    getDataSource(URL, USERNAME, PASSWORD);
-//    connection = DAOUtil.getDataSource(URL, USERNAME, PASSWORD, properties, false);
+    connection = DAOUtil.getDataSource(URL, USERNAME, PASSWORD, properties);
   }
 
-  public void setTestConnection() throws SQLException, ClassNotFoundException, IOException {
-    getDataSource(URL, USERNAME + "_TEST", PASSWORD);
-  }
-
-  private void getDataSource(String URL, String USERNAME, String PASSWORD)
-      throws SQLException, ClassNotFoundException, IOException {
-
-    try (FileInputStream fis = new FileInputStream(PATH_PROPERTY)) {
-      Class.forName(DRIVER_PATH_PROPERTY);
-      connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-      properties.load(fis);
-    } catch (IOException e) {
-      log.error("Driver error " + e.getMessage());
-      throw new IOException();
-    } catch (ClassNotFoundException e) {
-      log.error("Property file error " + e.getMessage());
-      throw new ClassNotFoundException();
-    } catch (SQLException e) {
-      log.error("Database connection error " + e.getMessage());
-      throw new SQLException();
+  public void setTestConnection() throws DAOConfigException {
+    try {
+      connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);
+    } catch (DAOConfigException e) {
+      log.error("Error while setting test connection " + e.getMessage());
+      throw new DAOConfigException("Error while setting test connection ", e);
     }
   }
+
 
   @Override
   public User getUserById(BigInteger id) throws UserDoesNotExistException, DAOLogicException {

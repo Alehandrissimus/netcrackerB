@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
@@ -60,7 +61,7 @@ class UserAnnouncementDAOImplTest {
         this.userDAO = userDAO;
         try {
             userDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
+        } catch (IOException | SQLException | ClassNotFoundException | DAOConfigException e) {
             log.error(LOG_ERROR + e.getMessage());
         }
     }

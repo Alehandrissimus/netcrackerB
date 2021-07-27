@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import org.apache.log4j.Logger;
@@ -63,6 +66,27 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
 
   @Override
   public Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id) {
+    try (PreparedStatement statement = connection
+        .prepareStatement(properties.getProperty(SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID))) {
+
+        statement.setLong(1, id.longValue());
+
+      ResultSet resultSet = statement.executeQuery();
+
+      if(!resultSet.isBeforeFirst()){
+        return null;
+      }
+
+      Set<QuizAccomplishedImpl> quizes = new HashSet<>();
+
+      while (resultSet.next()){
+
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
     return null;
   }
 
