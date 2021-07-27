@@ -5,21 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuestionDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
 import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.IOException;
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class QuestionDAOImplTest {
@@ -32,7 +31,7 @@ class QuestionDAOImplTest {
         this.questionDAO = questionDAO;
         try {
             questionDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
+        } catch (DAOConfigException e) {
             log.error("Error while setting test connection " + e.getMessage());
         }
     }
@@ -42,6 +41,7 @@ class QuestionDAOImplTest {
     void getQuestionByIdTest() {
         try {
             Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
+            log.debug("TEST QuestionDAOImplTest");
             assertNotNull(question);
             assertEquals("Ukraine location?", question.getQuestion());
         } catch (DAOLogicException | QuestionDoesNotExistException e) {
@@ -61,21 +61,21 @@ class QuestionDAOImplTest {
                     QuestionType.TRUE_FALSE
             );
 
-            log.info("questiontext = "+questionText);
+            log.debug("createQuestionTest: questionText = " + questionText);
 
             questionDAO.createQuestion(questionModel, quizId);
 
             boolean isFound = false;
             Collection<Question> questions = questionDAO.getAllQuestions(quizId);
             for (Question question : questions) {
-                if (question.getQuestion().equals(""+questionText)) {
+                if (question.getQuestion().equals("" + questionText)) {
                     isFound = true;
-                    log.info("found");
+                    log.debug("createQuestionTest: found question");
                 }
             }
             assertTrue(isFound);
 
-            questionDAO.deleteQuestion(questionModel, quizId);
+            questionDAO.deleteQuestion(questionModel);
         } catch (DAOLogicException | QuestionDoesNotExistException e) {
             log.error("Error while testing createQuestionTest " + e.getMessage());
             fail();
@@ -118,19 +118,4 @@ class QuestionDAOImplTest {
             fail();
         }
     }
-
-    /*
-    @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-    void getQuestionReturningNull() {
-        try {
-            Question question = questionDAO.getQuestionById(BigInteger.valueOf(-1), new ArrayList<>());
-            assertNull(question);
-        } catch (DaoLogicException | QuestionNotFoundException e) {
-            log.error("Error while testing getQuestionReturningNull " + e.getMessage());
-            fail();
-        }
-    }
-     */
-
 }

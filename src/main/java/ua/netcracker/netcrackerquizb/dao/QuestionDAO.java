@@ -20,7 +20,7 @@ public interface QuestionDAO {
 
     Question createQuestion(Question question, BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
 
-    void deleteQuestion(Question question, BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
+    void deleteQuestion(Question question) throws QuestionDoesNotExistException, DAOLogicException;
 
     Collection<Question> getAllQuestions(BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
 
