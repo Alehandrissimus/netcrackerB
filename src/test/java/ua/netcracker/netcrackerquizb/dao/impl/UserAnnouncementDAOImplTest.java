@@ -61,7 +61,7 @@ class UserAnnouncementDAOImplTest {
         this.userDAO = userDAO;
         try {
             userDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException | DAOConfigException e) {
+        } catch (DAOConfigException e) {
             log.error(LOG_ERROR + e.getMessage());
         }
     }

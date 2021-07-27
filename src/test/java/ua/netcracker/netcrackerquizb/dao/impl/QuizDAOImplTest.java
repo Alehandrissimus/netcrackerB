@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
@@ -14,10 +15,8 @@ import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,8 +33,9 @@ class QuizDAOImplTest {
         this.quizDAO = quizDAO;
         try {
             quizDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
-            log.error("Error while setting test connection ", e);
+        } catch (DAOConfigException e) {
+            log.error("Error while setting test connection " + e.getMessage());
+            fail();
         }
     }
 
@@ -43,7 +43,6 @@ class QuizDAOImplTest {
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createQuizTest() {
-
         try {
             User user = new UserImpl.UserBuilder()
                     .setId(BigInteger.valueOf(1))
@@ -60,10 +59,8 @@ class QuizDAOImplTest {
                     .setCreatorId(user.getId())
                     .build();
 
-            quizDAO.createQuiz(quiz);
-            log.info("Quiz with id " + quiz.getId() + " was created");
-
-            Quiz newQuiz = quizDAO.getQuizById(quiz.getId());
+            Quiz newQuiz = quizDAO.createQuiz(quiz);
+            log.info("Quiz with id " + newQuiz.getId() + " was created");
 
             assertNotNull(newQuiz);
             assertEquals(title, newQuiz.getTitle());
@@ -118,15 +115,14 @@ class QuizDAOImplTest {
                     .setCreatorId(user.getId())
                     .build();
 
-            quizDAO.createQuiz(quiz);
-            log.info("Quiz with id " + quiz.getId() + " was created");
+            Quiz newQuiz = quizDAO.createQuiz(quiz);
+            log.info("Quiz with id " + newQuiz.getId() + " was created");
 
-            Quiz newQuiz = quizDAO.getQuizById(quiz.getId());
-
-            assertNotNull(newQuiz);
+            assertEquals(title, newQuiz.getTitle());
 
             quizDAO.deleteQuiz(newQuiz);
             log.info("Quiz with id " + newQuiz.getId() + " was deleted");
+
 
         } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing deleteQuiz ", e);
