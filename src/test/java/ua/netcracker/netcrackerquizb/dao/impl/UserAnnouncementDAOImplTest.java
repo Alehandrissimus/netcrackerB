@@ -41,7 +41,7 @@ class UserAnnouncementDAOImplTest {
         this.userAnnouncementDAO = userAnnouncementDAO;
         try {
             userAnnouncementDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
+        } catch (DAOConfigException e) {
             log.error(LOG_ERROR + e.getMessage());
         }
     }
@@ -51,7 +51,7 @@ class UserAnnouncementDAOImplTest {
         this.announcementDAO = announcementDAO;
         try {
             announcementDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
+        } catch (DAOConfigException e) {
             log.error(LOG_ERROR + e.getMessage());
         }
     }

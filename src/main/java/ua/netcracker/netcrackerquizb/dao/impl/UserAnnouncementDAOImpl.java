@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserAnnouncementDAO;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
@@ -14,6 +15,8 @@ import ua.netcracker.netcrackerquizb.model.UserActive;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
+import ua.netcracker.netcrackerquizb.util.DAOUtil;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -41,36 +44,23 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
             @Value(URL_PROPERTY) String URL,
             @Value(USERNAME_PROPERTY) String USERNAME,
             @Value(PASSWORD_PROPERTY) String PASSWORD
-    ) throws SQLException, ClassNotFoundException, IOException {
+    ) throws DAOConfigException {
         this.URL = URL;
         this.USERNAME = USERNAME;
         this.PASSWORD = PASSWORD;
 
-        getDataSource(URL, USERNAME, PASSWORD);
+        connection = DAOUtil.getDataSource(URL, USERNAME, PASSWORD, properties);
     }
 
-
-    public void setTestConnection() throws SQLException, ClassNotFoundException, IOException {
-        getDataSource(URL, USERNAME + "_TEST", PASSWORD);
-    }
-
-    private void getDataSource(String URL, String USERNAME, String PASSWORD)
-            throws SQLException, ClassNotFoundException, IOException {
-        try (FileInputStream fis = new FileInputStream(PATH_PROPERTY)) {
-            Class.forName(DRIVER_PATH_PROPERTY);
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            properties.load(fis);
-        } catch (IOException e) {
-            log.error("Driver error " + e.getMessage());
-            throw new IOException();
-        } catch (ClassNotFoundException e) {
-            log.error("Property file error " + e.getMessage());
-            throw new ClassNotFoundException();
-        } catch (SQLException e) {
-            log.error("Database connection error " + e.getMessage());
-            throw new SQLException();
+    public void setTestConnection() throws DAOConfigException {
+        try {
+            connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);
+        } catch (DAOConfigException e) {
+            log.error("Error while setting test connection " + e.getMessage());
+            throw new DAOConfigException("Error while setting test connection ", e);
         }
     }
+
 
     @Override
     public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExist, DAOLogicException {

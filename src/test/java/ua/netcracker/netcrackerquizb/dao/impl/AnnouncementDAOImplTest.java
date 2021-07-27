@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
@@ -33,7 +34,6 @@ class AnnouncementDAOImplTest {
     private static final String LOG_ERROR = "Error while setting test connection" + " ";
 
     private AnnouncementDAOImpl announcementDAO;
-
     private static final Logger log = Logger.getLogger(AnnouncementDAOImplTest.class);
 
     @Autowired
@@ -41,7 +41,7 @@ class AnnouncementDAOImplTest {
         this.announcementDAO = announcementDAO;
         try {
             announcementDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
+        } catch (DAOConfigException e) {
             log.error(LOG_ERROR + e.getMessage());
         }
     }
@@ -74,13 +74,10 @@ class AnnouncementDAOImplTest {
                     .setAddress(TEST_ADDRESS)
                     .setParticipantsCap(5)
                     .build());
-            System.out.println("created");
             Announcement announcement = announcementDAO.getByTitle(TEST_TITLE);
-            System.out.println("geted by title");
             assertNotNull(announcement);
             assertEquals(TEST_TITLE, announcement.getTitle());
             announcementDAO.deleteAnnouncement(announcement.getId());
-            System.out.println("deleted");
         } catch (AnnouncementDoesNotExist | DAOLogicException e) {
             log.error("Error while testing getByTitle " + e.getMessage());
             fail();
