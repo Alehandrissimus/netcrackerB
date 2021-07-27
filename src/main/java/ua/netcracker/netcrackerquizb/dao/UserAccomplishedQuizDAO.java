@@ -2,6 +2,9 @@ package ua.netcracker.netcrackerquizb.dao;
 
 import java.math.BigInteger;
 import java.util.Set;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
+import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 
@@ -13,9 +16,10 @@ public interface UserAccomplishedQuizDAO {
   String PATH_PROPERTY = "src/main/resources/sqlScripts.properties";
   String DRIVER_PATH_PROPERTY = "oracle.jdbc.OracleDriver";
 
-  Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id);
+  Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id)
+      throws DAOConfigException, DAOLogicException, QuizDoesNotExistException;
 
-  Set<QuizAccomplishedImpl> getFavoriteQuizesByUser(BigInteger id);
+  Set<QuizAccomplishedImpl> getFavoriteQuizesByUser(BigInteger id) throws DAOLogicException;
 
   void addFavoriteQuiz(QuizAccomplishedImpl quiz);
 
@@ -24,4 +28,6 @@ public interface UserAccomplishedQuizDAO {
   void removeFavoriteQuiz(QuizAccomplishedImpl quiz);
 
   String SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID = "SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID";
+
+  int TRUE_SQL = 1;
 }

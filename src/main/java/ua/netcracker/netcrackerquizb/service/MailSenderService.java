@@ -1,11 +1,13 @@
 package ua.netcracker.netcrackerquizb.service;
 
+import java.math.BigInteger;
 import ua.netcracker.netcrackerquizb.model.User;
 
 public interface MailSenderService {
-    void sendEmail(String code, User user);
 
-    void generateCode();
+  void sendEmail(User user);
 
-    void confirmEmail(User user);
+  String generateCode(BigInteger id);
+
+  void confirmEmail(User user);
 }
