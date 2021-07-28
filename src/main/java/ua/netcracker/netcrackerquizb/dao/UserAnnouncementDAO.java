@@ -1,11 +1,13 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.User;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Set;
 
 public interface UserAnnouncementDAO {
@@ -14,6 +16,8 @@ public interface UserAnnouncementDAO {
     String SELECT_ANNOUNCEMENT_LIKED_BY_USER = "SELECT_ANNOUNCEMENT_LIKED_BY_USER";
     String GET_PARTICIPANT_BY_ID = "GET_PARTICIPANT_BY_ID";
     String ADD_PARTICIPANT = "ADD_PARTICIPANT";
+    String SELECT_ALL_ANNOUNCEMENT = "SELECT_ALL_ANNOUNCEMENT";
+
 
     String USER_ID = "USER_ID";
     String USER_FIRST_NAME = "USER_FIRST_NAME";
@@ -31,12 +35,15 @@ public interface UserAnnouncementDAO {
     String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
     String USER_HAS_NOT_BEEN_RECEIVED = "User has not been received";
 
-    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExistException, DAOLogicException;
+    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 
     Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DAOLogicException;
 
     boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
 
     void addParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
+
+    List<Announcement> getAllAnnouncementByIdUser(BigInteger idUser)
+            throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 
 }

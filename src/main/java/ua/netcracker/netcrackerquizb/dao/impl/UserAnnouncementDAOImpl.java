@@ -16,9 +16,7 @@ import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
 import java.math.BigInteger;
 import java.sql.*;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static ua.netcracker.netcrackerquizb.dao.AnnouncementDAO.*;
 
@@ -58,9 +56,12 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
 
 
     @Override
-    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExistException, DAOLogicException {
+    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser)
+            throws AnnouncementDoesNotExistException,
+            DAOLogicException, AnnouncementException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_ANNOUNCEMENT_LIKED_BY_USER));
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    properties.getProperty(SELECT_ANNOUNCEMENT_LIKED_BY_USER));
             preparedStatement.setLong(1, idUser.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
@@ -81,17 +82,19 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
                 announcements.add(announcement);
             }
             return announcements;
-        } catch (SQLException | AnnouncementException throwables) {
+        } catch (SQLException throwables) {
             log.error(throwables.getMessage(), throwables);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }
 
     @Override
-    public Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DAOLogicException {
+    public Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement)
+            throws UserDoesNotExistException, DAOLogicException {
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_USERS_LIKED_ANNOUNCEMENT));
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    properties.getProperty(SELECT_USERS_LIKED_ANNOUNCEMENT));
             preparedStatement.setLong(1, idAnnouncement.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
@@ -123,9 +126,11 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
     }
 
     @Override
-    public boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException {
+    public boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser)
+            throws DAOLogicException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_PARTICIPANT_BY_ID));
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    properties.getProperty(GET_PARTICIPANT_BY_ID));
             preparedStatement.setLong(1, idAnnouncement.longValue());
             preparedStatement.setLong(2, idUser.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -142,12 +147,47 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
     @Override
     public void addParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(ADD_PARTICIPANT));
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    properties.getProperty(ADD_PARTICIPANT));
             preparedStatement.setLong(1, idAnnouncement.longValue());
             preparedStatement.setLong(2, idUser.longValue());
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+        }
+    }
+
+    @Override
+    public List<Announcement> getAllAnnouncementByIdUser(BigInteger idUser)
+            throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    properties.getProperty(SELECT_ALL_ANNOUNCEMENT));
+            preparedStatement.setLong(1, idUser.longValue());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(!resultSet.isBeforeFirst()){
+                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getAllAnnouncement");
+                throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
+            }
+            List<Announcement> announcements = new ArrayList<>();
+            while (resultSet.next()) {
+                Announcement announcement = new AnnouncementImpl.AnnouncementBuilder()
+                        .setId(BigInteger.valueOf(resultSet.getLong(ID_ANNOUNCEMENT)))
+                        .setTitle(resultSet.getString(TITLE))
+                        .setDescription(resultSet.getString(DESCRIPTION))
+                        .setOwner(BigInteger.valueOf(resultSet.getLong(OWNER)))
+                        .setDate(resultSet.getDate(DATE_CREATE))
+                        .setAddress(resultSet.getString(ADDRESS))
+                        .setParticipantsCap(resultSet.getInt(LIKES))
+                        .setBlank(BigInteger.valueOf(resultSet.getLong(8)))
+                        .setIsLiked(resultSet.wasNull())
+                        .build();
+                announcements.add(announcement);
+            }
+            return announcements;
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }
     }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -72,7 +73,7 @@ class UserAnnouncementDAOImplTest {
             for(Announcement announcement : announcementSet)
                 assertNotNull(announcement);
 
-        } catch (AnnouncementDoesNotExistException | DAOLogicException e) {
+        } catch (AnnouncementDoesNotExistException | DAOLogicException | AnnouncementException e) {
             log.error("Error while testing getAnnouncementsLikedByUser " + e.getMessage());
             fail();
         }
@@ -133,5 +134,22 @@ class UserAnnouncementDAOImplTest {
             log.error("Error while testing addAndGetParticipantById" + e.getMessage());
             fail();
         }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void getAllAnnouncementByIdUser() {
+        try {
+            List<Announcement> allAnnouncement = userAnnouncementDAO.getAllAnnouncementByIdUser(BigInteger.ONE);
+            assertNotNull(allAnnouncement);
+            for(Announcement announcement: allAnnouncement){
+                assertNotNull(announcement);
+            }
+        } catch (AnnouncementDoesNotExistException | DAOLogicException | AnnouncementException e) {
+            log.error("Error while testing addAndGetParticipantById" + e.getMessage());
+            fail();
+        }
+
+
     }
 }

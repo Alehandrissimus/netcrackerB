@@ -21,6 +21,7 @@ public class AnnouncementImpl implements Announcement {
   private String address;
   private Collection<BigInteger> participants;
   private int participantsCap;
+  private boolean isLiked;
 
   @Override
   public BigInteger getId() {
@@ -147,6 +148,15 @@ public class AnnouncementImpl implements Announcement {
 
     public AnnouncementBuilder setParticipantsCap(int participantsCap){
       newAnnouncement.participantsCap = participantsCap;
+      return this;
+    }
+
+    public AnnouncementBuilder setBlank(BigInteger idUser){
+      return this;
+    }
+
+    public AnnouncementBuilder setIsLiked(boolean isLiked){
+      newAnnouncement.isLiked = !isLiked;
       return this;
     }
 

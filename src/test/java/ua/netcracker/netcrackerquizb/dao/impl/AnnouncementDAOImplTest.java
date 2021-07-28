@@ -72,7 +72,6 @@ class AnnouncementDAOImplTest {
                     .setOwner(BigInteger.ONE)
                     .setDate(new Date())
                     .setAddress(TEST_ADDRESS)
-                    .setParticipantsCap(5)
                     .build());
             Announcement announcement = announcementDAO.getByTitle(TEST_TITLE);
             assertNotNull(announcement);
@@ -94,7 +93,6 @@ class AnnouncementDAOImplTest {
                     .setOwner(BigInteger.ONE)
                     .setDate(new Date())
                     .setAddress(TEST_ADDRESS)
-                    .setParticipantsCap(5)
                     .build();
             BigInteger idAnnouncement = announcementDAO.createAnnouncement(newAnnouncement);
             assertTrue(idAnnouncement.intValue() > 0);
@@ -116,7 +114,6 @@ class AnnouncementDAOImplTest {
                     .setOwner(BigInteger.ONE)
                     .setDate(new Date())
                     .setAddress(TEST_ADDRESS)
-                    .setParticipantsCap(5)
                     .build();
             BigInteger idAnnouncement = announcementDAO.createAnnouncement(newAnnouncement);
             Announcement announcement = announcementDAO.getAnnouncementById(idAnnouncement);
@@ -147,7 +144,6 @@ class AnnouncementDAOImplTest {
                     .setOwner(BigInteger.ONE)
                     .setDate(new Date())
                     .setAddress(TEST_ADDRESS)
-                    .setParticipantsCap(5)
                     .build();
             BigInteger idAnnouncement = announcementDAO.createAnnouncement(newAnnouncement);
             assertNotNull(announcementDAO.getAnnouncementById(idAnnouncement));

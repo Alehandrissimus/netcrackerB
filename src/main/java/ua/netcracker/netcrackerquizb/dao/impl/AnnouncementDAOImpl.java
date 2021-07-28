@@ -134,16 +134,14 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.setLong(3, newAnnouncement.getOwner().longValue());
             preparedStatement.setDate(4,  new Date(System.currentTimeMillis()));
             preparedStatement.setString(5, newAnnouncement.getAddress());
-            preparedStatement.setInt(6, newAnnouncement.getParticipantsCap());
             int idAnnouncement = preparedStatement.executeUpdate();
             if (idAnnouncement > 0)
             {
-                ResultSet rs = preparedStatement.getGeneratedKeys();
-                rs.next();
-                return BigInteger.valueOf(rs.getLong(1));
+                ResultSet resultSets = preparedStatement.getGeneratedKeys();
+                resultSets.next();
+                return BigInteger.valueOf(resultSets.getLong(1));
             }
-            return BigInteger.ZERO;
-
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION + " in createAnnouncement");
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
