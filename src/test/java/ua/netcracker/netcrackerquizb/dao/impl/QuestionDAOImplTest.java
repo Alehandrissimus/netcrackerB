@@ -37,7 +37,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuestionByIdTest() {
         try {
             Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
@@ -51,7 +51,21 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getQuestionByDataTest() {
+        try {
+            Question question = questionDAO.getQuestionByData("Ukraine location?", BigInteger.valueOf(2));
+            assertNotNull(question);
+            assertEquals("Ukraine location?", question.getQuestion());
+            assertEquals(question.getId(), BigInteger.valueOf(11));
+        } catch (DAOLogicException | QuestionDoesNotExistException e) {
+            log.error("Error while testing getQuestionByIdTest " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createQuestionTest() {
         try {
             BigInteger quizId = BigInteger.valueOf(1);
@@ -83,7 +97,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuestionsByQuizTest() {
         try {
             Collection<Question> questions = questionDAO.getAllQuestions(BigInteger.valueOf(1));
@@ -97,7 +111,7 @@ class QuestionDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateQuestionTest() {
         try {
             BigInteger questionId = BigInteger.valueOf(3);

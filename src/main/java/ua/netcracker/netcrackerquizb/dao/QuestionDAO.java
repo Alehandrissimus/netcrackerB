@@ -10,13 +10,14 @@ import java.util.Collection;
 
 public interface QuestionDAO {
 
-    final String propertiesPath = "src/main/resources/sqlScripts.properties";
     final String questionIdColumn = "id_question";
     final String questionNameColumn = "question_name";
     final String questionTypeColumn = "question_type";
     final String questionQuizIdColumn = "quiz";
 
     Question getQuestionById(BigInteger id, Collection<Answer> answers) throws QuestionDoesNotExistException, DAOLogicException;
+
+    Question getQuestionByData(String questionText, BigInteger quizId) throws QuestionDoesNotExistException, DAOLogicException;
 
     Question createQuestion(Question question, BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
 
