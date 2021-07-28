@@ -1,6 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao;
 
-import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
+import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
@@ -31,7 +31,7 @@ public interface UserAnnouncementDAO {
     String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
     String USER_HAS_NOT_BEEN_RECEIVED = "User has not been received";
 
-    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExist, DAOLogicException;
+    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExistException, DAOLogicException;
 
     Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DAOLogicException;
 

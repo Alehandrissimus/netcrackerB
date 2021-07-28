@@ -5,6 +5,11 @@ import java.util.Collection;
 import java.util.Date;
 
 public interface Announcement {
+
+  int MAX_LENGTH_TITLE = 50;
+  int MAX_LENGTH_DESCRIPTION = 300;
+  int MAX_LENGTH_ADDRESS = 30;
+
   BigInteger getId();
   String getTitle();
   String getDescription();

@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserAnnouncementDAO;
-import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserActive;
@@ -17,8 +14,6 @@ import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.HashSet;
@@ -63,30 +58,30 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
 
 
     @Override
-    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExist, DAOLogicException {
+    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExistException, DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SELECT_ANNOUNCEMENT_LIKED_BY_USER));
             preparedStatement.setLong(1, idUser.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
                 log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getAnnouncementsLikedByUser");
-                throw new AnnouncementDoesNotExist(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
+                throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             Set<Announcement> announcements = new HashSet<>();
             while (resultSet.next()) {
                 Announcement announcement = new AnnouncementImpl.AnnouncementBuilder()
                         .setId(BigInteger.valueOf(resultSet.getLong(ID_ANNOUNCEMENT)))
-                        .setTitle(resultSet.getString(TITLE).trim())
-                        .setDescription(resultSet.getString(DESCRIPTION).trim())
+                        .setTitle(resultSet.getString(TITLE))
+                        .setDescription(resultSet.getString(DESCRIPTION))
                         .setOwner(BigInteger.valueOf(resultSet.getLong(OWNER)))
                         .setDate(resultSet.getDate(DATE_CREATE))
-                        .setAddress(resultSet.getString(ADDRESS).trim())
+                        .setAddress(resultSet.getString(ADDRESS))
                         .setParticipantsCap(resultSet.getInt(LIKES))
                         .build();
                 announcements.add(announcement);
             }
             return announcements;
-        } catch (SQLException throwables) {
+        } catch (SQLException | AnnouncementException throwables) {
             log.error(throwables.getMessage(), throwables);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }

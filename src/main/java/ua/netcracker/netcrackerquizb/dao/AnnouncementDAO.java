@@ -1,6 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao;
 
-import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
+import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import java.math.BigInteger;
@@ -33,10 +33,12 @@ public interface AnnouncementDAO {
     String LIKES = "LIKES";
 
     String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
-    String ANNOUNCEMENT_NOT_FOUND_EXCEPTION = "Announcement does not exist!";
-    String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
+//    String ANNOUNCEMENT_NOT_FOUND_EXCEPTION = "Announcement does not exist!";
+//    String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
 
-    Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExist, DAOLogicException;
+    String ERROR_TEST_CONNECTION = "Error while setting test connection ";
+
+    Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExistException, DAOLogicException;
 
     void deleteAnnouncement(BigInteger idAnnouncement) throws DAOLogicException;
 
@@ -44,10 +46,12 @@ public interface AnnouncementDAO {
 
     void editAnnouncement(Announcement newAnnouncement) throws DAOLogicException;
 
-    Announcement getByTitle(String title) throws AnnouncementDoesNotExist, DAOLogicException;
+    Announcement getByTitle(String title) throws AnnouncementDoesNotExistException, DAOLogicException;
 
-    Set<Announcement> getSetByTitle(String title) throws AnnouncementDoesNotExist, DAOLogicException;
+    Set<Announcement> getSetByTitle(String title) throws AnnouncementDoesNotExistException, DAOLogicException;
 
-    List<Announcement> getPopular(int number) throws AnnouncementDoesNotExist, DAOLogicException;
+    List<Announcement> getPopular(int number) throws AnnouncementDoesNotExistException, DAOLogicException;
+
+    boolean isAnnouncementByTitle(String title) throws DAOLogicException;
 
 }

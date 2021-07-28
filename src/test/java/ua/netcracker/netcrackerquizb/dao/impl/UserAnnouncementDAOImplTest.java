@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExist;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
@@ -75,7 +72,7 @@ class UserAnnouncementDAOImplTest {
             for(Announcement announcement : announcementSet)
                 assertNotNull(announcement);
 
-        } catch (AnnouncementDoesNotExist | DAOLogicException e) {
+        } catch (AnnouncementDoesNotExistException | DAOLogicException e) {
             log.error("Error while testing getAnnouncementsLikedByUser " + e.getMessage());
             fail();
         }
@@ -132,7 +129,7 @@ class UserAnnouncementDAOImplTest {
             announcementDAO.deleteAnnouncement(idAnnouncement);
             userDAO.deleteUser(user.getId());
 
-        } catch (DAOLogicException | AnnouncementDoesNotExist | UserDoesNotExistException e) {
+        } catch (DAOLogicException | AnnouncementDoesNotExistException | UserDoesNotExistException | AnnouncementException e) {
             log.error("Error while testing addAndGetParticipantById" + e.getMessage());
             fail();
         }

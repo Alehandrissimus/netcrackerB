@@ -3,7 +3,10 @@ package ua.netcracker.netcrackerquizb.model.impl;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
+import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
+
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
 public class AnnouncementImpl implements Announcement {
 
@@ -88,41 +91,65 @@ public class AnnouncementImpl implements Announcement {
   public static class AnnouncementBuilder {
 
     private final AnnouncementImpl newAnnouncement;
+
     public AnnouncementBuilder(){
       newAnnouncement = new AnnouncementImpl();
     }
+
     public AnnouncementBuilder setId(BigInteger id){
       newAnnouncement.id = id;
       return this;
     }
-    public AnnouncementBuilder setTitle(String title){
+
+    public AnnouncementBuilder setTitle(String title) throws AnnouncementException{
+      if(title.isBlank())
+        throw new AnnouncementException(EMPTY_ANNOUNCEMENT_TITLE);
+      if(title.length()>MAX_LENGTH_TITLE)
+        throw new AnnouncementException(TITLE_TOO_LONG);
       newAnnouncement.title = title;
       return this;
     }
-    public AnnouncementBuilder setDescription(String description){
+
+    public AnnouncementBuilder setDescription(String description) throws AnnouncementException{
+      if(description.isBlank())
+        throw new AnnouncementException(EMPTY_ANNOUNCEMENT_DESCRIPTION);
+      if(description.length()>MAX_LENGTH_DESCRIPTION)
+        throw new AnnouncementException(DESCRIPTION_TOO_LONG);
       newAnnouncement.description = description;
       return this;
     }
-    public AnnouncementBuilder setOwner(BigInteger owner) {
+
+    public AnnouncementBuilder setOwner(BigInteger owner) throws AnnouncementException {
+      if(owner == null)
+        throw new AnnouncementException(OWNER_IS_NULL);
       newAnnouncement.owner = owner;
       return this;
     }
+
     public AnnouncementBuilder setDate(Date date) {
       newAnnouncement.date = date;
       return this;
     }
-    public AnnouncementBuilder setAddress(String address){
+
+    public AnnouncementBuilder setAddress(String address) throws AnnouncementException{
+      if(address.isBlank())
+        throw new AnnouncementException(EMPTY_ANNOUNCEMENT_ADDRESS);
+      if(address.length()>MAX_LENGTH_ADDRESS)
+        throw new AnnouncementException(ADDRESS_TOO_LONG);
       newAnnouncement.address = address;
       return this;
     }
+
     public AnnouncementBuilder setParticipants(Collection<BigInteger> participants){
       newAnnouncement.participants = participants;
       return this;
     }
+
     public AnnouncementBuilder setParticipantsCap(int participantsCap){
       newAnnouncement.participantsCap = participantsCap;
       return this;
     }
+
     public Announcement build(){
       return newAnnouncement;
     }
