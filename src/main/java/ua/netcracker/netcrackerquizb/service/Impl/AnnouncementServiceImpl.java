@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.impl.AnnouncementDAOImpl;
+import ua.netcracker.netcrackerquizb.dao.impl.UserAnnouncementDAOImpl;
+import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
@@ -11,7 +13,7 @@ import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import ua.netcracker.netcrackerquizb.service.AnnouncementService;
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.List;
 
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
@@ -23,18 +25,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Autowired
     AnnouncementDAOImpl announcementDAO;
+    @Autowired
+    UserAnnouncementDAOImpl userAnnouncementDAO;
 
     @Override
-    public Collection<Announcement> getAllAnnouncements() {
-        return null;
-    }
-
-    @Override
-    public void validateLikedUser(User user, Announcement announcement) {
-    }
-
-    @Override
-    public void validateAnnouncement(Announcement announcement) {
+    public List<Announcement> getAllAnnouncements(BigInteger idUser)
+            throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
+        return userAnnouncementDAO.getAllAnnouncementByIdUser(idUser);
     }
 
     @Override
@@ -57,5 +54,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             log.info(DAO_LOGIC_EXCEPTION + " in buildNewAnnouncement()");
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
+    }
+
+    @Override
+    public void validateLikedUser(User user, Announcement announcement) {
+    }
+
+    @Override
+    public void validateAnnouncement(Announcement announcement) {
     }
 }

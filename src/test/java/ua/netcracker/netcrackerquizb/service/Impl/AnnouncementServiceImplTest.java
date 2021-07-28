@@ -1,15 +1,20 @@
 package ua.netcracker.netcrackerquizb.service.Impl;
 
+import com.fasterxml.jackson.databind.introspect.Annotated;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.dao.impl.AnnouncementDAOImpl;
+import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.model.Announcement;
+
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -51,6 +56,22 @@ class AnnouncementServiceImplTest {
             assertNotNull(exception);
             announcementDAO.deleteAnnouncement(idAnnouncement);
         } catch (AnnouncementException | DAOLogicException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void getAllAnnouncements() {
+
+        try {
+            List<Announcement> announcementList = announcementService.getAllAnnouncements(BigInteger.ONE);
+            assertNotNull(announcementList);
+            for(Announcement announcement: announcementList){
+                assertNotNull(announcement);
+            }
+        } catch (AnnouncementDoesNotExistException | DAOLogicException | AnnouncementException e) {
             e.printStackTrace();
         }
 
