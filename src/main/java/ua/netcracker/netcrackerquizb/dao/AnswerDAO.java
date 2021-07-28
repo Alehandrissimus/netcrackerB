@@ -5,6 +5,7 @@ import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 
 import java.math.BigInteger;
+import java.util.Collection;
 
 public interface AnswerDAO {
     String SQL_ANSWER_ID = "id_answer";
@@ -22,4 +23,7 @@ public interface AnswerDAO {
     void deleteAnswer(BigInteger id) throws DAOLogicException;
 
     BigInteger updateAnswer(Answer answer) throws DAOLogicException;
+
+    Collection<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException;
+
 }

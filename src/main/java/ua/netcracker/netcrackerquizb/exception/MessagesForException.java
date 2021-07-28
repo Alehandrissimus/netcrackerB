@@ -28,6 +28,7 @@ public interface MessagesForException {
     String GET_QUIZZES_BY_TYPE_EXCEPTION = "SQL Exception while getQuizzesByType in QuizDAOImpl";
 
     String testConnectionError = "Error while setting test connection %s";
+    String testConnectionErrorWithoutStringFormat = "Error while setting test connection";
     String getQuestionByIdNotFoundErr = "QuestionDoesNotExistException in getQuestionById, questionId = %d";
     String getQuestionByIdNotFoundExc = "getQuestionById() not found question by id = %s";
     String getQuestionByDataNotFoundErr = "QuestionDoesNotExistException in getQuestionByData, questionText = %s, quiz = %d";
@@ -48,5 +49,14 @@ public interface MessagesForException {
     String getAllQuestionsLogicExc = "SQLException in getAllQuestions";
     String updateQuestionLogicErr = "SQL Exception while updateQuestion in QuestionDAOImpl";
     String updateQuestionLogicExc = "SQLException in updateQuestion";
+
+    String getAnswerByIdNotFoundErr = "AnswerDoesNotExistException in getAnswerById, answerId = %d";
+    String getAnswerByIdNotFoundExc = "getAnswerById() not found answer by answerId = %d";
+    String getAnswerByIdLogicErr = "SQL Exception while getAnswerById in AnswerDAOImpl";
+    String getAnswerByIdLogicExc = "SQL Exception while getAnswerById with answerId = %d";
+    String getLastAnswerIdByTitleNotFoundErr = "AnswerDoesNotExistException in getLastAnswerIdByTitle, title = %s";
+    String getLastAnswerIdByTitleNotFoundExc = "getLastAnswerIdByTitle() does not found answer with title = %s";
+    String getLastAnswerIdByTitleLogicErr = "getLastAnswerIdByTitle() does not found answer with title = %s";
+    String getLastAnswerIdByTitleLogicExc = "getLastAnswerIdByTitle() does not found answer with title = %s";
 
 }

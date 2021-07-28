@@ -6,25 +6,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
 import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.exception.MessagesForException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
+import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 @Repository
-public class AnswerDAOImpl implements AnswerDAO {
+public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
 
     private Connection connection;
     private final Properties properties = new Properties();
     private static final Logger log = Logger.getLogger(AnswerDAOImpl.class);
     private final int SQL_TRUE = 1;
     private final int SQL_FALSE = 0;
-    private static final String PROPERTIESPATH = "src/main/resources/sqlScripts.properties";
 
     private final String URL;
     private final String USERNAME;
@@ -35,54 +37,42 @@ public class AnswerDAOImpl implements AnswerDAO {
             @Value("${spring.datasource.url}") String URL,
             @Value("${spring.datasource.username}") String USERNAME,
             @Value("${spring.datasource.password}") String PASSWORD
-    ) throws SQLException, ClassNotFoundException, IOException {
+    ) throws DAOConfigException {
         this.URL = URL;
         this.USERNAME = USERNAME;
         this.PASSWORD = PASSWORD;
 
-        getDataSource(URL, USERNAME, PASSWORD);
+       connection = DAOUtil.getDataSource(URL, USERNAME, PASSWORD, properties);
     }
 
-    public void setTestConnection() throws SQLException, ClassNotFoundException, IOException {
-        getDataSource(URL, USERNAME + "_TEST", PASSWORD);
-    }
-
-    private void getDataSource(String URL, String USERNAME, String PASSWORD)
-            throws SQLException, ClassNotFoundException, IOException {
-        try (FileInputStream fis = new FileInputStream(PROPERTIESPATH)) {
-            Class.forName("oracle.jdbc.OracleDriver");
-            properties.load(fis);
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (ClassNotFoundException throwable) {
-            log.error("Drives was not found in AnswerDAOImpl ", throwable);
-            throw new ClassNotFoundException();
-        } catch (SQLException throwable) {
-            log.error("Error while getting SQL Connection in AnswerDAOImpl ", throwable);
-            throw new SQLException();
-        } catch (IOException throwable) {
-            log.error("Error while loading properties in AnswerDAOImpl ", throwable);
-            throw new IOException();
+    public void setTestConnection() throws DAOConfigException {
+        try {
+            connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);
+        } catch (DAOConfigException e) {
+            log.error(String.format(testConnectionError, e.getMessage()));
+            throw new DAOConfigException(testConnectionErrorWithoutStringFormat, e);
         }
     }
 
     @Override
-    public Answer getAnswerById(BigInteger id) throws DAOLogicException, AnswerDoesNotExistException {
+    public Answer getAnswerById(BigInteger answerId) throws DAOLogicException, AnswerDoesNotExistException {
         try  {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(properties.getProperty("GET_ANSWER_BY_ID"));
-            preparedStatement.setLong(1, id.intValue());
+            preparedStatement.setLong(1, answerId.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) {
-                throw new AnswerDoesNotExistException("getAnswerById() does not found answer with id = " + id);
+                log.error(String.format(getAnswerByIdNotFoundErr, answerId));
+                throw new AnswerDoesNotExistException(String.format(getAnswerByIdNotFoundExc, answerId));
             }
             return new AnswerImpl(
-                    id,
+                    answerId,
                     resultSet.getString(SQL_ANSWER_TEXT),
                     resultSet.getInt(SQL_ANSWER_IS_TRUE) == SQL_TRUE,
-                    BigInteger.valueOf(resultSet.getInt(SQL_ANSWER_QUESTION)));
+                    BigInteger.valueOf(resultSet.getLong(SQL_ANSWER_QUESTION)));
         } catch (SQLException throwable) {
-            log.error("SQL Exception while getAnswerById in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
+            log.error(getAnswerByIdLogicErr, throwable);
+            throw new DAOLogicException(String.format(getAnswerByIdLogicExc ,answerId), throwable);
         }
 
     }
@@ -94,14 +84,14 @@ public class AnswerDAOImpl implements AnswerDAO {
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) {
-                throw new AnswerDoesNotExistException("getLastAnswerIdByTitle() does not found answer with title = " + title);
+                log.error(String.format(getLastAnswerIdByTitleNotFoundErr, title));
+                throw new AnswerDoesNotExistException(String.format(getLastAnswerIdByTitleNotFoundExc, title));
             }
-            return BigInteger.valueOf(resultSet.getInt(SQL_MAX_ID_ANSWER));
+            return BigInteger.valueOf(resultSet.getLong(SQL_MAX_ID_ANSWER));
         } catch (SQLException throwable) {
             log.error("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
+            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle with title = " + title, throwable);
         }
-
     }
 
     @Override
@@ -116,7 +106,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             return getLastAnswerIdByTitle(title);
         } catch (SQLException throwable) {
             log.error("SQL Exception while createAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
+            throw new DAOLogicException("SQL Exception while createAnswer in AnswerDAOImpl", throwable);
         }
     }
 
@@ -128,7 +118,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             log.error("SQL Exception while deleteAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
+            throw new DAOLogicException("SQL Exception while deleteAnswer in AnswerDAOImpl", throwable);
         }
     }
 
@@ -145,7 +135,31 @@ public class AnswerDAOImpl implements AnswerDAO {
             return id;
         } catch (SQLException throwable) {
             log.error("SQL Exception while updateAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl", throwable);
+            throw new DAOLogicException("SQL Exception while updateAnswer in AnswerDAOImpl", throwable);
         }
     }
+
+    @Override
+    public Collection<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_ANSWERS_BY_QUESTION_ID"));
+            preparedStatement.setLong(1, questionId.longValue());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Collection<Answer> answers = new ArrayList<>();
+
+            while (resultSet.next()) {
+                answers.add(new AnswerImpl(
+                        BigInteger.valueOf(resultSet.getLong(SQL_ANSWER_ID)),
+                        resultSet.getString(SQL_ANSWER_TEXT),
+                        resultSet.getInt(SQL_ANSWER_IS_TRUE) == SQL_TRUE,
+                        questionId));
+            }
+            return answers;
+        } catch (SQLException throwable) {
+            log.error("SQL Exception while getAnswersByQuestionId in AnswerDAOImpl ", throwable);
+            throw new DAOLogicException("SQL Exception while getAnswersByQuestionId in AnswerDAOImpl", throwable);
+        }
+    }
+
+
 }

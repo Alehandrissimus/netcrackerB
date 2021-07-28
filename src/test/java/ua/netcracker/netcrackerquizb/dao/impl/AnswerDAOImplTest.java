@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -28,8 +28,9 @@ public class AnswerDAOImplTest {
         this.answerDAO = answerDAO;
         try {
             answerDAO.setTestConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
+        } catch (DAOConfigException e) {
             log.error("Error while setting test connection in AnswerDAOImplTest " + e.getMessage());
+            fail();
         }
     }
 
@@ -139,6 +140,24 @@ public class AnswerDAOImplTest {
             answerDAO.deleteAnswer(id);
         } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing updateAnswerTest " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getAnswersByQuestionIdTest() {
+        try {
+            BigInteger questionId = BigInteger.TWO;
+            if (answerDAO.getAnswersByQuestionId(questionId).getClass().getName().equals(ArrayList.class.getName())) {
+                ArrayList<Answer> answersForSecondQuestion = (ArrayList<Answer>) answerDAO.getAnswersByQuestionId(questionId);
+                assertEquals("America", answersForSecondQuestion.get(0).getValue());
+                assertEquals("Asia", answersForSecondQuestion.get(1).getValue());
+                assertEquals("Africa", answersForSecondQuestion.get(2).getValue());
+                assertEquals("Europe", answersForSecondQuestion.get(3).getValue());
+            }
+        } catch (DAOLogicException e) {
+            log.error("Error while testing getAnswersByQuestionIdTest " + e.getMessage());
             fail();
         }
     }
