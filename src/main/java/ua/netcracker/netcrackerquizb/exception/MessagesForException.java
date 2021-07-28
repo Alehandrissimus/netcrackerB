@@ -56,7 +56,12 @@ public interface MessagesForException {
     String getAnswerByIdLogicExc = "SQL Exception while getAnswerById with answerId = %d";
     String getLastAnswerIdByTitleNotFoundErr = "AnswerDoesNotExistException in getLastAnswerIdByTitle, title = %s";
     String getLastAnswerIdByTitleNotFoundExc = "getLastAnswerIdByTitle() does not found answer with title = %s";
-    String getLastAnswerIdByTitleLogicErr = "getLastAnswerIdByTitle() does not found answer with title = %s";
-    String getLastAnswerIdByTitleLogicExc = "getLastAnswerIdByTitle() does not found answer with title = %s";
+    String getLastAnswerIdByTitleLogicErr = "SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl";
+    String getLastAnswerIdByTitleLogicExc = "SQL Exception while getLastAnswerIdByTitle with title = %s";
+    String createAnswerLogicExc = "SQL Exception while createAnswer in AnswerDAOImpl";
+    String deleteAnswerLogicExc = "SQL Exception while deleteAnswer in AnswerDAOImpl";
+    String updateAnswerLogicExc = "SQL Exception while updateAnswer in AnswerDAOImpl";
+    String getAnswersByQuestionIdLogicErr = "SQL Exception while getAnswersByQuestionId in AnswerDAOImpl";
+    String getAnswersByQuestionIdLogicExc = "SQL Exception while getAnswersByQuestionId with questionId = %d";
 
 }

@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
-import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.MessagesForException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.impl.AnswerImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
@@ -89,8 +86,8 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
             }
             return BigInteger.valueOf(resultSet.getLong(SQL_MAX_ID_ANSWER));
         } catch (SQLException throwable) {
-            log.error("SQL Exception while getLastAnswerIdByTitle in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while getLastAnswerIdByTitle with title = " + title, throwable);
+            log.error(getLastAnswerIdByTitleLogicErr, throwable);
+            throw new DAOLogicException(String.format(getLastAnswerIdByTitleLogicExc, title), throwable);
         }
     }
 
@@ -105,8 +102,8 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
             preparedStatement.executeUpdate();
             return getLastAnswerIdByTitle(title);
         } catch (SQLException throwable) {
-            log.error("SQL Exception while createAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while createAnswer in AnswerDAOImpl", throwable);
+            log.error(createAnswerLogicExc, throwable);
+            throw new DAOLogicException(createAnswerLogicExc, throwable);
         }
     }
 
@@ -117,8 +114,8 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
             preparedStatement.setLong(1, id.longValue());
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
-            log.error("SQL Exception while deleteAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while deleteAnswer in AnswerDAOImpl", throwable);
+            log.error(deleteAnswerLogicExc, throwable);
+            throw new DAOLogicException(deleteAnswerLogicExc, throwable);
         }
     }
 
@@ -134,19 +131,19 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
             preparedStatement.executeUpdate();
             return id;
         } catch (SQLException throwable) {
-            log.error("SQL Exception while updateAnswer in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while updateAnswer in AnswerDAOImpl", throwable);
+            log.error(updateAnswerLogicExc, throwable);
+            throw new DAOLogicException(updateAnswerLogicExc, throwable);
         }
     }
 
     @Override
-    public Collection<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException {
+    public Collection<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException, AnswerDoesNotExistException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_ANSWERS_BY_QUESTION_ID"));
             preparedStatement.setLong(1, questionId.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
-            Collection<Answer> answers = new ArrayList<>();
 
+            Collection<Answer> answers = new ArrayList<>();
             while (resultSet.next()) {
                 answers.add(new AnswerImpl(
                         BigInteger.valueOf(resultSet.getLong(SQL_ANSWER_ID)),
@@ -156,8 +153,8 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
             }
             return answers;
         } catch (SQLException throwable) {
-            log.error("SQL Exception while getAnswersByQuestionId in AnswerDAOImpl ", throwable);
-            throw new DAOLogicException("SQL Exception while getAnswersByQuestionId in AnswerDAOImpl", throwable);
+            log.error(getAnswersByQuestionIdLogicErr, throwable);
+            throw new DAOLogicException(String.format(getAnswersByQuestionIdLogicExc, questionId), throwable);
         }
     }
 

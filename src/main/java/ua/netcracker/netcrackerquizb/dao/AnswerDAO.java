@@ -24,6 +24,6 @@ public interface AnswerDAO {
 
     BigInteger updateAnswer(Answer answer) throws DAOLogicException;
 
-    Collection<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException;
+    Collection<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException, AnswerDoesNotExistException;
 
 }

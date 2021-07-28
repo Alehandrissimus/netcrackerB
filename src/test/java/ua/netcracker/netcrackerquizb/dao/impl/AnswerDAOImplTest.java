@@ -35,7 +35,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void getAnswerByIdTest() {
         try {
             Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
@@ -48,7 +48,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void getLastAnswerIdByTitleTest() {
         try {
             String aboba = "Aboba";
@@ -71,7 +71,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void createAnswerTest() {
         try {
             String antarctica = "Antarctica";
@@ -94,7 +94,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void deleteAnswerTest() {
         try {
             String mars = "Mars";
@@ -113,7 +113,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void updateAnswerTest() {
         try {
             String moon = "Moon";
@@ -145,18 +145,18 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void getAnswersByQuestionIdTest() {
         try {
             BigInteger questionId = BigInteger.TWO;
             if (answerDAO.getAnswersByQuestionId(questionId).getClass().getName().equals(ArrayList.class.getName())) {
-                ArrayList<Answer> answersForSecondQuestion = (ArrayList<Answer>) answerDAO.getAnswersByQuestionId(questionId);
+                ArrayList<Answer> answersForSecondQuestion = new ArrayList<>(answerDAO.getAnswersByQuestionId(questionId));
                 assertEquals("America", answersForSecondQuestion.get(0).getValue());
                 assertEquals("Asia", answersForSecondQuestion.get(1).getValue());
                 assertEquals("Africa", answersForSecondQuestion.get(2).getValue());
                 assertEquals("Europe", answersForSecondQuestion.get(3).getValue());
             }
-        } catch (DAOLogicException e) {
+        } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing getAnswersByQuestionIdTest " + e.getMessage());
             fail();
         }
