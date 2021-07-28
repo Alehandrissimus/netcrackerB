@@ -1,11 +1,14 @@
 package ua.netcracker.netcrackerquizb.model.impl;
 
+import ua.netcracker.netcrackerquizb.exception.QuizException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Objects;
+
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
 public class QuizImpl implements Quiz {
 
@@ -118,12 +121,16 @@ public class QuizImpl implements Quiz {
             return this;
         }
 
-        public Builder setTitle(String title) {
+        public Builder setTitle(String title) throws QuizException {
+            if (title.isBlank())
+                throw new QuizException(EMPTY_TITLE);
             QuizImpl.this.title = title;
             return this;
         }
 
-        public Builder setDescription(String description) {
+        public Builder setDescription(String description) throws QuizException {
+            if (description.isBlank())
+                throw new QuizException(EMPTY_DESCRIPTION);
             QuizImpl.this.description = description;
             return this;
         }
@@ -138,7 +145,10 @@ public class QuizImpl implements Quiz {
             return this;
         }
 
-        public Builder setCreatorId(BigInteger creatorId) {
+        public Builder setCreatorId(BigInteger creatorId) throws QuizException {
+            if (creatorId == null) {
+                throw new QuizException(OWNER_IS_NULL);
+            }
             QuizImpl.this.creatorId = creatorId;
             return this;
         }

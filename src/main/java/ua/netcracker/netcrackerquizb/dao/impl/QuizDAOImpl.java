@@ -5,22 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.QuizDAO;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.*;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
 @Repository
 public class QuizDAOImpl implements QuizDAO {
@@ -32,31 +29,6 @@ public class QuizDAOImpl implements QuizDAO {
     private final String URL;
     private final String USERNAME;
     private final String PASSWORD;
-
-    private static final String URL_PROPERTY = "${spring.datasource.url}";
-    private static final String USERNAME_PROPERTY = "${spring.datasource.username}";
-    private static final String PASSWORD_PROPERTY = "${spring.datasource.password}";
-    private static final String DRIVER_PATH = "oracle.jdbc.OracleDriver";
-    private static final String PATH = "src/main/resources/sqlScripts.properties";
-
-    private static final String ID_QUIZ = "ID_QUIZ";
-    private static final String TITLE = "TITLE";
-    private static final String DESCRIPTION = "DESCRIPTION";
-    private static final String CREATION_DATE = "CREATION_DATE";
-    private static final String QUIZ_TYPE = "QUIZ_TYPE";
-    private static final String CREATOR = "CREATOR";
-
-    private static final String INSERT_INTO_QUIZ = "INSERT_INTO_QUIZ";
-    private static final String GET_QUIZ_ID_BY_DATA = "GET_QUIZ_ID_BY_DATA";
-    private static final String UPDATE_QUIZ = "UPDATE_QUIZ";
-    private static final String DELETE_QUIZ = "DELETE_QUIZ";
-    private static final String SELECT_QUIZ_BY_ID = "SELECT_QUIZ_BY_ID";
-    private static final String SELECT_ALL_QUIZZES = "SELECT_ALL_QUIZZES";
-    private static final String SELECT_QUIZZES_BY_TITLE = "SELECT_QUIZZES_BY_TITLE";
-    private static final String SELECT_QUIZZES_BY_TYPE = "SELECT_QUIZZES_BY_TYPE";
-
-    private static final String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
-
 
     @Autowired
     QuizDAOImpl(
@@ -75,8 +47,8 @@ public class QuizDAOImpl implements QuizDAO {
         try {
             connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);
         } catch (DAOConfigException e) {
-            log.error("Error while setting test connection " + e.getMessage());
-            throw new DAOConfigException("Error while setting test connection ", e);
+            log.error(ERROR_WHILE_SETTING_TEST_CONNECTION + e.getMessage());
+            throw new DAOConfigException(ERROR_WHILE_SETTING_TEST_CONNECTION, e);
         }
     }
 
@@ -102,8 +74,8 @@ public class QuizDAOImpl implements QuizDAO {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                log.error("Throw DAOLogicException while createQuiz in QuizDAOImpl");
-                throw new DAOLogicException("Throw DAOLogicException while createQuiz in QuizDAOImpl");
+                log.error(CREATE_QUIZ_EXCEPTION);
+                throw new DAOLogicException(CREATE_QUIZ_EXCEPTION);
             }
 
             long quizId = resultSet.getLong(ID_QUIZ);
@@ -112,8 +84,8 @@ public class QuizDAOImpl implements QuizDAO {
             return quiz;
 
         } catch (SQLException e) {
-            log.error("SQL Exception while createQuiz in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException("SQL Exception while createQuiz in QuizDAOImpl ", e);
+            log.error(CREATE_QUIZ_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(CREATE_QUIZ_EXCEPTION, e);
         }
 
     }
@@ -135,8 +107,8 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            log.error("SQL Exception while updateQuiz in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException("SQL Exception while updateQuiz in QuizDAOImpl ", e);
+            log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
 
     }
@@ -151,8 +123,8 @@ public class QuizDAOImpl implements QuizDAO {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            log.error("SQL Exception while deleteQuiz in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException("SQL Exception while deleteQuiz in QuizDAOImpl ", e);
+            log.error(DELETE_QUIZ_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(DELETE_QUIZ_EXCEPTION, e);
         }
     }
 
@@ -165,8 +137,8 @@ public class QuizDAOImpl implements QuizDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.next()) {
-                log.error("Throw DAOLogicException while getQuizById in QuizDAOImpl");
-                throw new QuizDoesNotExistException("Throw QuizDoesNotExistException while getQuizById in QuizDAOImpl");
+                log.error(QUIZ_HAS_NOT_BEEN_RECEIVED + "in getQuizById()");
+                throw new QuizDoesNotExistException(QUIZ_HAS_NOT_BEEN_RECEIVED);
             }
 
             return QuizImpl.QuizBuilder()
@@ -178,13 +150,27 @@ public class QuizDAOImpl implements QuizDAO {
                     .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
                     .build();
 
-        } catch (SQLException e) {
-            log.error("SQL Exception while getQuizById in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException("SQL Exception while getQuizById in QuizDAOImpl ", e);
+        } catch (SQLException | QuizException e) {
+            log.error(GET_QUIZ_BY_ID_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_QUIZ_BY_ID_EXCEPTION, e);
         }
 
     }
 
+    @Override
+    public boolean existQuizByDescription(String description) throws DAOLogicException {
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty(SELECT_QUIZ_BY_DESCRIPTION))) {
+
+            preparedStatement.setString(1, description);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+
+        } catch (SQLException e) {
+            log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
+        }
+    }
 
     @Override
     public List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException {
@@ -211,9 +197,9 @@ public class QuizDAOImpl implements QuizDAO {
             }
 
             return quizzes;
-        } catch (SQLException e) {
-            log.error("SQL Exception while getAllQuizzes in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException("SQL Exception while getAllQuizzes in QuizDAOImpl ", e);
+        } catch (SQLException | QuizException e) {
+            log.error(GET_ALL_QUIZZES_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_ALL_QUIZZES_EXCEPTION, e);
         }
 
     }
@@ -244,9 +230,9 @@ public class QuizDAOImpl implements QuizDAO {
             }
             return quizzes;
 
-        } catch (SQLException e) {
-            log.error("SQL Exception while getQuizzesByTitle in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException("SQL Exception while getQuizzesByTitle in QuizDAOImpl ", e);
+        } catch (SQLException | QuizException e) {
+            log.error(GET_QUIZZES_BY_TITLE_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_QUIZZES_BY_TITLE_EXCEPTION, e);
         }
     }
 
@@ -277,9 +263,9 @@ public class QuizDAOImpl implements QuizDAO {
 
             return quizzes;
 
-        } catch (SQLException e) {
-            log.error("SQL Exception while getQuizzesByType in QuizDAOImpl " + e.getMessage());
-            throw new DAOLogicException("SQL Exception while getQuizzesByType in QuizDAOImpl ", e);
+        } catch (SQLException | QuizException e) {
+            log.error(GET_QUIZZES_BY_TYPE_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_QUIZZES_BY_TYPE_EXCEPTION, e);
         }
     }
 }

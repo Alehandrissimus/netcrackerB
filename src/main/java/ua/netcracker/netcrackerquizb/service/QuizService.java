@@ -2,6 +2,7 @@ package ua.netcracker.netcrackerquizb.service;
 
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.QuizException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface QuizService {
 
-    Quiz createQuiz(Quiz quiz) throws DAOLogicException, UserDoesNotExistException;
+    Quiz buildNewQuiz(String title, String description, QuizType quizType, BigInteger userId) throws QuizException, DAOLogicException;
 
     void updateQuiz(Quiz updatedQuiz) throws QuizDoesNotExistException, DAOLogicException;
 
@@ -24,8 +25,7 @@ public interface QuizService {
 
     List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException;
+    List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException, QuizException;
 
-    Quiz buildNewQuiz(String title, String description, QuizType quizType, User user);
 
 }

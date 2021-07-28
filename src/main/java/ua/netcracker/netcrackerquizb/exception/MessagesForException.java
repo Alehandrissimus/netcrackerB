@@ -1,18 +1,31 @@
 package ua.netcracker.netcrackerquizb.exception;
 
 public interface MessagesForException {
-
+    String ERROR_WHILE_SETTING_TEST_CONNECTION = "Error while setting test connection ";
     String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
+    String EMPTY_TITLE = "Title field cannot be empty";
+    String EMPTY_DESCRIPTION = "Description field cannot be empty";
+    String TITLE_TOO_LONG = "Length of the title field cannot exceed 50 characters";
+    String DESCRIPTION_TOO_LONG = "Length of the description field cannot exceed 300 characters";
+    String OWNER_IS_NULL = "Owner field cannot be empty";
+
     String ANNOUNCEMENT_NOT_FOUND_EXCEPTION = "Announcement does not exist!";
     String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
     String ANNOUNCEMENT_ALREADY_EXISTS = "Announcement with the same name already exists";
     String EMPTY_ANNOUNCEMENT_TITLE = "Title field cannot be empty";
-    String TITLE_TOO_LONG = "Length of the title field cannot exceed 50 characters";
     String EMPTY_ANNOUNCEMENT_DESCRIPTION = "Description field cannot be empty";
-    String DESCRIPTION_TOO_LONG = "Length of the description field cannot exceed 300 characters";
     String EMPTY_ANNOUNCEMENT_ADDRESS = "Address field cannot be empty";
     String ADDRESS_TOO_LONG = "Length of the address field cannot exceed 30 characters";
-    String OWNER_IS_NULL = "Owner field cannot be empty";
+
+    String QUIZ_ALREADY_EXISTS = "Quiz with the same description already exists";
+    String QUIZ_NOT_FOUND_EXCEPTION = "Quiz does not exist!";
+    String QUIZ_HAS_NOT_BEEN_RECEIVED = "Quiz has not been received";
+    String CREATE_QUIZ_EXCEPTION = "SQL Exception while createQuiz in QuizDAOImpl";
+    String DELETE_QUIZ_EXCEPTION = "SQL Exception while deleteQuiz in QuizDAOImpl";
+    String GET_QUIZ_BY_ID_EXCEPTION = "SQL Exception while getQuizById in QuizDAOImpl";
+    String GET_ALL_QUIZZES_EXCEPTION = "SQL Exception while getAllQuizzes in QuizDAOImpl";
+    String GET_QUIZZES_BY_TITLE_EXCEPTION = "SQL Exception while getQuizzesByTitle in QuizDAOImpl";
+    String GET_QUIZZES_BY_TYPE_EXCEPTION = "SQL Exception while getQuizzesByType in QuizDAOImpl";
 
     String testConnectionError = "Error while setting test connection %s";
     String getQuestionByIdNotFoundErr = "QuestionDoesNotExistException in getQuestionById, questionId = %d";

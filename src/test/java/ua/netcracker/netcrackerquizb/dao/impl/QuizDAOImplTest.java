@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.User;
@@ -67,7 +64,7 @@ class QuizDAOImplTest {
 
             quizDAO.deleteQuiz(newQuiz);
             log.info("Test Quiz with id: " + newQuiz.getId() + " was deleted");
-        } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException e) {
+        } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException | QuizException e) {
             log.error("Error while testing createQuiz ", e);
             fail();
         }
@@ -97,8 +94,6 @@ class QuizDAOImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void deleteQuizTest() {
 
-//        Quiz quiz1 = quizDAO.getQuizById(BigInteger.valueOf(128));
-//        quizDAO.deleteQuiz(quiz1);
         try {
             User user = new UserImpl.UserBuilder()
                     .setId(BigInteger.valueOf(1))
@@ -124,7 +119,7 @@ class QuizDAOImplTest {
             log.info("Quiz with id " + newQuiz.getId() + " was deleted");
 
 
-        } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException e) {
+        } catch (QuizDoesNotExistException | UserDoesNotExistException | DAOLogicException | QuizException e) {
             log.error("Error while testing deleteQuiz ", e);
             fail();
         }
