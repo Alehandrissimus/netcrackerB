@@ -41,7 +41,6 @@ class QuestionDAOImplTest {
     void getQuestionByIdTest() {
         try {
             Question question = questionDAO.getQuestionById(BigInteger.ONE, new ArrayList<>());
-            log.debug("TEST QuestionDAOImplTest");
             assertNotNull(question);
             assertEquals("Ukraine location?", question.getQuestion());
         } catch (DAOLogicException | QuestionDoesNotExistException e) {
@@ -78,7 +77,6 @@ class QuestionDAOImplTest {
             log.debug("createQuestionTest: questionText = " + questionText);
 
             questionDAO.createQuestion(questionModel, quizId);
-
             boolean isFound = false;
             Collection<Question> questions = questionDAO.getAllQuestions(quizId);
             for (Question question : questions) {
@@ -87,9 +85,9 @@ class QuestionDAOImplTest {
                     log.debug("createQuestionTest: found question");
                 }
             }
-            assertTrue(isFound);
-
             questionDAO.deleteQuestion(questionModel);
+
+            assertTrue(isFound);
         } catch (DAOLogicException | QuestionDoesNotExistException e) {
             log.error("Error while testing createQuestionTest " + e.getMessage());
             fail();

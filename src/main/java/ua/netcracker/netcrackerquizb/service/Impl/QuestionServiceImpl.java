@@ -1,9 +1,11 @@
 package ua.netcracker.netcrackerquizb.service.Impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
 import ua.netcracker.netcrackerquizb.dao.QuestionDAO;
+import ua.netcracker.netcrackerquizb.dao.impl.QuestionDAOImpl;
 import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Answer;
 import ua.netcracker.netcrackerquizb.model.Question;
@@ -14,6 +16,8 @@ import java.util.Collection;
 
 @Service
 public class QuestionServiceImpl implements QuestionService, MessagesForException {
+
+    private static final Logger log = Logger.getLogger(QuestionDAOImpl.class);
 
     @Autowired
     private QuestionDAO questionDAO;
@@ -29,24 +33,27 @@ public class QuestionServiceImpl implements QuestionService, MessagesForExceptio
     @Override
     public Question createQuestion(Question question, BigInteger quizId)
             throws DAOLogicException, QuestionDoesNotExistException, QuestionException, AnswerDoesNotExistException {
-        if(question.getQuestion().equals("")) {
-            throw new QuestionException(QUESTION_EMPTY);
+        if (question.getQuestion().equals("")) {
+            log.error(QUESTION_EMPTY + " in QuestionService createQuestion question: " + question.toString());
+            throw new QuestionException(QUESTION_EMPTY + "in createQuestion");
         }
-        for(Answer answer : question.getAnswers()) {
-            if(answer.getValue().equals("")) {
-                throw new QuestionException(ANSWER_EMPTY);
+        for (Answer answer : question.getAnswers()) {
+            if (answer.getValue().equals("")) {
+                log.error(QUESTION_EMPTY + " in QuestionService createQuestion question: " + question.toString());
+                throw new QuestionException(ANSWER_EMPTY + "in createQuestion");
             }
         }
         Collection<Question> questions = questionDAO.getAllQuestions(quizId);
         for (Question questionElement : questions) {
-            if(question.getQuestion().equals(questionElement.getQuestion())) {
-                throw new QuestionException(QUESTION_DUPLICATE);
+            if (question.getQuestion().equals(questionElement.getQuestion())) {
+                log.error(QUESTION_EMPTY + " in QuestionService createQuestion question: " + question.toString());
+                throw new QuestionException(QUESTION_DUPLICATE + "in createQuestion");
             }
         }
 
         Question createdQuestion = questionDAO.createQuestion(question, quizId);
 
-        for(Answer answer : question.getAnswers()) {
+        for (Answer answer : question.getAnswers()) {
             answer.setQuestionId(createdQuestion.getId());
             answerDAO.createAnswer(answer);
         }
@@ -54,7 +61,11 @@ public class QuestionServiceImpl implements QuestionService, MessagesForExceptio
     }
 
     @Override
-    public void updateQuestion(Question updatedQuestion) throws DAOLogicException {
+    public void updateQuestion(Question updatedQuestion) throws DAOLogicException, QuestionException {
+        if (updatedQuestion.getQuestion().equals("")) {
+            log.error(QUESTION_EMPTY + " in QuestionService updateQuestion question: " + updatedQuestion.toString());
+            throw new QuestionException(QUESTION_EMPTY + "in createQuestion");
+        }
         questionDAO.updateQuestion(updatedQuestion);
     }
 
@@ -81,7 +92,7 @@ public class QuestionServiceImpl implements QuestionService, MessagesForExceptio
     public Collection<Question> getQuestionsByQuiz(BigInteger quizId)
             throws DAOLogicException, QuestionDoesNotExistException, AnswerDoesNotExistException {
         Collection<Question> questions = questionDAO.getAllQuestions(quizId);
-        for(Question question: questions) {
+        for (Question question : questions) {
             Collection<Answer> answers = answerDAO.getAnswersByQuestionId(question.getId());
             question.setAnswers(answers);
         }

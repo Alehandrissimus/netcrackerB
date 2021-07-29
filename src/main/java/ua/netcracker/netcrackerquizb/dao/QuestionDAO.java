@@ -16,6 +16,14 @@ public interface QuestionDAO {
     final String questionTypeColumn = "question_type";
     final String questionQuizIdColumn = "quiz";
 
+    final String PROPERTY_GET_QUESTION_BY_ID = "GET_QUESTION_BY_ID";
+    final String PROPERTY_GET_QUESTION_BY_DATA = "GET_QUESTION_BY_DATA";
+    final String PROPERTY_CREATE_QUESTION = "CREATE_QUESTION";
+    final String PROPERTY_GET_QUESTION_ID_BY_DATA = "GET_QUESTION_ID_BY_DATA";
+    final String PROPERTY_DELETE_QUESTION = "DELETE_QUESTION";
+    final String PROPERTY_GET_ALL_QUESTIONS = "GET_ALL_QUESTIONS";
+    final String PROPERTY_UPDATE_QUESTION = "UPDATE_QUESTION";
+
     void setTestConnection() throws DAOConfigException;
 
     Question getQuestionById(BigInteger id, Collection<Answer> answers) throws QuestionDoesNotExistException, DAOLogicException;

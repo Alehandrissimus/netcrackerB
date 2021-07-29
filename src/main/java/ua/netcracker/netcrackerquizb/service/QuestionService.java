@@ -12,7 +12,7 @@ public interface QuestionService {
 
     Question createQuestion(Question question, BigInteger quizId) throws DAOLogicException, QuestionDoesNotExistException, QuestionException, AnswerDoesNotExistException;
 
-    void updateQuestion(Question updatedQuestion) throws DAOLogicException, QuestionDoesNotExistException;
+    void updateQuestion(Question updatedQuestion) throws DAOLogicException, QuestionDoesNotExistException, QuestionException;
 
     void deleteQuestion(Question question) throws DAOLogicException, QuestionDoesNotExistException;
 
