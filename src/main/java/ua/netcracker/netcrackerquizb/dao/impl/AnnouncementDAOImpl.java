@@ -17,8 +17,7 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
-import static ua.netcracker.netcrackerquizb.exception.MessagesForException.ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED;
-import static ua.netcracker.netcrackerquizb.exception.MessagesForException.ANNOUNCEMENT_NOT_FOUND_EXCEPTION;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
 @Repository
 public class AnnouncementDAOImpl implements AnnouncementDAO {
@@ -230,6 +229,30 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
                     .setParticipantsCap(resultSet.getInt(LIKES))
                     .build();
         } catch (SQLException | AnnouncementException throwables) {
+            log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+        }
+    }
+
+    @Override
+    public void toLike(BigInteger idAnnouncement) throws DAOLogicException {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(SET_LIKE));
+            preparedStatement.setLong(1, idAnnouncement.longValue());
+            preparedStatement.executeUpdate();
+        } catch (SQLException throwables) {
+            log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+        }
+    }
+
+    @Override
+    public void toDisLike(BigInteger idAnnouncement) throws DAOLogicException {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(UNSET_LIKE));
+            preparedStatement.setLong(1, idAnnouncement.longValue());
+            preparedStatement.executeUpdate();
+        } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }

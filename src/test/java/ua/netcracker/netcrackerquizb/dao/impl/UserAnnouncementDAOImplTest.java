@@ -72,7 +72,6 @@ class UserAnnouncementDAOImplTest {
             assertNotNull(announcementSet);
             for(Announcement announcement : announcementSet)
                 assertNotNull(announcement);
-
         } catch (AnnouncementDoesNotExistException | DAOLogicException | AnnouncementException e) {
             log.error("Error while testing getAnnouncementsLikedByUser " + e.getMessage());
             fail();
@@ -95,7 +94,7 @@ class UserAnnouncementDAOImplTest {
 
     @Test
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
-    void addAndGetParticipantById() {
+    void addAndGetAndDeleteParticipantById() {
 
         try {
             BigInteger idAnnouncement = announcementDAO.createAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
@@ -117,16 +116,13 @@ class UserAnnouncementDAOImplTest {
                             .setEmailCode("testEmailCode")
                             .build()
             );
-
             assertNotNull(announcementDAO.getAnnouncementById(idAnnouncement));
-
             User user = userDAO.getUserByEmail("test@gmail.com");
             assertNotNull(user);
-
             userAnnouncementDAO.addParticipant(idAnnouncement, user.getId());
-
-            assertTrue(userAnnouncementDAO.getParticipantById(idAnnouncement, user.getId()));
-
+            assertTrue(userAnnouncementDAO.isParticipant(idAnnouncement, user.getId()));
+            userAnnouncementDAO.deleteParticipant(idAnnouncement, user.getId());
+            assertFalse(userAnnouncementDAO.isParticipant(idAnnouncement, user.getId()));
             announcementDAO.deleteAnnouncement(idAnnouncement);
             userDAO.deleteUser(user.getId());
 
@@ -140,7 +136,7 @@ class UserAnnouncementDAOImplTest {
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void getAllAnnouncementByIdUser() {
         try {
-            List<Announcement> allAnnouncement = userAnnouncementDAO.getAllAnnouncementByIdUser(BigInteger.ONE);
+            List<Announcement> allAnnouncement = userAnnouncementDAO.getAnnouncements(BigInteger.ONE);
             assertNotNull(allAnnouncement);
             for(Announcement announcement: allAnnouncement){
                 assertNotNull(announcement);

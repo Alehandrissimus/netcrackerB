@@ -31,7 +31,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public List<Announcement> getAllAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
-        return userAnnouncementDAO.getAllAnnouncementByIdUser(idUser);
+        return userAnnouncementDAO.getAnnouncements(idUser);
     }
 
     @Override
@@ -75,6 +75,34 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             announcementDAO.deleteAnnouncement(idAnnouncement);
         } catch (UserDoesNotExistException e) {
             log.info(DAO_LOGIC_EXCEPTION + " in deleteAnnouncement()");
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
+        }
+    }
+
+    @Override
+    public void toLikeAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
+            throws AnnouncementException, DAOLogicException {
+        try {
+            if(userAnnouncementDAO.isParticipant(idAnnouncement, idUser))
+                throw new AnnouncementException(ANNOUNCEMENT_ALREADY_LIKED);
+            userAnnouncementDAO.addParticipant(idAnnouncement, idUser);
+            announcementDAO.toLike(idAnnouncement);
+        } catch (DAOLogicException e) {
+            log.info(DAO_LOGIC_EXCEPTION + " in toLikeAnnouncement()");
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
+        }
+    }
+
+    @Override
+    public void toDisLikeAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
+            throws AnnouncementException, DAOLogicException {
+        try {
+            if(!userAnnouncementDAO.isParticipant(idAnnouncement, idUser))
+                throw new AnnouncementException(ANNOUNCEMENT_HAS_NOT_LIKED);
+            userAnnouncementDAO.deleteParticipant(idAnnouncement, idUser);
+            announcementDAO.toDisLike(idAnnouncement);
+        } catch (DAOLogicException e) {
+            log.info(DAO_LOGIC_EXCEPTION + " in toDisLikeAnnouncement()");
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
     }

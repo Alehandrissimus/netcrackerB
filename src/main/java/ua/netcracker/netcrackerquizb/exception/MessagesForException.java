@@ -68,4 +68,6 @@ public interface MessagesForException {
     String getAnswersByQuestionIdLogicExc = "SQL Exception while getAnswersByQuestionId with questionId = %d";
 
     String DONT_ENOUGH_RIGHTS = "You don't have enough rights";
+    String ANNOUNCEMENT_ALREADY_LIKED = "The user has already liked this announcement";
+    String ANNOUNCEMENT_HAS_NOT_LIKED = "User has not liked this announcement yet";
 }
