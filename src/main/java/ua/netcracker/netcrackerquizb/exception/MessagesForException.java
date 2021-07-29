@@ -3,6 +3,7 @@ package ua.netcracker.netcrackerquizb.exception;
 public interface MessagesForException {
     String ERROR_WHILE_SETTING_TEST_CONNECTION = "Error while setting test connection ";
     String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
+    String EMPTY_ID = "Id cannot be empty";
     String EMPTY_TITLE = "Title field cannot be empty";
     String EMPTY_DESCRIPTION = "Description field cannot be empty";
     String TITLE_TOO_LONG = "Length of the title field cannot exceed 50 characters";
@@ -25,6 +26,7 @@ public interface MessagesForException {
     String DELETE_QUIZ_EXCEPTION = "SQL Exception while deleteQuiz in QuizDAOImpl";
     String GET_QUIZ_BY_ID_EXCEPTION = "SQL Exception while getQuizById in QuizDAOImpl";
     String GET_ALL_QUIZZES_EXCEPTION = "SQL Exception while getAllQuizzes in QuizDAOImpl";
+    String GET_LAST_FIVE_CREATED_QUIZZES_EXCEPTION = "SQL Exception while getLastFiveCreatedQuizzes in QuizDAOImpl";
     String GET_QUIZZES_BY_TITLE_EXCEPTION = "SQL Exception while getQuizzesByTitle in QuizDAOImpl";
     String GET_QUIZZES_BY_TYPE_EXCEPTION = "SQL Exception while getQuizzesByType in QuizDAOImpl";
 

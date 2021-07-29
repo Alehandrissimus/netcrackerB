@@ -31,6 +31,7 @@ public interface QuizDAO {
     String SELECT_QUIZZES_BY_TITLE = "SELECT_QUIZZES_BY_TITLE";
     String SELECT_QUIZZES_BY_TYPE = "SELECT_QUIZZES_BY_TYPE";
     String SELECT_QUIZ_BY_DESCRIPTION = "SELECT_QUIZ_BY_DESCRIPTION";
+    String SELECT_LAST_FIVE_CREATED_QUIZZES = "SELECT_LAST_FIVE_CREATED_QUIZZES";
 
     Quiz createQuiz(Quiz quiz) throws DAOLogicException, UserDoesNotExistException;
 
@@ -45,6 +46,8 @@ public interface QuizDAO {
     List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DAOLogicException;
 
     List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException;
+
+    List<Quiz> getLastFiveCreatedQuizzes() throws DAOLogicException, QuizDoesNotExistException;
 
     List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException;
 

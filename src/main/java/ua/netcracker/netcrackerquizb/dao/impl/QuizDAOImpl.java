@@ -204,6 +204,35 @@ public class QuizDAOImpl implements QuizDAO {
 
     }
 
+    @Override
+    public List<Quiz> getLastFiveCreatedQuizzes() throws DAOLogicException {
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement(properties.getProperty(SELECT_LAST_FIVE_CREATED_QUIZZES))) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Quiz> quizzes = new ArrayList<>();
+
+            while (resultSet.next()) {
+
+                Quiz quiz = QuizImpl.QuizBuilder()
+                        .setId(BigInteger.valueOf(resultSet.getLong(ID_QUIZ)))
+                        .setTitle(resultSet.getString(TITLE))
+                        .setDescription(resultSet.getString(DESCRIPTION))
+                        .setQuizType(QuizType.values()[resultSet.getInt(QUIZ_TYPE)])
+                        .setCreationDate(resultSet.getDate(CREATION_DATE))
+                        .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
+                        .build();
+
+                quizzes.add(quiz);
+            }
+
+            return quizzes;
+        } catch (SQLException | QuizException e) {
+            log.error(GET_LAST_FIVE_CREATED_QUIZZES_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_LAST_FIVE_CREATED_QUIZZES_EXCEPTION, e);
+        }
+    }
 
     @Override
     public List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException {
