@@ -23,11 +23,12 @@ public interface UserAccomplishedQuizDAO {
 
   void addFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
-  void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz);
+  void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz) throws DAOLogicException;
 
   void removeFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
   String SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID = "SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID";
+  String ADD_ACCOMPLISHED_QUIZ = "ADD_ACCOMPLISHED_QUIZ";
 
   int TRUE_SQL = 1;
 }

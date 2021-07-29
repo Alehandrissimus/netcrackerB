@@ -28,6 +28,12 @@ public class QuizAccomplishedImpl {
         return isFavourite;
     }
 
+    public int getIntFavourite(){
+        if(this.isFavourite)
+            return 1;
+        else return 0;
+    }
+
     public void setFavourite(Boolean favourite) {
         isFavourite = favourite;
     }

@@ -3,11 +3,7 @@ package ua.netcracker.netcrackerquizb.dao.impl;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
@@ -22,6 +18,8 @@ import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
+
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.DAO_LOGIC_EXCEPTION;
 
 @Repository
 public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
@@ -109,8 +107,20 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
   }
 
   @Override
-  public void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz) {
-
+  public void addAccomplishedQuiz(BigInteger idUser, QuizAccomplishedImpl quiz) throws DAOLogicException {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(
+              properties.getProperty(ADD_ACCOMPLISHED_QUIZ));
+      preparedStatement.setLong(1, idUser.longValue());
+      preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
+      preparedStatement.setLong(3, quiz.getQuiz().getId().longValue());
+      preparedStatement.setLong(4, quiz.getCorrectAnswers().longValue());
+      preparedStatement.setInt(5, quiz.getIntFavourite());
+      preparedStatement.executeUpdate();
+    } catch (SQLException throwables) {
+      log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+    }
   }
 
   @Override
