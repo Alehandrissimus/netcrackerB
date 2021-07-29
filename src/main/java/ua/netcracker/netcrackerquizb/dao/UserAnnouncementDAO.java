@@ -46,7 +46,7 @@ public interface UserAnnouncementDAO {
 
     void deleteParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
 
-    List<Announcement> getAnnouncements(BigInteger idUser)
+    List<Announcement> getAllAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 
 }

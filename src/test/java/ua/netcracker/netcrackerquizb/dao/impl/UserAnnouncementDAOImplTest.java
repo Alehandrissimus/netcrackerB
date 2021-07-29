@@ -10,9 +10,8 @@ import ua.netcracker.netcrackerquizb.model.Announcement;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
-import java.io.IOException;
+
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -136,7 +135,7 @@ class UserAnnouncementDAOImplTest {
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void getAllAnnouncementByIdUser() {
         try {
-            List<Announcement> allAnnouncement = userAnnouncementDAO.getAnnouncements(BigInteger.ONE);
+            List<Announcement> allAnnouncement = userAnnouncementDAO.getAllAnnouncements(BigInteger.ONE);
             assertNotNull(allAnnouncement);
             for(Announcement announcement: allAnnouncement){
                 assertNotNull(announcement);

@@ -12,6 +12,7 @@ import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.service.AnnouncementService;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
@@ -31,7 +32,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public List<Announcement> getAllAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
-        return userAnnouncementDAO.getAnnouncements(idUser);
+        return userAnnouncementDAO.getAllAnnouncements(idUser);
     }
 
     @Override
@@ -105,5 +106,17 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             log.error(DAO_LOGIC_EXCEPTION + " in toDisLikeAnnouncement()");
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
+    }
+
+    @Override
+    public List<Announcement> getPopularAnnouncements(int numberAnnouncements)
+            throws AnnouncementDoesNotExistException, DAOLogicException {
+        return announcementDAO.getPopular(numberAnnouncements);
+    }
+
+    @Override
+    public Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser)
+            throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
+        return userAnnouncementDAO.getAnnouncementsLikedByUser(idUser);
     }
 }

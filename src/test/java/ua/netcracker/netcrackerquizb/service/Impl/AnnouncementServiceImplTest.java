@@ -12,6 +12,7 @@ import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -148,6 +149,32 @@ class AnnouncementServiceImplTest {
         } catch (AnnouncementException | DAOLogicException e) {
             log.error(LOG_ERROR_CASE +"toLikeAndDisLikeAnnouncement "+ e.getMessage());
             fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void getPopularAnnouncements() {
+        try {
+            List<Announcement> announcements = announcementService.getPopularAnnouncements(4);
+            assertNotNull(announcements);
+            for(Announcement announcement: announcements)
+                assertNotNull(announcement);
+        } catch (AnnouncementDoesNotExistException | DAOLogicException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void getAnnouncementsLikedByUser() {
+        try {
+            Set<Announcement> announcementSet = announcementService.getAnnouncementsLikedByUser(BigInteger.ONE);
+            assertNotNull(announcementSet);
+            for(Announcement announcement: announcementSet)
+                assertNotNull(announcement);
+        } catch (AnnouncementDoesNotExistException | DAOLogicException | AnnouncementException e) {
+            e.printStackTrace();
         }
     }
 }

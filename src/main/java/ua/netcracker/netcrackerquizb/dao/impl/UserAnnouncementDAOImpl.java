@@ -173,7 +173,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
     }
 
     @Override
-    public List<Announcement> getAnnouncements(BigInteger idUser)
+    public List<Announcement> getAllAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(

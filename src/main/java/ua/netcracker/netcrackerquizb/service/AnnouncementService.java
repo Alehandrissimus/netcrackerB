@@ -7,6 +7,7 @@ import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 public interface AnnouncementService {
 
@@ -27,4 +28,10 @@ public interface AnnouncementService {
 
     void toDisLikeAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
             throws AnnouncementException, DAOLogicException;
+
+    List<Announcement> getPopularAnnouncements(int numberAnnouncements)
+            throws AnnouncementDoesNotExistException, DAOLogicException;
+
+    Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser)
+            throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 }
