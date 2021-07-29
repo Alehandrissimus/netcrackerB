@@ -42,12 +42,13 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
        connection = DAOUtil.getDataSource(URL, USERNAME, PASSWORD, properties);
     }
 
+    @Override
     public void setTestConnection() throws DAOConfigException {
         try {
             connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);
         } catch (DAOConfigException e) {
-            log.error(String.format(testConnectionError, e.getMessage()));
-            throw new DAOConfigException(testConnectionErrorWithoutStringFormat, e);
+            log.error(String.format(TEST_CONNECTION_ERR, e.getMessage()));
+            throw new DAOConfigException(TEST_CONNECTION_EXC, e);
         }
     }
 

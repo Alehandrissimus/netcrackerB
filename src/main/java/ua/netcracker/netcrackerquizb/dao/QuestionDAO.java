@@ -1,5 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao;
 
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuestionDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.Answer;
@@ -14,6 +15,8 @@ public interface QuestionDAO {
     final String questionNameColumn = "question_name";
     final String questionTypeColumn = "question_type";
     final String questionQuizIdColumn = "quiz";
+
+    void setTestConnection() throws DAOConfigException;
 
     Question getQuestionById(BigInteger id, Collection<Answer> answers) throws QuestionDoesNotExistException, DAOLogicException;
 

@@ -30,28 +30,13 @@ public interface MessagesForException {
     String GET_QUIZZES_BY_TITLE_EXCEPTION = "SQL Exception while getQuizzesByTitle in QuizDAOImpl";
     String GET_QUIZZES_BY_TYPE_EXCEPTION = "SQL Exception while getQuizzesByType in QuizDAOImpl";
 
-    String testConnectionError = "Error while setting test connection %s";
-    String testConnectionErrorWithoutStringFormat = "Error while setting test connection";
-    String getQuestionByIdNotFoundErr = "QuestionDoesNotExistException in getQuestionById, questionId = %d";
-    String getQuestionByIdNotFoundExc = "getQuestionById() not found question by id = %s";
-    String getQuestionByDataNotFoundErr = "QuestionDoesNotExistException in getQuestionByData, questionText = %s, quiz = %d";
-    String getQuestionByDataNotFoundExc = "getQuestionByData not found question by questionText = %s, quiz = %d";
-    String getQuestionByDataLogicErr = "SQL Exception while getQuestionByData in QuestionDAOImpl";
-    String getQuestionByDataLogicExc = "SQLException in getQuestionByData";
-    String GetQuestionByIdLogicErr = "SQL Exception while getQuestionById in QuestionDAOImpl";
-    String GetQuestionByIdLogicExc = "SQLException in getQuestionById";
-    String createQuestionNotFoundErr = "QuestionDoesNotExistException in createQuestion, questionText = %s, quizId = %d";
-    String createQuestionNotFoundExc = "createQuestion not found in new created question, questionText = %s, quizId = %d";
-    String createQuestionLogicErr = "SQL Exception while createQuestion in QuestionDAOImpl";
-    String createQuestionLogicExc = "SQLException in createQuestion";
-    String deleteQuestionLogicErr = "SQL Exception while deleteQuestion in QuestionDAOImpl";
-    String deleteQuestionLogicExc = "SQLException in deleteQuestion";
-    String getAllQuestionsNotFoundErr = "QuestionDoesNotExistException in getAllQuestions , quizId = %s";
-    String getAllQuestionsNotFoundExc = "getAllQuestions have not found any questions by quizId = %s";
-    String getAllQuestionsLogicErr = "SQL Exception while getAllQuestions in QuestionDAOImpl";
-    String getAllQuestionsLogicExc = "SQLException in getAllQuestions";
-    String updateQuestionLogicErr = "SQL Exception while updateQuestion in QuestionDAOImpl";
-    String updateQuestionLogicExc = "SQLException in updateQuestion";
+    String TEST_CONNECTION_ERR = "Error while setting test connection %s";
+    String TEST_CONNECTION_EXC = "Error while setting test connection";
+    String QUESTION_NOT_FOUND = "QuestionDoesNotExistException ";
+    String QUESTION_DUPLICATE = "Question title duplicate within one quiz";
+    String QUESTION_EMPTY = "Question title is empty";
+
+    String ANSWER_EMPTY = "Answer title is empty";
 
     String getAnswerByIdNotFoundErr = "AnswerDoesNotExistException in getAnswerById, answerId = %d";
     String getAnswerByIdNotFoundExc = "getAnswerById() not found answer by answerId = %d";

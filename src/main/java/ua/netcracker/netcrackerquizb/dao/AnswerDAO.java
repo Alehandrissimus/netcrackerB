@@ -1,6 +1,7 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.model.Answer;
 
@@ -13,6 +14,8 @@ public interface AnswerDAO {
     String SQL_ANSWER_TEXT = "text";
     String SQL_ANSWER_IS_TRUE = "is_true";
     String SQL_ANSWER_QUESTION = "question";
+
+    void setTestConnection() throws DAOConfigException;
 
     Answer getAnswerById(BigInteger id) throws DAOLogicException, AnswerDoesNotExistException;
 
