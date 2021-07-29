@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
       if (user != null) {
         return userDAO.getAuthorizeUser(user.getEmail(), user.getPassword());
       }
-      throw new UserException("Invalid user " + user);
+      throw new UserException("Invalid user");
     } catch (DAOLogicException | UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
       log.info(DAO_LOGIC_EXCEPTION + " in authorize()");
       throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);

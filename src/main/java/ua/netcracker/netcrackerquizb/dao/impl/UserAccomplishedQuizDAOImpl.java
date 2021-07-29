@@ -21,7 +21,6 @@ import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
-import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
 @Repository
@@ -110,7 +109,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
   }
 
   @Override
-  public void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz, boolean favorite) {
+  public void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz) {
 
   }
 

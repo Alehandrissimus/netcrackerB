@@ -23,7 +23,7 @@ public interface UserAccomplishedQuizDAO {
 
   void addFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
-  void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz, boolean favorite);
+  void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
   void removeFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
