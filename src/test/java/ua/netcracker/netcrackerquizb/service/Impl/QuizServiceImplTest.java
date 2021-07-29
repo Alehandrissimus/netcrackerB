@@ -8,8 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
-import ua.netcracker.netcrackerquizb.model.User;
-import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
+import ua.netcracker.netcrackerquizb.service.QuizService;
 
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class QuizServiceImplTest {
 
     @Autowired
-    private QuizServiceImpl quizService;
+    private QuizService quizService;
+
     private static final Logger log = Logger.getLogger(QuizServiceImplTest.class);
 
     @Test

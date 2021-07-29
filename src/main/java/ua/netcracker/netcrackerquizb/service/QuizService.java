@@ -25,5 +25,4 @@ public interface QuizService {
 
     Quiz getQuizByTitle(String title) throws QuizDoesNotExistException, DAOLogicException, QuizException;
 
-
 }
