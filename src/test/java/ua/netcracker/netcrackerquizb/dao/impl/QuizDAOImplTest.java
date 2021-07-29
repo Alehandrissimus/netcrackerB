@@ -64,7 +64,6 @@ class QuizDAOImplTest {
             fail();
         }
 
-
     }
 
     @Test
@@ -159,16 +158,16 @@ class QuizDAOImplTest {
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    void getQuizzesByTitleTest() {
+    void getQuizByTitleTest() {
         try {
             String title = "ZNO";
-            List<Quiz> quizzes = quizDAO.getQuizzesByTitle(title);
-            log.info("Get quizzes by title in test");
-            if (!quizzes.isEmpty()) {
-                assertEquals(title, quizzes.get(0).getTitle());
+            Quiz quiz = quizDAO.getQuizByTitle(title);
+            log.info("Get quiz by title in test");
+            if (quiz != null) {
+                assertEquals(title, quiz.getTitle());
             }
         } catch (QuizDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing getQuizzesByTitle ", e);
+            log.error("Error while testing getQuizByTitle ", e);
             fail();
         }
 

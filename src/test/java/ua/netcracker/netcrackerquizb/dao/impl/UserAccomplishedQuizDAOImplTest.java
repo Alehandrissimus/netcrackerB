@@ -1,15 +1,23 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
 import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.dao.UserAccomplishedQuizDAO;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.*;
+import ua.netcracker.netcrackerquizb.model.Quiz;
+import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
+import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 class UserAccomplishedQuizDAOImplTest {
@@ -65,4 +73,16 @@ class UserAccomplishedQuizDAOImplTest {
 //    }
 
   }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void addAccomplishedQuiz() {
+      try {
+        userAccomplishedQuizDAO.addAccomplishedQuiz(BigInteger.ONE, new QuizAccomplishedImpl(
+                BigInteger.valueOf(5), true, QuizImpl.QuizBuilder().setId(BigInteger.ONE).build()));
+      } catch (DAOLogicException | QuizException e) {
+        //log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
+        fail();
+      }
+    }
 }

@@ -25,13 +25,14 @@ public class QuizServiceImpl implements QuizService {
     @Autowired
     private QuizDAO quizDAO;
 
-
     @Override
     public Quiz buildNewQuiz(String title, String description, QuizType quizType, BigInteger userId)
             throws QuizException, DAOLogicException, UserException {
         try {
-            if (quizDAO.existQuizByDescription(description)) {
-                log.info(QUIZ_ALREADY_EXISTS);
+            boolean isExist = quizDAO.existQuizByTitle(title);
+
+            if (isExist) {
+                log.error(QUIZ_ALREADY_EXISTS);
                 throw new QuizException(QUIZ_ALREADY_EXISTS);
             }
             Quiz quiz = QuizImpl.QuizBuilder()
@@ -44,12 +45,9 @@ public class QuizServiceImpl implements QuizService {
 
             return quizDAO.createQuiz(quiz);
 
-        } catch (DAOLogicException e) {
-            log.info(DAO_LOGIC_EXCEPTION + " in buildNewQuiz()");
+        } catch (DAOLogicException | UserDoesNotExistException e) {
+            log.error(DAO_LOGIC_EXCEPTION + " in buildNewQuiz()");
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
-        } catch (UserDoesNotExistException e) {
-            log.error(DONT_ENOUGH_RIGHTS + " to buildNewQuiz");
-            throw new UserException(DONT_ENOUGH_RIGHTS);
         }
 
     }
@@ -79,7 +77,6 @@ public class QuizServiceImpl implements QuizService {
             log.error(QUIZ_NOT_FOUND_EXCEPTION + " in deleteQuiz");
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
-
     }
 
     @Override
@@ -99,18 +96,18 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getLastFiveCreatedQuizzes() throws QuizDoesNotExistException, DAOLogicException {
-        return quizDAO.getLastFiveCreatedQuizzes();
+    public List<Quiz> getLastThreeCreatedQuizzes() throws QuizDoesNotExistException, DAOLogicException {
+        return quizDAO.getLastThreeCreatedQuizzes();
     }
 
     @Override
-    public List<Quiz> getQuizzesByTitle(String title)
+    public Quiz getQuizByTitle(String title)
             throws QuizDoesNotExistException, DAOLogicException, QuizException {
         if (title.isBlank()) {
             log.error(EMPTY_TITLE);
             throw new QuizException(EMPTY_TITLE);
         }
-        return quizDAO.getQuizzesByTitle(title);
+        return quizDAO.getQuizByTitle(title);
     }
 
 }
