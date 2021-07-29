@@ -19,15 +19,15 @@ public interface MessagesForException {
     String EMPTY_ANNOUNCEMENT_ADDRESS = "Address field cannot be empty";
     String ADDRESS_TOO_LONG = "Length of the address field cannot exceed 30 characters";
 
-    String QUIZ_ALREADY_EXISTS = "Quiz with the same description already exists";
+    String QUIZ_ALREADY_EXISTS = "Quiz with the same title already exists";
     String QUIZ_NOT_FOUND_EXCEPTION = "Quiz does not exist!";
     String QUIZ_HAS_NOT_BEEN_RECEIVED = "Quiz has not been received";
     String CREATE_QUIZ_EXCEPTION = "SQL Exception while createQuiz in QuizDAOImpl";
     String DELETE_QUIZ_EXCEPTION = "SQL Exception while deleteQuiz in QuizDAOImpl";
     String GET_QUIZ_BY_ID_EXCEPTION = "SQL Exception while getQuizById in QuizDAOImpl";
     String GET_ALL_QUIZZES_EXCEPTION = "SQL Exception while getAllQuizzes in QuizDAOImpl";
-    String GET_LAST_FIVE_CREATED_QUIZZES_EXCEPTION = "SQL Exception while getLastFiveCreatedQuizzes in QuizDAOImpl";
-    String GET_QUIZZES_BY_TITLE_EXCEPTION = "SQL Exception while getQuizzesByTitle in QuizDAOImpl";
+    String GET_LAST_THREE_CREATED_QUIZZES_EXCEPTION = "SQL Exception while getLastThreeCreatedQuizzes in QuizDAOImpl";
+    String GET_QUIZ_BY_TITLE_EXCEPTION = "SQL Exception while getQuizByTitle in QuizDAOImpl";
     String GET_QUIZZES_BY_TYPE_EXCEPTION = "SQL Exception while getQuizzesByType in QuizDAOImpl";
 
     String TEST_CONNECTION_ERR = "Error while setting test connection %s";

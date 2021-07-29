@@ -98,19 +98,6 @@ public class QuizImpl implements Quiz {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        QuizImpl quiz = (QuizImpl) o;
-        return Objects.equals(id, quiz.id) && Objects.equals(title, quiz.title) && Objects.equals(description, quiz.description) && quizType == quiz.quizType && Objects.equals(creationDate, quiz.creationDate) && Objects.equals(creatorId, quiz.creatorId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, quizType, creationDate, creatorId);
-    }
-
     public class Builder {
 
         private Builder() {

@@ -28,10 +28,9 @@ public interface QuizDAO {
     String DELETE_QUIZ = "DELETE_QUIZ";
     String SELECT_QUIZ_BY_ID = "SELECT_QUIZ_BY_ID";
     String SELECT_ALL_QUIZZES = "SELECT_ALL_QUIZZES";
-    String SELECT_QUIZZES_BY_TITLE = "SELECT_QUIZZES_BY_TITLE";
+    String SELECT_QUIZ_BY_TITLE = "SELECT_QUIZ_BY_TITLE";
     String SELECT_QUIZZES_BY_TYPE = "SELECT_QUIZZES_BY_TYPE";
-    String SELECT_QUIZ_BY_DESCRIPTION = "SELECT_QUIZ_BY_DESCRIPTION";
-    String SELECT_LAST_FIVE_CREATED_QUIZZES = "SELECT_LAST_FIVE_CREATED_QUIZZES";
+    String SELECT_LAST_THREE_CREATED_QUIZZES = "SELECT_LAST_THREE_CREATED_QUIZZES";
 
     Quiz createQuiz(Quiz quiz) throws DAOLogicException, UserDoesNotExistException;
 
@@ -41,14 +40,14 @@ public interface QuizDAO {
 
     Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DAOLogicException;
 
-    boolean existQuizByDescription(String description) throws DAOLogicException;
+    boolean existQuizByTitle(String title) throws DAOLogicException;
 
     List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DAOLogicException;
 
     List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getLastFiveCreatedQuizzes() throws DAOLogicException, QuizDoesNotExistException;
+    List<Quiz> getLastThreeCreatedQuizzes() throws DAOLogicException, QuizDoesNotExistException;
 
-    List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException;
+    Quiz getQuizByTitle(String title) throws QuizDoesNotExistException, DAOLogicException;
 
 }

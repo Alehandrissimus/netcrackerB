@@ -21,9 +21,9 @@ public interface QuizService {
 
     List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getLastFiveCreatedQuizzes() throws QuizDoesNotExistException, DAOLogicException;
+    List<Quiz> getLastThreeCreatedQuizzes() throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException, QuizException;
+    Quiz getQuizByTitle(String title) throws QuizDoesNotExistException, DAOLogicException, QuizException;
 
 
 }

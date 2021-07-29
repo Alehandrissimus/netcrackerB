@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuestionDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.QuestionException;
 import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.QuestionType;
 import ua.netcracker.netcrackerquizb.model.impl.QuestionImpl;
@@ -28,7 +30,7 @@ class QuestionServiceImplTest {
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    void createQuestion() throws DAOLogicException, QuestionDoesNotExistException {
+    void createQuestion() throws DAOLogicException, QuestionDoesNotExistException, AnswerDoesNotExistException, QuestionException {
         BigInteger quizId = BigInteger.valueOf(2);
         String questionText = "" + new Random().nextInt(500000);
         Question questionModel = new QuestionImpl(
@@ -45,7 +47,7 @@ class QuestionServiceImplTest {
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    void createQuestionNull() throws DAOLogicException, QuestionDoesNotExistException {
+    void createQuestionNull() throws DAOLogicException, QuestionDoesNotExistException, AnswerDoesNotExistException, QuestionException {
         BigInteger quizId = BigInteger.valueOf(2);
         String questionText = "";
         Question questionModel = new QuestionImpl(

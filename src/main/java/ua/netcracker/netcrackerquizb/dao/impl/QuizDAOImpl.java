@@ -158,11 +158,11 @@ public class QuizDAOImpl implements QuizDAO {
     }
 
     @Override
-    public boolean existQuizByDescription(String description) throws DAOLogicException {
+    public boolean existQuizByTitle(String title) throws DAOLogicException {
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty(SELECT_QUIZ_BY_DESCRIPTION))) {
+                     connection.prepareStatement(properties.getProperty(SELECT_QUIZ_BY_TITLE))) {
 
-            preparedStatement.setString(1, description);
+            preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
 
@@ -205,9 +205,9 @@ public class QuizDAOImpl implements QuizDAO {
     }
 
     @Override
-    public List<Quiz> getLastFiveCreatedQuizzes() throws DAOLogicException {
+    public List<Quiz> getLastThreeCreatedQuizzes() throws DAOLogicException {
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty(SELECT_LAST_FIVE_CREATED_QUIZZES))) {
+                     connection.prepareStatement(properties.getProperty(SELECT_LAST_THREE_CREATED_QUIZZES))) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -229,39 +229,36 @@ public class QuizDAOImpl implements QuizDAO {
 
             return quizzes;
         } catch (SQLException | QuizException e) {
-            log.error(GET_LAST_FIVE_CREATED_QUIZZES_EXCEPTION + e.getMessage());
-            throw new DAOLogicException(GET_LAST_FIVE_CREATED_QUIZZES_EXCEPTION, e);
+            log.error(GET_LAST_THREE_CREATED_QUIZZES_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_LAST_THREE_CREATED_QUIZZES_EXCEPTION, e);
         }
     }
 
     @Override
-    public List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException {
+    public Quiz getQuizByTitle(String title) throws QuizDoesNotExistException, DAOLogicException {
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty(SELECT_QUIZZES_BY_TITLE))) {
+                     connection.prepareStatement(properties.getProperty(SELECT_QUIZ_BY_TITLE))) {
 
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<Quiz> quizzes = new ArrayList<>();
-
-            while (resultSet.next()) {
-
-                Quiz quiz = QuizImpl.QuizBuilder()
-                        .setId(BigInteger.valueOf(resultSet.getLong(ID_QUIZ)))
-                        .setTitle(resultSet.getString(TITLE))
-                        .setDescription(resultSet.getString(DESCRIPTION))
-                        .setQuizType(QuizType.values()[resultSet.getInt(QUIZ_TYPE)])
-                        .setCreationDate(resultSet.getDate(CREATION_DATE))
-                        .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
-                        .build();
-
-                quizzes.add(quiz);
+            if (!resultSet.next()) {
+                log.error(QUIZ_HAS_NOT_BEEN_RECEIVED + "in getQuizByTitle()");
+                throw new QuizDoesNotExistException(QUIZ_HAS_NOT_BEEN_RECEIVED);
             }
-            return quizzes;
+
+            return QuizImpl.QuizBuilder()
+                    .setId(BigInteger.valueOf(resultSet.getLong(ID_QUIZ)))
+                    .setTitle(resultSet.getString(TITLE))
+                    .setDescription(resultSet.getString(DESCRIPTION))
+                    .setQuizType(QuizType.values()[resultSet.getInt(QUIZ_TYPE)])
+                    .setCreationDate(resultSet.getDate(CREATION_DATE))
+                    .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
+                    .build();
 
         } catch (SQLException | QuizException e) {
-            log.error(GET_QUIZZES_BY_TITLE_EXCEPTION + e.getMessage());
-            throw new DAOLogicException(GET_QUIZZES_BY_TITLE_EXCEPTION, e);
+            log.error(GET_QUIZ_BY_TITLE_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_QUIZ_BY_TITLE_EXCEPTION, e);
         }
     }
 
