@@ -25,10 +25,10 @@ public class QuizServiceImpl implements QuizService {
     @Autowired
     private QuizDAO quizDAO;
 
+
     @Override
-    public Quiz buildNewQuiz(String title, String description, QuizType quizType, BigInteger userId) throws QuizException, DAOLogicException {
-        title = title.trim();
-        description = description.trim();
+    public Quiz buildNewQuiz(String title, String description, QuizType quizType, BigInteger userId)
+            throws QuizException, DAOLogicException, UserException {
         try {
             if (quizDAO.existQuizByDescription(description)) {
                 log.info(QUIZ_ALREADY_EXISTS);
@@ -44,29 +44,39 @@ public class QuizServiceImpl implements QuizService {
 
             return quizDAO.createQuiz(quiz);
 
-        } catch (DAOLogicException | UserDoesNotExistException e) {
+        } catch (DAOLogicException e) {
             log.info(DAO_LOGIC_EXCEPTION + " in buildNewQuiz()");
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
+        } catch (UserDoesNotExistException e) {
+            log.error(DONT_ENOUGH_RIGHTS + " to buildNewQuiz");
+            throw new UserException(DONT_ENOUGH_RIGHTS);
         }
 
     }
 
     @Override
-    public void updateQuiz(Quiz updatedQuiz) throws QuizDoesNotExistException, DAOLogicException {
+    public void updateQuiz(Quiz updatedQuiz)
+            throws QuizDoesNotExistException, DAOLogicException {
+
         Quiz quizFromDAO = quizDAO.getQuizById(updatedQuiz.getId());
+
         if (quizFromDAO != null) {
             quizDAO.updateQuiz(updatedQuiz);
         } else {
+            log.error(QUIZ_NOT_FOUND_EXCEPTION + " in updateQuiz");
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
     }
 
     @Override
-    public void deleteQuiz(Quiz quiz) throws QuizDoesNotExistException, DAOLogicException {
+    public void deleteQuiz(Quiz quiz)
+            throws QuizDoesNotExistException, DAOLogicException, UserDoesNotExistException, UserException {
+
         Quiz quizFromDAO = quizDAO.getQuizById(quiz.getId());
         if (quizFromDAO != null) {
             quizDAO.deleteQuiz(quiz);
         } else {
+            log.error(QUIZ_NOT_FOUND_EXCEPTION + " in deleteQuiz");
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
 
@@ -78,7 +88,8 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DAOLogicException {
+    public List<Quiz> getQuizzesByType(QuizType quizType)
+            throws QuizDoesNotExistException, DAOLogicException {
         return quizDAO.getQuizzesByType(quizType);
     }
 
@@ -88,8 +99,15 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getQuizzesByTitle(String title) throws QuizDoesNotExistException, DAOLogicException, QuizException {
+    public List<Quiz> getLastFiveCreatedQuizzes() throws QuizDoesNotExistException, DAOLogicException {
+        return quizDAO.getLastFiveCreatedQuizzes();
+    }
+
+    @Override
+    public List<Quiz> getQuizzesByTitle(String title)
+            throws QuizDoesNotExistException, DAOLogicException, QuizException {
         if (title.isBlank()) {
+            log.error(EMPTY_TITLE);
             throw new QuizException(EMPTY_TITLE);
         }
         return quizDAO.getQuizzesByTitle(title);

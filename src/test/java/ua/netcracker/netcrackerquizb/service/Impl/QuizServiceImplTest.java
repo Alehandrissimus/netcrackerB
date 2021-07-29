@@ -44,14 +44,11 @@ class QuizServiceImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void buildNewQuiz() {
         try {
-            User user = new UserImpl.UserBuilder()
-                    .setId(BigInteger.valueOf(1))
-                    .build();
             Quiz quiz = quizService.buildNewQuiz(
                     "Math",
                     "Math quiz",
                     QuizType.MATHEMATICS,
-                    user.getId());
+                    BigInteger.valueOf(1));
 
             log.info("Quiz with id " + quiz.getId() + " was created");
             assertNotNull(quiz);
@@ -59,9 +56,11 @@ class QuizServiceImplTest {
             log.info("Quiz with id " + quiz.getId() + " was deleted");
             quizService.deleteQuiz(quiz);
 
-        } catch (QuizException | DAOLogicException | QuizDoesNotExistException e) {
-            e.printStackTrace();
+        } catch (QuizException | DAOLogicException | QuizDoesNotExistException | UserException | UserDoesNotExistException e) {
+            log.error("Error while testing buildNewQuiz in QuizService", e);
+            fail();
         }
     }
+
 
 }

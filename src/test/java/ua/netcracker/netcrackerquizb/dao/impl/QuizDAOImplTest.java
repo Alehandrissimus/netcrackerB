@@ -8,9 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
-import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
-import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
 import java.math.BigInteger;
 import java.sql.Date;
@@ -18,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.ERROR_WHILE_SETTING_TEST_CONNECTION;
 
 @SpringBootTest
 class QuizDAOImplTest {
@@ -31,7 +30,7 @@ class QuizDAOImplTest {
         try {
             quizDAO.setTestConnection();
         } catch (DAOConfigException e) {
-            log.error("Error while setting test connection " + e.getMessage());
+            log.error(ERROR_WHILE_SETTING_TEST_CONNECTION + e.getMessage());
             fail();
         }
     }
@@ -41,10 +40,6 @@ class QuizDAOImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createQuizTest() {
         try {
-            User user = new UserImpl.UserBuilder()
-                    .setId(BigInteger.valueOf(1))
-                    .build();
-
             String title = "History Quiz";
             String description = "Historical quiz";
             QuizType quizType = QuizType.HISTORIC;
@@ -53,7 +48,7 @@ class QuizDAOImplTest {
                     .setDescription(description)
                     .setQuizType(quizType)
                     .setCreationDate(new Date(System.currentTimeMillis()))
-                    .setCreatorId(user.getId())
+                    .setCreatorId(BigInteger.valueOf(3))
                     .build();
 
             Quiz newQuiz = quizDAO.createQuiz(quiz);
@@ -95,9 +90,6 @@ class QuizDAOImplTest {
     void deleteQuizTest() {
 
         try {
-            User user = new UserImpl.UserBuilder()
-                    .setId(BigInteger.valueOf(1))
-                    .build();
 
             String title = "newOlo";
             String description = "Horror quiz";
@@ -107,7 +99,7 @@ class QuizDAOImplTest {
                     .setDescription(description)
                     .setQuizType(quizType)
                     .setCreationDate(new Date(System.currentTimeMillis()))
-                    .setCreatorId(user.getId())
+                    .setCreatorId(BigInteger.valueOf(5))
                     .build();
 
             Quiz newQuiz = quizDAO.createQuiz(quiz);

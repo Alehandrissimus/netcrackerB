@@ -116,7 +116,9 @@ public class QuizImpl implements Quiz {
         private Builder() {
         }
 
-        public Builder setId(BigInteger id) {
+        public Builder setId(BigInteger id) throws QuizException {
+            if(id == null)
+                throw new QuizException(EMPTY_ID);
             QuizImpl.this.id = id;
             return this;
         }
