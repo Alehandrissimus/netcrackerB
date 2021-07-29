@@ -3,11 +3,9 @@ package ua.netcracker.netcrackerquizb.service;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
-import ua.netcracker.netcrackerquizb.model.User;
-
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
 
 public interface AnnouncementService {
@@ -15,10 +13,12 @@ public interface AnnouncementService {
     List<Announcement> getAllAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 
-    void validateLikedUser(User user, Announcement announcement);
+    BigInteger buildNewAnnouncement(Announcement announcement)
+            throws AnnouncementException, DAOLogicException, UserException;
 
-    void validateAnnouncement(Announcement announcement);
-
-    BigInteger buildNewAnnouncement(String title, String description, String address, BigInteger owner)
+    void editAnnouncement(Announcement announcement, BigInteger idUser)
             throws AnnouncementException, DAOLogicException;
+
+    void deleteAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
+            throws DAOLogicException, AnnouncementException;
 }

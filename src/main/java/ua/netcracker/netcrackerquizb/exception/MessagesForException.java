@@ -11,6 +11,7 @@ public interface MessagesForException {
 
     String ANNOUNCEMENT_NOT_FOUND_EXCEPTION = "Announcement does not exist!";
     String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
+    String EMPTY_ANNOUNCEMENT_ID = "IdAnnouncement field cannot be empty";
     String ANNOUNCEMENT_ALREADY_EXISTS = "Announcement with the same name already exists";
     String EMPTY_ANNOUNCEMENT_TITLE = "Title field cannot be empty";
     String EMPTY_ANNOUNCEMENT_DESCRIPTION = "Description field cannot be empty";
@@ -64,4 +65,5 @@ public interface MessagesForException {
     String getAnswersByQuestionIdLogicErr = "SQL Exception while getAnswersByQuestionId in AnswerDAOImpl";
     String getAnswersByQuestionIdLogicExc = "SQL Exception while getAnswersByQuestionId with questionId = %d";
 
+    String DONT_ENOUGH_RIGHTS = "You don't have enough rights";
 }

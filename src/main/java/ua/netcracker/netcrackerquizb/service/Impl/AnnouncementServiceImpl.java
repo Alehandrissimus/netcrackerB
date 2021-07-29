@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.impl.AnnouncementDAOImpl;
 import ua.netcracker.netcrackerquizb.dao.impl.UserAnnouncementDAOImpl;
-import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.dao.impl.UserDAOImpl;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Announcement;
-import ua.netcracker.netcrackerquizb.model.User;
-import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
+import ua.netcracker.netcrackerquizb.model.UserRoles;
 import ua.netcracker.netcrackerquizb.service.AnnouncementService;
 import java.math.BigInteger;
 import java.util.List;
@@ -27,6 +25,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     AnnouncementDAOImpl announcementDAO;
     @Autowired
     UserAnnouncementDAOImpl userAnnouncementDAO;
+    @Autowired
+    UserDAOImpl userDAO;
 
     @Override
     public List<Announcement> getAllAnnouncements(BigInteger idUser)
@@ -35,32 +35,47 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public BigInteger buildNewAnnouncement(String title , String description, String address, BigInteger owner) throws AnnouncementException, DAOLogicException {
-        title = title.trim();
-        description = description.trim();
-        address = address.trim();
+    public BigInteger buildNewAnnouncement(Announcement announcement)
+            throws UserException, AnnouncementException, DAOLogicException {
+
         try {
-            if(announcementDAO.isAnnouncementByTitle(title)) {
+            if(!userDAO.getUserById(announcement.getOwner()).getUserRole().equals(UserRoles.ADMIN))
+                throw new UserException(DONT_ENOUGH_RIGHTS);
+
+            if(announcementDAO.isAnnouncementByTitle(announcement.getTitle())) {
                 log.info(ANNOUNCEMENT_ALREADY_EXISTS + " in buildNewAnnouncement()");
                 throw new AnnouncementException(ANNOUNCEMENT_ALREADY_EXISTS);
             }
-            return announcementDAO.createAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
-                    .setTitle(title)
-                    .setDescription(description)
-                    .setAddress(address)
-                    .setOwner(owner)
-                    .build());
-        } catch (DAOLogicException e) {
+            return announcementDAO.createAnnouncement(announcement);
+        } catch (DAOLogicException | UserDoesNotExistException e) {
             log.info(DAO_LOGIC_EXCEPTION + " in buildNewAnnouncement()");
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
     }
 
     @Override
-    public void validateLikedUser(User user, Announcement announcement) {
+    public void editAnnouncement(Announcement announcement, BigInteger idUser)
+            throws AnnouncementException, DAOLogicException {
+        try {
+            if(!userDAO.getUserById(idUser).getUserRole().equals(UserRoles.ADMIN))
+                throw new AnnouncementException(DONT_ENOUGH_RIGHTS);
+            announcementDAO.editAnnouncement(announcement);
+        } catch (DAOLogicException | UserDoesNotExistException e) {
+            log.info(DAO_LOGIC_EXCEPTION + " in editAnnouncement()");
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
+        }
     }
 
     @Override
-    public void validateAnnouncement(Announcement announcement) {
+    public void deleteAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
+            throws DAOLogicException, AnnouncementException {
+        try {
+            if(!userDAO.getUserById(idUser).getUserRole().equals(UserRoles.ADMIN))
+                throw new AnnouncementException(DONT_ENOUGH_RIGHTS);
+            announcementDAO.deleteAnnouncement(idAnnouncement);
+        } catch (UserDoesNotExistException e) {
+            log.info(DAO_LOGIC_EXCEPTION + " in deleteAnnouncement()");
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
+        }
     }
 }

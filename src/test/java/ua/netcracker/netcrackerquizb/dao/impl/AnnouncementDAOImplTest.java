@@ -152,7 +152,6 @@ class AnnouncementDAOImplTest {
                 announcementDAO.getAnnouncementById(idAnnouncement));
             assertNotNull(thrown);
         } catch (DAOLogicException | AnnouncementDoesNotExistException | AnnouncementException e) {
-            e.printStackTrace();
             log.error("Error while testing deleteAnnouncement " + e.getMessage());
             fail();
         }

@@ -97,12 +97,15 @@ public class AnnouncementImpl implements Announcement {
       newAnnouncement = new AnnouncementImpl();
     }
 
-    public AnnouncementBuilder setId(BigInteger id){
+    public AnnouncementBuilder setId(BigInteger id) throws AnnouncementException {
+      if(id == null)
+        throw new AnnouncementException(EMPTY_ANNOUNCEMENT_ID);
       newAnnouncement.id = id;
       return this;
     }
 
     public AnnouncementBuilder setTitle(String title) throws AnnouncementException{
+      title = title.trim();
       if(title.isBlank())
         throw new AnnouncementException(EMPTY_ANNOUNCEMENT_TITLE);
       if(title.length()>MAX_LENGTH_TITLE)
@@ -112,6 +115,7 @@ public class AnnouncementImpl implements Announcement {
     }
 
     public AnnouncementBuilder setDescription(String description) throws AnnouncementException{
+      description = description.trim();
       if(description.isBlank())
         throw new AnnouncementException(EMPTY_ANNOUNCEMENT_DESCRIPTION);
       if(description.length()>MAX_LENGTH_DESCRIPTION)
@@ -133,6 +137,7 @@ public class AnnouncementImpl implements Announcement {
     }
 
     public AnnouncementBuilder setAddress(String address) throws AnnouncementException{
+      address = address.trim();
       if(address.isBlank())
         throw new AnnouncementException(EMPTY_ANNOUNCEMENT_ADDRESS);
       if(address.length()>MAX_LENGTH_ADDRESS)
@@ -151,7 +156,7 @@ public class AnnouncementImpl implements Announcement {
       return this;
     }
 
-    public AnnouncementBuilder setBlank(BigInteger idUser){
+    public AnnouncementBuilder setBlank(Object blank){
       return this;
     }
 

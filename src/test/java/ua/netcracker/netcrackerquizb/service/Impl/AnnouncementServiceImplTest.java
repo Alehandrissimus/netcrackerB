@@ -1,19 +1,16 @@
 package ua.netcracker.netcrackerquizb.service.Impl;
 
-import com.fasterxml.jackson.databind.introspect.Annotated;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.dao.impl.AnnouncementDAOImpl;
-import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Announcement;
-
+import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class AnnouncementServiceImplTest {
 
+    private static final String TEST_TITLE = "test";
+    private static final String TEST_DESCRIPTION = "testDescription";
+    private static final String TEST_ADDRESS = "testAddress";
+    private static final String TEST_NEW_TITLE = "newTest";
+    private static final String TEST_NEW_DESCRIPTION = "newDescription";
+    private static final String TEST_NEW_ADDRESS = "newAddress";
     private static final String LOG_ERROR = "Error while setting test connection" + " ";
+    private static final String LOG_ERROR_CASE = "Error while testing" + " ";
 
 
     @Autowired
@@ -41,30 +45,36 @@ class AnnouncementServiceImplTest {
         }
     }
 
-
     @Test
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void buildNewAnnouncement() {
-
         try {
-            BigInteger idAnnouncement = announcementService.buildNewAnnouncement("test", "testDescription" ,
-                    "testAddress" , BigInteger.ONE);
+
+            BigInteger idAnnouncement = announcementService.buildNewAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
+                    .setTitle(TEST_TITLE)
+                    .setDescription(TEST_DESCRIPTION)
+                    .setOwner(BigInteger.ONE)
+                    .setAddress(TEST_ADDRESS)
+                    .build());
             assertNotNull(idAnnouncement);
             AnnouncementException exception = assertThrows(AnnouncementException.class,
-                    ()-> announcementService.buildNewAnnouncement("test", "testDescription" ,
-                            "testAddress" , BigInteger.ONE));
+                    ()-> announcementService.buildNewAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
+                            .setTitle(TEST_TITLE)
+                            .setDescription(TEST_DESCRIPTION)
+                            .setOwner(BigInteger.ONE)
+                            .setAddress(TEST_ADDRESS)
+                            .build()));
             assertNotNull(exception);
-            announcementDAO.deleteAnnouncement(idAnnouncement);
-        } catch (AnnouncementException | DAOLogicException e) {
-            e.printStackTrace();
+            announcementService.deleteAnnouncement(idAnnouncement, BigInteger.ONE);
+        } catch (AnnouncementException | DAOLogicException | UserException e) {
+            log.error(LOG_ERROR_CASE +"buildNewAnnouncement "+ e.getMessage());
+            fail();
         }
-
     }
 
     @Test
     @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void getAllAnnouncements() {
-
         try {
             List<Announcement> announcementList = announcementService.getAllAnnouncements(BigInteger.ONE);
             assertNotNull(announcementList);
@@ -72,8 +82,57 @@ class AnnouncementServiceImplTest {
                 assertNotNull(announcement);
             }
         } catch (AnnouncementDoesNotExistException | DAOLogicException | AnnouncementException e) {
-            e.printStackTrace();
+            log.error(LOG_ERROR_CASE +"getAllAnnouncements "+ e.getMessage());
+            fail();
         }
+    }
 
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void editAnnouncement() {
+        try {
+            BigInteger idAnnouncement = announcementService.buildNewAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
+                    .setTitle(TEST_TITLE)
+                    .setDescription(TEST_DESCRIPTION)
+                    .setOwner(BigInteger.ONE)
+                    .setAddress(TEST_ADDRESS)
+                    .build());
+            assertNotNull(idAnnouncement);
+            announcementService.editAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
+                    .setId(idAnnouncement)
+                    .setTitle(TEST_NEW_TITLE)
+                    .setDescription(TEST_NEW_DESCRIPTION)
+                    .setAddress(TEST_NEW_ADDRESS)
+                    .build(), BigInteger.ONE);
+            Announcement testAnnouncement = announcementDAO.getAnnouncementById(idAnnouncement);
+            assertEquals(TEST_NEW_TITLE, testAnnouncement.getTitle());
+            assertEquals(TEST_NEW_DESCRIPTION, testAnnouncement.getDescription());
+            assertEquals(TEST_NEW_ADDRESS, testAnnouncement.getAddress());
+            announcementService.deleteAnnouncement(idAnnouncement, BigInteger.ONE);
+        } catch (DAOLogicException | AnnouncementException | AnnouncementDoesNotExistException | UserException e) {
+            e.printStackTrace();
+            log.error(LOG_ERROR_CASE +"editAnnouncement "+ e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void deleteAnnouncement() {
+        try {
+            BigInteger idAnnouncement = announcementService.buildNewAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
+                    .setTitle(TEST_TITLE)
+                    .setDescription(TEST_DESCRIPTION)
+                    .setOwner(BigInteger.ONE)
+                    .setAddress(TEST_ADDRESS)
+                    .build());
+            assertNotNull(idAnnouncement);
+            announcementService.deleteAnnouncement(idAnnouncement, BigInteger.ONE);
+            AnnouncementDoesNotExistException thrown = assertThrows(AnnouncementDoesNotExistException.class, () ->
+                    announcementDAO.getAnnouncementById(idAnnouncement));
+            assertNotNull(thrown);
+        } catch (DAOLogicException | AnnouncementException | UserException e) {
+            log.error(LOG_ERROR_CASE +"deleteAnnouncement "+ e.getMessage());
+            fail();
+        }
     }
 }
