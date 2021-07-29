@@ -182,4 +182,28 @@ class AnnouncementDAOImplTest {
             fail();
         }
     }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void toLike() {
+        try {
+            int likes = announcementDAO.getAnnouncementById(BigInteger.ONE).getParticipantsCap();
+            announcementDAO.toLike(BigInteger.ONE);
+            assertEquals(likes + 1, announcementDAO.getAnnouncementById(BigInteger.ONE).getParticipantsCap());
+        } catch (DAOLogicException | AnnouncementDoesNotExistException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void toDisLike() {
+        try {
+            int likes = announcementDAO.getAnnouncementById(BigInteger.ONE).getParticipantsCap();
+            announcementDAO.toDisLike(BigInteger.ONE);
+            assertEquals(likes - 1, announcementDAO.getAnnouncementById(BigInteger.ONE).getParticipantsCap());
+        } catch (DAOLogicException | AnnouncementDoesNotExistException e) {
+            e.printStackTrace();
+        }
+    }
 }

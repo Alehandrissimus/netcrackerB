@@ -21,4 +21,10 @@ public interface AnnouncementService {
 
     void deleteAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
             throws DAOLogicException, AnnouncementException;
+
+    void toLikeAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
+            throws AnnouncementException, DAOLogicException;
+
+    void toDisLikeAnnouncement(BigInteger idAnnouncement, BigInteger idUser)
+            throws AnnouncementException, DAOLogicException;
 }

@@ -9,9 +9,6 @@ import java.util.Set;
 
 public interface AnnouncementDAO {
 
-
-    String PATH_PROPERTY = "src/main/resources/sqlScripts.properties";
-    String DRIVER_PATH_PROPERTY = "oracle.jdbc.OracleDriver";
     String URL_PROPERTY = "${spring.datasource.url}";
     String USERNAME_PROPERTY = "${spring.datasource.username}";
     String PASSWORD_PROPERTY = "${spring.datasource.password}";
@@ -23,6 +20,8 @@ public interface AnnouncementDAO {
     String DELETE_ANNOUNCEMENT_BY_ID = "DELETE_ANNOUNCEMENT_BY_ID";
     String GET_POPULAR_ANNOUNCEMENT = "GET_POPULAR_ANNOUNCEMENT";
     String GET_ANNOUNCEMENT_BY_ID = "GET_ANNOUNCEMENT_BY_ID";
+    String SET_LIKE = "SET_LIKE";
+    String UNSET_LIKE = "UNSET_LIKE";
 
     String ID_ANNOUNCEMENT = "ID_ANNOUNCEMENT";
     String TITLE = "TITLE";
@@ -31,10 +30,6 @@ public interface AnnouncementDAO {
     String DATE_CREATE = "DATE_CREATE";
     String ADDRESS = "ADDRESS";
     String LIKES = "LIKES";
-
-    String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
-//    String ANNOUNCEMENT_NOT_FOUND_EXCEPTION = "Announcement does not exist!";
-//    String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
 
     String ERROR_TEST_CONNECTION = "Error while setting test connection ";
 
@@ -54,4 +49,7 @@ public interface AnnouncementDAO {
 
     boolean isAnnouncementByTitle(String title) throws DAOLogicException;
 
+    void toLike(BigInteger idAnnouncement) throws DAOLogicException;
+
+    void toDisLike(BigInteger idAnnouncement) throws DAOLogicException;
 }

@@ -110,13 +110,13 @@ class AnnouncementServiceImplTest {
             assertEquals(TEST_NEW_ADDRESS, testAnnouncement.getAddress());
             announcementService.deleteAnnouncement(idAnnouncement, BigInteger.ONE);
         } catch (DAOLogicException | AnnouncementException | AnnouncementDoesNotExistException | UserException e) {
-            e.printStackTrace();
             log.error(LOG_ERROR_CASE +"editAnnouncement "+ e.getMessage());
             fail();
         }
     }
 
     @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
     void deleteAnnouncement() {
         try {
             BigInteger idAnnouncement = announcementService.buildNewAnnouncement(new AnnouncementImpl.AnnouncementBuilder()
@@ -132,6 +132,21 @@ class AnnouncementServiceImplTest {
             assertNotNull(thrown);
         } catch (DAOLogicException | AnnouncementException | UserException e) {
             log.error(LOG_ERROR_CASE +"deleteAnnouncement "+ e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void toLikeAndDisLikeAnnouncement() {
+        try {
+            announcementService.toLikeAnnouncement(BigInteger.ONE, BigInteger.TWO);
+            assertThrows(AnnouncementException.class, () ->
+                    announcementService.toLikeAnnouncement(BigInteger.ONE, BigInteger.ONE));
+            announcementService.toDisLikeAnnouncement(BigInteger.ONE, BigInteger.TWO);
+
+        } catch (AnnouncementException | DAOLogicException e) {
+            log.error(LOG_ERROR_CASE +"toLikeAndDisLikeAnnouncement "+ e.getMessage());
             fail();
         }
     }

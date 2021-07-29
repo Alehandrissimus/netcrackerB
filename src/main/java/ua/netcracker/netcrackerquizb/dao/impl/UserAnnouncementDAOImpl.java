@@ -126,7 +126,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
     }
 
     @Override
-    public boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser)
+    public boolean isParticipant(BigInteger idAnnouncement, BigInteger idUser)
             throws DAOLogicException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -159,7 +159,21 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
     }
 
     @Override
-    public List<Announcement> getAllAnnouncementByIdUser(BigInteger idUser)
+    public void deleteParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException {
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(DELETE_PARTICIPANT));
+            preparedStatement.setLong(1, idAnnouncement.longValue());
+            preparedStatement.setLong(2, idUser.longValue());
+            preparedStatement.executeUpdate();
+        } catch (SQLException throwables) {
+            log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+        }
+    }
+
+    @Override
+    public List<Announcement> getAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(

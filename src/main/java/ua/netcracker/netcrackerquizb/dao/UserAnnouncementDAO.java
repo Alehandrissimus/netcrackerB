@@ -16,6 +16,7 @@ public interface UserAnnouncementDAO {
     String SELECT_ANNOUNCEMENT_LIKED_BY_USER = "SELECT_ANNOUNCEMENT_LIKED_BY_USER";
     String GET_PARTICIPANT_BY_ID = "GET_PARTICIPANT_BY_ID";
     String ADD_PARTICIPANT = "ADD_PARTICIPANT";
+    String DELETE_PARTICIPANT = "DELETE_PARTICIPANT";
     String SELECT_ALL_ANNOUNCEMENT = "SELECT_ALL_ANNOUNCEMENT";
 
 
@@ -39,11 +40,13 @@ public interface UserAnnouncementDAO {
 
     Set<User> getUsersLikedAnnouncement(BigInteger idAnnouncement) throws UserDoesNotExistException, DAOLogicException;
 
-    boolean getParticipantById(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
+    boolean isParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
 
     void addParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
 
-    List<Announcement> getAllAnnouncementByIdUser(BigInteger idUser)
+    void deleteParticipant(BigInteger idAnnouncement, BigInteger idUser) throws DAOLogicException;
+
+    List<Announcement> getAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 
 }
