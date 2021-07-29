@@ -21,11 +21,11 @@ public interface UserAccomplishedQuizDAO {
 
   Set<QuizAccomplishedImpl> getFavoriteQuizesByUser(BigInteger id) throws DAOLogicException;
 
-  void addFavoriteQuiz(QuizAccomplishedImpl quiz);
+  void addFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
-  void addAccomplishedQuiz(QuizAccomplishedImpl quiz);
+  void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz, boolean favorite);
 
-  void removeFavoriteQuiz(QuizAccomplishedImpl quiz);
+  void removeFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
   String SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID = "SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID";
 

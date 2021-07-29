@@ -15,6 +15,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserAccomplishedQuizDAO;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
@@ -23,6 +24,7 @@ import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
+@Repository
 public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
 
   private Connection connection;
@@ -38,7 +40,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
       @Value(URL_PROPERTY) String URL,
       @Value(USERNAME_PROPERTY) String USERNAME,
       @Value(PASSWORD_PROPERTY) String PASSWORD
-  ) throws SQLException, ClassNotFoundException, IOException, DAOConfigException {
+  ) throws DAOConfigException {
     this.URL = URL;
     this.USERNAME = USERNAME;
     this.PASSWORD = PASSWORD;
@@ -108,17 +110,17 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
   }
 
   @Override
-  public void addFavoriteQuiz(QuizAccomplishedImpl quiz) {
+  public void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz, boolean favorite) {
 
   }
 
   @Override
-  public void addAccomplishedQuiz(QuizAccomplishedImpl quiz) {
+  public void addFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz) {
 
   }
 
   @Override
-  public void removeFavoriteQuiz(QuizAccomplishedImpl quiz) {
+  public void removeFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz) {
 
   }
 }

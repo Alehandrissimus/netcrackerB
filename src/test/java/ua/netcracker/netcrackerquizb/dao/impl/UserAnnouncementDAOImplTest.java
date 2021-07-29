@@ -130,7 +130,7 @@ class UserAnnouncementDAOImplTest {
             announcementDAO.deleteAnnouncement(idAnnouncement);
             userDAO.deleteUser(user.getId());
 
-        } catch (DAOLogicException | AnnouncementDoesNotExistException | UserDoesNotExistException | AnnouncementException e) {
+        } catch (DAOLogicException | AnnouncementDoesNotExistException | UserDoesNotExistException | AnnouncementException | UserException e) {
             log.error("Error while testing addAndGetParticipantById" + e.getMessage());
             fail();
         }

@@ -18,15 +18,18 @@ public class MailSenderServiceImpl implements MailSenderService {
   public void sendEmail(User user) {
     try {
 
-      if (!userDAO.getUserById(user.getId()).isActive()) {
-        String code = generateCode(user.getId());
+      User userInDatabsse = userDAO.getUserById(user.getId());
 
-        userDAO.updateUsersEmailCode(user.getId(), code);
-
-
-
-
+      if (userInDatabsse.isActive()) {
+//        throw new Exception();
       }
+
+      String code = generateCode(user.getId());
+
+      userDAO.updateUsersEmailCode(user.getId(), code);
+
+      String to = userInDatabsse.getEmail();
+      String from = "max.bataiev@gmail.com";
 
 
     } catch (DAOLogicException e) {

@@ -119,7 +119,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
                 users.add(user);
             }
             return users;
-        } catch (SQLException throwables) {
+        } catch (SQLException | UserException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
         }

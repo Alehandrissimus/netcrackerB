@@ -13,6 +13,7 @@ import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -108,7 +109,7 @@ class UserDAOImplTest {
         assertTrue(true);
       }
 
-    } catch (UserDoesNotExistException | DAOLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException | UserException e) {
       log.error("Error while testing deleteUser " + e.getMessage());
       fail();
     }
@@ -142,7 +143,7 @@ class UserDAOImplTest {
         assertTrue(true);
       }
 
-    } catch (UserDoesNotExistException | DAOLogicException e) {
+    } catch (UserDoesNotExistException | DAOLogicException | UserException e) {
       log.error("Error while testing createUser " + e.getMessage());
       fail();
     }
@@ -370,7 +371,7 @@ class UserDAOImplTest {
 
       userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
 
-    } catch (DAOLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException | UserException e) {
       log.error("Error while testing activateUnverifiedUser " + e.getMessage());
       fail();
     }
@@ -422,7 +423,7 @@ class UserDAOImplTest {
 
       userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
 
-    } catch (DAOLogicException | UserDoesNotExistException e) {
+    } catch (DAOLogicException | UserDoesNotExistException | UserException e) {
       log.error("Error while testing activateUnverifiedUser " + e.getMessage());
       fail();
     }

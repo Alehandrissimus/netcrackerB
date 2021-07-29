@@ -15,6 +15,7 @@ import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.UserActive;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.UserRoles;
@@ -82,7 +83,7 @@ public class UserDAOImpl implements UserDAO {
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
-    } catch (SQLException e) {
+    } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException("Dao logic exception while getting user by id=" + id + "!", e);
     }
@@ -116,7 +117,7 @@ public class UserDAOImpl implements UserDAO {
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
-    } catch (SQLException e) {
+    } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException("Dao logic exception while getting user by email=" + email + "!",
           e);
@@ -234,7 +235,7 @@ public class UserDAOImpl implements UserDAO {
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
-    } catch (SQLException e) {
+    } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException(
           "Dao logic exception while getting authorize user with email=" + email + ", password="
@@ -307,7 +308,7 @@ public class UserDAOImpl implements UserDAO {
           .setDescription(resultSet.getString(properties.getProperty(USER_DESCRIPTION)))
           .build();
 
-    } catch (SQLException e) {
+    } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException(
           "Dao logic exception while getting user by email code with code=" + code, e);
