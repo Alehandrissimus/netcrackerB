@@ -5,6 +5,7 @@ import ua.netcracker.netcrackerquizb.model.Question;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 public interface QuestionService {
 
@@ -20,6 +21,6 @@ public interface QuestionService {
 
     Question getQuestionByData(String questionText, BigInteger quizId) throws DAOLogicException, QuestionDoesNotExistException, AnswerDoesNotExistException;
 
-    Collection<Question> getQuestionsByQuiz(BigInteger quizId) throws DAOLogicException, QuestionDoesNotExistException, AnswerDoesNotExistException;
+    List<Question> getQuestionsByQuiz(BigInteger quizId) throws DAOLogicException, QuestionDoesNotExistException, AnswerDoesNotExistException;
 
 }

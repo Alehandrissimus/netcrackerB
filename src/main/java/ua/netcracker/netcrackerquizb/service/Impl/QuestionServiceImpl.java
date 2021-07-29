@@ -13,6 +13,7 @@ import ua.netcracker.netcrackerquizb.service.QuestionService;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class QuestionServiceImpl implements QuestionService, MessagesForException {
@@ -89,9 +90,9 @@ public class QuestionServiceImpl implements QuestionService, MessagesForExceptio
     }
 
     @Override
-    public Collection<Question> getQuestionsByQuiz(BigInteger quizId)
+    public List<Question> getQuestionsByQuiz(BigInteger quizId)
             throws DAOLogicException, QuestionDoesNotExistException, AnswerDoesNotExistException {
-        Collection<Question> questions = questionDAO.getAllQuestions(quizId);
+        List<Question> questions = questionDAO.getAllQuestions(quizId);
         for (Question question : questions) {
             Collection<Answer> answers = answerDAO.getAnswersByQuestionId(question.getId());
             question.setAnswers(answers);

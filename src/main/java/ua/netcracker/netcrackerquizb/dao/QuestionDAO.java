@@ -8,6 +8,7 @@ import ua.netcracker.netcrackerquizb.model.Question;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 public interface QuestionDAO {
 
@@ -34,7 +35,7 @@ public interface QuestionDAO {
 
     void deleteQuestion(Question question) throws QuestionDoesNotExistException, DAOLogicException;
 
-    Collection<Question> getAllQuestions(BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
+    List<Question> getAllQuestions(BigInteger id) throws QuestionDoesNotExistException, DAOLogicException;
 
     void updateQuestion(Question question) throws DAOLogicException;
 

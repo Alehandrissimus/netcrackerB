@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 @Repository
@@ -166,7 +167,7 @@ public class QuestionDAOImpl implements QuestionDAO, MessagesForException {
     }
 
     @Override
-    public Collection<Question> getAllQuestions(BigInteger quizId)
+    public List<Question> getAllQuestions(BigInteger quizId)
             throws QuestionDoesNotExistException, DAOLogicException {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(properties.getProperty(PROPERTY_GET_ALL_QUESTIONS))) {
@@ -174,7 +175,7 @@ public class QuestionDAOImpl implements QuestionDAO, MessagesForException {
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            Collection<Question> questions = new ArrayList<>();
+            List<Question> questions = new ArrayList<>();
             while (resultSet.next()) {
                 questions.add(new QuestionImpl(
                         BigInteger.valueOf(resultSet.getLong(questionIdColumn)),
