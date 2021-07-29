@@ -17,9 +17,11 @@ public interface UserAccomplishedQuizDAO {
   String DRIVER_PATH_PROPERTY = "oracle.jdbc.OracleDriver";
 
   Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id)
-      throws DAOConfigException, DAOLogicException, QuizDoesNotExistException;
+      throws DAOLogicException, QuizDoesNotExistException;
 
   Set<QuizAccomplishedImpl> getFavoriteQuizesByUser(BigInteger id) throws DAOLogicException;
+
+  void editAccomplishedQuiz(BigInteger idUser, QuizAccomplishedImpl newQuiz) throws DAOLogicException;
 
   void addFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
@@ -29,6 +31,7 @@ public interface UserAccomplishedQuizDAO {
 
   String SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID = "SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID";
   String ADD_ACCOMPLISHED_QUIZ = "ADD_ACCOMPLISHED_QUIZ";
+  String UPDATE_ACCOMPLISHED_QUIZ = "UPDATE_ACCOMPLISHED_QUIZ";
 
   int TRUE_SQL = 1;
 }

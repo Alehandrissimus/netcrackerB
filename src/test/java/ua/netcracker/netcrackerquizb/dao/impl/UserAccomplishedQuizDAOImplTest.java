@@ -71,7 +71,6 @@ class UserAccomplishedQuizDAOImplTest {
 //    } catch (QuizDoesNotExistException e) {
 //      e.printStackTrace();
 //    }
-
   }
 
     @Test
@@ -79,10 +78,36 @@ class UserAccomplishedQuizDAOImplTest {
     void addAccomplishedQuiz() {
       try {
         userAccomplishedQuizDAO.addAccomplishedQuiz(BigInteger.ONE, new QuizAccomplishedImpl(
-                BigInteger.valueOf(5), true, QuizImpl.QuizBuilder().setId(BigInteger.ONE).build()));
-      } catch (DAOLogicException | QuizException e) {
+                5, false, BigInteger.ONE));
+      } catch (DAOLogicException e) {
         //log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
         fail();
       }
     }
+
+    @Test
+    @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+    void editAccomplishedQuiz() {
+        try {
+            userAccomplishedQuizDAO.editAccomplishedQuiz(BigInteger.ONE, new QuizAccomplishedImpl(
+                    10, true, BigInteger.ONE));
+        } catch (DAOLogicException e) {
+          //log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
+          fail();
+        }
+    }
+
+  @Test
+  @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+  void getAccomplishedQuizesByUser() {
+    try {
+      Set<QuizAccomplishedImpl> accomplishedSet =  userAccomplishedQuizDAO.getAccomplishedQuizesByUser(BigInteger.ONE);
+      assertNotNull(accomplishedSet);
+      for(QuizAccomplishedImpl quizAccomplished: accomplishedSet)
+        assertNotNull(quizAccomplished);
+    } catch (DAOLogicException | QuizDoesNotExistException e) {
+      //log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
+      fail();
+    }
+  }
 }

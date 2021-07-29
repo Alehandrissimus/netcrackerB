@@ -161,7 +161,8 @@ class AnnouncementServiceImplTest {
             for(Announcement announcement: announcements)
                 assertNotNull(announcement);
         } catch (AnnouncementDoesNotExistException | DAOLogicException e) {
-            e.printStackTrace();
+            log.error(LOG_ERROR_CASE +"getPopularAnnouncements "+ e.getMessage());
+            fail();
         }
     }
 
@@ -174,7 +175,8 @@ class AnnouncementServiceImplTest {
             for(Announcement announcement: announcementSet)
                 assertNotNull(announcement);
         } catch (AnnouncementDoesNotExistException | DAOLogicException | AnnouncementException e) {
-            e.printStackTrace();
+            log.error(LOG_ERROR_CASE +"getAnnouncementsLikedByUser "+ e.getMessage());
+            fail();
         }
     }
 }

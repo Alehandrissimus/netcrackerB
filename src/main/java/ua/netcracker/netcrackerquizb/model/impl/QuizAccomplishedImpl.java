@@ -6,26 +6,35 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 public class QuizAccomplishedImpl {
-    private BigInteger correctAnswers;
+    private int correctAnswers;
     private Boolean isFavourite;
-    private Quiz quiz;
+    private BigInteger quiz;
 
-    public QuizAccomplishedImpl(BigInteger correctAnswers, Boolean isFavourite, Quiz quiz) {
+    public QuizAccomplishedImpl(int correctAnswers, Boolean isFavourite, BigInteger quiz) {
         this.correctAnswers = correctAnswers;
         this.isFavourite = isFavourite;
         this.quiz = quiz;
     }
+    public QuizAccomplishedImpl(){
+    }
 
-    public BigInteger getCorrectAnswers() {
+    public int getCorrectAnswers() {
         return correctAnswers;
     }
 
-    public void setCorrectAnswers(BigInteger correctAnswers) {
+    public void setCorrectAnswers(int correctAnswers) {
         this.correctAnswers = correctAnswers;
     }
 
     public Boolean getFavourite() {
         return isFavourite;
+    }
+
+    public void setBoolFavourite(int isFavourite){
+        if(isFavourite == 1)
+            this.isFavourite = true;
+        else if(isFavourite == 0)
+            this.isFavourite = false;
     }
 
     public int getIntFavourite(){
@@ -38,11 +47,11 @@ public class QuizAccomplishedImpl {
         isFavourite = favourite;
     }
 
-    public Quiz getQuiz() {
+    public BigInteger getQuiz() {
         return quiz;
     }
 
-    public void setQuiz(Quiz quiz) {
+    public void setQuiz(BigInteger quiz) {
         this.quiz = quiz;
     }
 

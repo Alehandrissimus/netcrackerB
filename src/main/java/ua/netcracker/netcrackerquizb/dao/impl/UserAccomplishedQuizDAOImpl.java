@@ -55,33 +55,28 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
     }
   }
 
+  String CORRECT_ANSWERS = "correct_answers";
+  String IS_FAVOURITE = "is_favourite";
+  String QUIZ = "quiz";
   @Override
-  public Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id)
-      throws DAOConfigException, DAOLogicException, QuizDoesNotExistException {
+  public Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger idUser)
+      throws DAOLogicException, QuizDoesNotExistException {
     try (PreparedStatement statement = connection
         .prepareStatement(properties.getProperty(SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID))) {
-
-      statement.setLong(1, id.longValue());
-
+      statement.setLong(1, idUser.longValue());
       ResultSet resultSet = statement.executeQuery();
-
       if (!resultSet.isBeforeFirst()) {
-        throw new DAOLogicException("Error while getAccomplishedQuizesByUser with id=" + id);
+        throw new QuizDoesNotExistException("Error while getAccomplishedQuizesByUser with id=" + idUser);
       }
-
       Set<QuizAccomplishedImpl> quizes = new HashSet<>();
-
       while (resultSet.next()) {
-        QuizAccomplishedImpl quiz = new QuizAccomplishedImpl(
-            BigInteger.valueOf(resultSet.getLong("correct_answers")),
-            resultSet.getInt("is_favorite") == TRUE_SQL,
-            new QuizDAOImpl(URL, USERNAME, PASSWORD).getQuizById(
-                BigInteger.valueOf(resultSet.getLong("quiz")))
-        );
+        QuizAccomplishedImpl quiz = new QuizAccomplishedImpl();
+        quiz.setCorrectAnswers(resultSet.getInt(CORRECT_ANSWERS));
+        quiz.setBoolFavourite(resultSet.getInt(IS_FAVOURITE));
+        quiz.setQuiz(BigInteger.valueOf(resultSet.getLong(QUIZ)));
         quizes.add(quiz);
       }
       return quizes;
-
     } catch (SQLException e) {
       throw new DAOLogicException("DaoLogic exception", e);
     }
@@ -113,9 +108,25 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
               properties.getProperty(ADD_ACCOMPLISHED_QUIZ));
       preparedStatement.setLong(1, idUser.longValue());
       preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
-      preparedStatement.setLong(3, quiz.getQuiz().getId().longValue());
-      preparedStatement.setLong(4, quiz.getCorrectAnswers().longValue());
+      preparedStatement.setLong(3, quiz.getQuiz().longValue());
+      preparedStatement.setInt(4, quiz.getCorrectAnswers());
       preparedStatement.setInt(5, quiz.getIntFavourite());
+      preparedStatement.executeUpdate();
+    } catch (SQLException throwables) {
+      log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+    }
+  }
+
+  @Override
+  public void editAccomplishedQuiz(BigInteger idUser, QuizAccomplishedImpl newQuiz) throws DAOLogicException {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(UPDATE_ACCOMPLISHED_QUIZ));
+      preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
+      preparedStatement.setInt(2, newQuiz.getCorrectAnswers());
+      preparedStatement.setInt(3, newQuiz.getIntFavourite());
+      preparedStatement.setLong(4, idUser.longValue());
+      preparedStatement.setLong(5, newQuiz.getQuiz().longValue());
       preparedStatement.executeUpdate();
     } catch (SQLException throwables) {
       log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
