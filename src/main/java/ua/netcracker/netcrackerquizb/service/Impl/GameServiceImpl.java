@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.AnswerDAO;
 import ua.netcracker.netcrackerquizb.dao.QuestionDAO;
 import ua.netcracker.netcrackerquizb.dao.UserAccomplishedQuizDAO;
-import ua.netcracker.netcrackerquizb.exception.AnswerDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.QuestionDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.*;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 import ua.netcracker.netcrackerquizb.service.GameService;
@@ -30,6 +27,13 @@ public class GameServiceImpl implements GameService {
         this.questionDAO = questionDAO;
         this.answerDAO = answerDAO;
         this.userAccomplishedQuizDAO = userAccomplishedQuizDAO;
+    }
+
+    @Override
+    public void setTestConnection() throws DAOConfigException {
+        questionDAO.setTestConnection();
+        answerDAO.setTestConnection();
+        userAccomplishedQuizDAO.setTestConnection();
     }
 
     @Override

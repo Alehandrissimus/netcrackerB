@@ -16,6 +16,8 @@ public interface UserAccomplishedQuizDAO {
   String PATH_PROPERTY = "src/main/resources/sqlScripts.properties";
   String DRIVER_PATH_PROPERTY = "oracle.jdbc.OracleDriver";
 
+  void setTestConnection() throws DAOConfigException;
+
   Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger id)
       throws DAOLogicException, QuizDoesNotExistException;
 
