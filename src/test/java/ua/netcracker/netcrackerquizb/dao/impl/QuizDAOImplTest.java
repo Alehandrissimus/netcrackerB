@@ -192,13 +192,12 @@ class QuizDAOImplTest {
     void getLastCreatedQuizzesTest() {
         try {
             List<Quiz> quizList = quizDAO.getLastCreatedQuizzes(BigInteger.valueOf(3));
-            System.out.println(quizList);
 
             if (!quizList.isEmpty()) {
                 assertNotNull(quizList);
             }
 
-            log.info("Get getLastThreeCreatedQuizzes in test");
+            log.info("Get getLastCreatedQuizzes in test");
         } catch (DAOLogicException e) {
             log.error("Error while testing getAllQuizzes ", e);
             fail();
