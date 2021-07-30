@@ -60,7 +60,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(!resultSet.isBeforeFirst()){
-                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getByTitle");
+                log.error(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + MESSAGE_FOR_GET_BY_TITLE);
                 throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             resultSet.next();
@@ -100,7 +100,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.setString(1, title + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getSetByTitle");
+                log.error(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + MESSAGE_FOR_GET_SET_BY_TITLE);
                 throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             Set<Announcement> announcements = new HashSet<>();
@@ -140,7 +140,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
                 resultSets.next();
                 return BigInteger.valueOf(resultSets.getLong(1));
             }
-            throw new DAOLogicException(DAO_LOGIC_EXCEPTION + " in createAnnouncement");
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION + MESSAGE_FOR_CREATE_ANNOUNCEMENT);
         } catch (SQLException throwables) {
             log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
@@ -184,7 +184,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.setInt(1, number);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getPopular");
+                log.error(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + MESSAGE_FOR_GET_POPULAR);
                 throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             List<Announcement> popularAnnouncement = new ArrayList<>();
@@ -215,7 +215,7 @@ public class AnnouncementDAOImpl implements AnnouncementDAO {
             preparedStatement.setLong(1, idAnnouncement.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getAnnouncementById");
+                log.error(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + MESSAGE_FOR_GET_ANNOUNCEMENT_BY_ID);
                 throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             resultSet.next();

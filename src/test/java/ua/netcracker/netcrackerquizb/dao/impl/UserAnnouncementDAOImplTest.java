@@ -144,7 +144,5 @@ class UserAnnouncementDAOImplTest {
             log.error("Error while testing addAndGetParticipantById" + e.getMessage());
             fail();
         }
-
-
     }
 }

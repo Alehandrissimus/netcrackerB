@@ -11,6 +11,12 @@ import java.util.Set;
 
 public interface AnnouncementService {
 
+    String MESSAGE_FOR_BUILD_NEW_ANNOUNCEMENT = " in buildNewAnnouncement()";
+    String MESSAGE_FOR_EDIT_ANNOUNCEMENT = " in editAnnouncement()";
+    String MESSAGE_FOR_DELETE_ANNOUNCEMENT = " in deleteAnnouncement()";
+    String MESSAGE_FOR_TO_LIKE_ANNOUNCEMENT = " in toLikeAnnouncement()";
+    String MESSAGE_FOR_TO_DISLIKE_ANNOUNCEMENT = " in toDisLikeAnnouncement()";
+
     List<Announcement> getAllAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 

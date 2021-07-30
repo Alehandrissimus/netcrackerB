@@ -44,12 +44,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 throw new UserException(DONT_ENOUGH_RIGHTS);
 
             if(announcementDAO.isAnnouncementByTitle(announcement.getTitle())) {
-                log.error(ANNOUNCEMENT_ALREADY_EXISTS + " in buildNewAnnouncement()");
+                log.error(ANNOUNCEMENT_ALREADY_EXISTS + MESSAGE_FOR_BUILD_NEW_ANNOUNCEMENT);
                 throw new AnnouncementException(ANNOUNCEMENT_ALREADY_EXISTS);
             }
             return announcementDAO.createAnnouncement(announcement);
         } catch (DAOLogicException | UserDoesNotExistException e) {
-            log.error(DAO_LOGIC_EXCEPTION + " in buildNewAnnouncement()");
+            log.error(DAO_LOGIC_EXCEPTION + MESSAGE_FOR_BUILD_NEW_ANNOUNCEMENT);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
     }
@@ -62,7 +62,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 throw new AnnouncementException(DONT_ENOUGH_RIGHTS);
             announcementDAO.editAnnouncement(announcement);
         } catch (DAOLogicException | UserDoesNotExistException e) {
-            log.error(DAO_LOGIC_EXCEPTION + " in editAnnouncement()");
+            log.error(DAO_LOGIC_EXCEPTION + MESSAGE_FOR_EDIT_ANNOUNCEMENT);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
     }
@@ -75,7 +75,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 throw new AnnouncementException(DONT_ENOUGH_RIGHTS);
             announcementDAO.deleteAnnouncement(idAnnouncement);
         } catch (UserDoesNotExistException e) {
-            log.error(DAO_LOGIC_EXCEPTION + " in deleteAnnouncement()");
+            log.error(DAO_LOGIC_EXCEPTION + MESSAGE_FOR_DELETE_ANNOUNCEMENT);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
     }
@@ -89,7 +89,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             userAnnouncementDAO.addParticipant(idAnnouncement, idUser);
             announcementDAO.toLike(idAnnouncement);
         } catch (DAOLogicException e) {
-            log.error(DAO_LOGIC_EXCEPTION + " in toLikeAnnouncement()");
+            log.error(DAO_LOGIC_EXCEPTION + MESSAGE_FOR_TO_LIKE_ANNOUNCEMENT);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
     }
@@ -103,7 +103,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             userAnnouncementDAO.deleteParticipant(idAnnouncement, idUser);
             announcementDAO.toDisLike(idAnnouncement);
         } catch (DAOLogicException e) {
-            log.error(DAO_LOGIC_EXCEPTION + " in toDisLikeAnnouncement()");
+            log.error(DAO_LOGIC_EXCEPTION + MESSAGE_FOR_TO_DISLIKE_ANNOUNCEMENT);
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
         }
     }

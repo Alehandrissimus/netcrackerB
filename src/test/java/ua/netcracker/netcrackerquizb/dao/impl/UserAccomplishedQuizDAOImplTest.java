@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.catalina.authenticator.SpnegoAuthenticator;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -16,8 +17,7 @@ import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class UserAccomplishedQuizDAOImplTest {
@@ -25,6 +25,8 @@ class UserAccomplishedQuizDAOImplTest {
   private UserDAOImpl userDAO;
   private QuizDAOImpl quizDAO;
   private UserAccomplishedQuizDAOImpl userAccomplishedQuizDAO;
+
+  private static final Logger log = Logger.getLogger(UserAnnouncementDAOImpl.class);
 
 
   @Autowired
@@ -79,8 +81,12 @@ class UserAccomplishedQuizDAOImplTest {
       try {
         userAccomplishedQuizDAO.addAccomplishedQuiz(BigInteger.ONE, new QuizAccomplishedImpl(
                 5, false, BigInteger.ONE));
-      } catch (DAOLogicException e) {
-        //log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
+        Set<QuizAccomplishedImpl> accomplishedSet =  userAccomplishedQuizDAO.getAccomplishedQuizesByUser(BigInteger.ONE);
+        assertNotNull(accomplishedSet);
+        for(QuizAccomplishedImpl quizAccomplished: accomplishedSet)
+          assertNotNull(quizAccomplished);
+      } catch (DAOLogicException | QuizDoesNotExistException e) {
+        log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
         fail();
       }
     }
@@ -91,8 +97,13 @@ class UserAccomplishedQuizDAOImplTest {
         try {
             userAccomplishedQuizDAO.editAccomplishedQuiz(BigInteger.ONE, new QuizAccomplishedImpl(
                     10, true, BigInteger.ONE));
-        } catch (DAOLogicException e) {
-          //log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
+            Set<QuizAccomplishedImpl> accomplishedSet =  userAccomplishedQuizDAO.getAccomplishedQuizesByUser(BigInteger.ONE);
+            for(QuizAccomplishedImpl quizAccomplished: accomplishedSet){
+              assertEquals(10, quizAccomplished.getCorrectAnswers());
+              assertEquals(true, quizAccomplished.getFavourite());
+            }
+        } catch (DAOLogicException | QuizDoesNotExistException e) {
+          log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
           fail();
         }
     }
@@ -106,7 +117,34 @@ class UserAccomplishedQuizDAOImplTest {
       for(QuizAccomplishedImpl quizAccomplished: accomplishedSet)
         assertNotNull(quizAccomplished);
     } catch (DAOLogicException | QuizDoesNotExistException e) {
-      //log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
+      log.error("Error while testing addAccomplishedQuiz " + e.getMessage());
+      fail();
+    }
+  }
+
+  @Test
+  @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+  void setIsFavoriteQuiz() {
+    try {
+      userAccomplishedQuizDAO.setIsFavoriteQuiz(BigInteger.ONE, new QuizAccomplishedImpl(
+              0, false, BigInteger.ONE));
+      Set<QuizAccomplishedImpl> accomplishedSet =  userAccomplishedQuizDAO.getAccomplishedQuizesByUser(BigInteger.ONE);
+      for(QuizAccomplishedImpl quizAccomplished: accomplishedSet)
+        assertEquals(false, quizAccomplished.getFavourite());
+    } catch (DAOLogicException | QuizDoesNotExistException e) {
+      log.error("Error while testing setIsFavoriteQuiz " + e.getMessage());
+      fail();
+    }
+    }
+
+  @Test
+  @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+  void getAccomplishedQuizById() {
+    try {
+      QuizAccomplishedImpl quizAccomplished = userAccomplishedQuizDAO.getAccomplishedQuizById(BigInteger.ONE, BigInteger.ONE);
+      assertNotNull(quizAccomplished);
+    } catch (QuizDoesNotExistException | DAOLogicException e) {
+      log.error("Error while testing пetAccomplishedQuizById " + e.getMessage());
       fail();
     }
   }

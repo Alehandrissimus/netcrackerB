@@ -33,6 +33,12 @@ public interface AnnouncementDAO {
 
     String ERROR_TEST_CONNECTION = "Error while setting test connection ";
 
+    String MESSAGE_FOR_GET_BY_TITLE = " in getByTitle";
+    String MESSAGE_FOR_GET_SET_BY_TITLE = " in getSetByTitle";
+    String MESSAGE_FOR_CREATE_ANNOUNCEMENT = " in createAnnouncement";
+    String MESSAGE_FOR_GET_POPULAR = " in getPopular";
+    String MESSAGE_FOR_GET_ANNOUNCEMENT_BY_ID = " in createAnnouncement";
+
     Announcement getAnnouncementById(BigInteger idAnnouncement) throws AnnouncementDoesNotExistException, DAOLogicException;
 
     void deleteAnnouncement(BigInteger idAnnouncement) throws DAOLogicException;
