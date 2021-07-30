@@ -35,7 +35,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getAnswerByIdTest() {
         try {
             Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
@@ -49,7 +49,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getLastAnswerIdByTitleTest() {
         try {
             String aboba = "Aboba";
@@ -72,7 +72,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void createAnswerTest() {
         try {
             String antarctica = "Antarctica";
@@ -96,7 +96,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void deleteAnswerTest() {
         try {
             String mars = "Mars";
@@ -116,7 +116,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateAnswerTest() {
         try {
             String moon = "Moon";
@@ -148,7 +148,7 @@ public class AnswerDAOImplTest {
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getAnswersByQuestionIdTest() {
         try {
             BigInteger questionId = BigInteger.TWO;
