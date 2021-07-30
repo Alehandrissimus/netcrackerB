@@ -1,5 +1,6 @@
 package ua.netcracker.netcrackerquizb.service.Impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,19 +35,19 @@ public class QuestionServiceImpl implements QuestionService, MessagesForExceptio
     @Override
     public Question createQuestion(Question question, BigInteger quizId)
             throws DAOLogicException, QuestionDoesNotExistException, QuestionException, AnswerDoesNotExistException {
-        if (question.getQuestion().equals("")) {
+        if (StringUtils.isEmpty(question.getQuestion())) {
             log.error(QUESTION_EMPTY + " in QuestionService createQuestion question: " + question.toString());
             throw new QuestionException(QUESTION_EMPTY + "in createQuestion");
         }
         for (Answer answer : question.getAnswers()) {
-            if (answer.getValue().equals("")) {
+            if (StringUtils.isEmpty(answer.getValue())) {
                 log.error(QUESTION_EMPTY + " in QuestionService createQuestion question: " + question.toString());
                 throw new QuestionException(ANSWER_EMPTY + "in createQuestion");
             }
         }
         Collection<Question> questions = questionDAO.getAllQuestions(quizId);
         for (Question questionElement : questions) {
-            if (question.getQuestion().equals(questionElement.getQuestion())) {
+            if (StringUtils.equals(question.getQuestion(), questionElement.getQuestion())) {
                 log.error(QUESTION_EMPTY + " in QuestionService createQuestion question: " + question.toString());
                 throw new QuestionException(QUESTION_DUPLICATE + "in createQuestion");
             }
@@ -63,9 +64,9 @@ public class QuestionServiceImpl implements QuestionService, MessagesForExceptio
 
     @Override
     public void updateQuestion(Question updatedQuestion) throws DAOLogicException, QuestionException {
-        if (updatedQuestion.getQuestion().equals("")) {
+        if (StringUtils.isEmpty(updatedQuestion.getQuestion())) {
             log.error(QUESTION_EMPTY + " in QuestionService updateQuestion question: " + updatedQuestion.toString());
-            throw new QuestionException(QUESTION_EMPTY + "in createQuestion");
+            throw new QuestionException(QUESTION_EMPTY + " in createQuestion");
         }
         questionDAO.updateQuestion(updatedQuestion);
     }
