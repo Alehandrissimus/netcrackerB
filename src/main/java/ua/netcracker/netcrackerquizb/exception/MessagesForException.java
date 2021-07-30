@@ -29,6 +29,7 @@ public interface MessagesForException {
     String GET_LAST_THREE_CREATED_QUIZZES_EXCEPTION = "SQL Exception while getLastThreeCreatedQuizzes in QuizDAOImpl";
     String GET_QUIZ_BY_TITLE_EXCEPTION = "SQL Exception while getQuizByTitle in QuizDAOImpl";
     String GET_QUIZZES_BY_TYPE_EXCEPTION = "SQL Exception while getQuizzesByType in QuizDAOImpl";
+    String ACCOMPLISHED_QUIZ_HAS_NOT_BEEN_FOUNDED = "Accomplished quiz has not been founded";
 
     String TEST_CONNECTION_ERR = "Error while setting test connection %s";
     String TEST_CONNECTION_EXC = "Error while setting test connection";
@@ -55,4 +56,6 @@ public interface MessagesForException {
     String DONT_ENOUGH_RIGHTS = "You don't have enough rights";
     String ANNOUNCEMENT_ALREADY_LIKED = "The user has already liked this announcement";
     String ANNOUNCEMENT_HAS_NOT_LIKED = "User has not liked this announcement yet";
+    String USER_NOT_FOUND_EXCEPTION = "User does not exist!";
+    String USER_HAS_NOT_BEEN_RECEIVED = "User has not been received";
 }

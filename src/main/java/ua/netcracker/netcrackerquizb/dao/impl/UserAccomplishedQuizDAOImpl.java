@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserAccomplishedQuizDAO;
-import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
+import ua.netcracker.netcrackerquizb.exception.*;
+import ua.netcracker.netcrackerquizb.model.Announcement;
+import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
-import static ua.netcracker.netcrackerquizb.exception.MessagesForException.DAO_LOGIC_EXCEPTION;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
 @Repository
 public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
@@ -142,6 +142,31 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
       preparedStatement.setLong(2, idUser.longValue());
       preparedStatement.setLong(3, quiz.getQuiz().longValue());
       preparedStatement.executeUpdate();
+    } catch (SQLException throwables) {
+      log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+    }
+  }
+
+
+
+
+  public QuizAccomplishedImpl getAccomplishedQuizById(BigInteger idUser, BigInteger idQuiz)
+          throws QuizDoesNotExistException, DAOLogicException {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_ACCOMPLISHED_QUIZ));
+      preparedStatement.setLong(1, idUser.longValue());
+      preparedStatement.setLong(2, idQuiz.longValue());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if(!resultSet.isBeforeFirst()){
+        log.error(ACCOMPLISHED_QUIZ_HAS_NOT_BEEN_FOUNDED + MESSAGE_FOR_GET_ACCOMPLISHED_QUIZ_BY_ID);
+        throw new QuizDoesNotExistException(ACCOMPLISHED_QUIZ_HAS_NOT_BEEN_FOUNDED);
+      }
+      resultSet.next();
+      QuizAccomplishedImpl quizAccomplished = new QuizAccomplishedImpl();
+      quizAccomplished.setCorrectAnswers(resultSet.getInt(CORRECT_ANSWERS));
+      quizAccomplished.setBoolFavourite(resultSet.getInt(IS_FAVOURITE));
+      return quizAccomplished;
     } catch (SQLException throwables) {
       log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
       throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);

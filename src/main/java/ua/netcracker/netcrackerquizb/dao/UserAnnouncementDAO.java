@@ -30,11 +30,11 @@ public interface UserAnnouncementDAO {
     String USER_EMAIL_CODE = "USER_EMAIL_CODE";
     String USER_DESCRIPTION = "USER_DESCRIPTION";
 
-    String DAO_LOGIC_EXCEPTION = "Dao logic exception ";
-    String ANNOUNCEMENT_NOT_FOUND_EXCEPTION = "Announcement does not exist!";
-    String USER_NOT_FOUND_EXCEPTION = "User does not exist!";
-    String ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED = "Announcement has not been received";
-    String USER_HAS_NOT_BEEN_RECEIVED = "User has not been received";
+    String ERROR_TEST_CONNECTION = "Error while setting test connection ";
+
+    String MESSAGE_FOR_GET_ANNOUNCEMENTS_LIKED_BY_USER = " in getAnnouncementsLikedByUser";
+    String MESSAGE_FOR_GET_USERS_LIKED_ANNOUNCEMENT = " in getUsersLikedAnnouncement";
+    String MESSAGE_FOR_GET_ALL_ANNOUNCEMENTS = " in getAllAnnouncement";
 
     Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser) throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
 

@@ -136,4 +136,16 @@ class UserAccomplishedQuizDAOImplTest {
       fail();
     }
     }
+
+  @Test
+  @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+  void getAccomplishedQuizById() {
+    try {
+      QuizAccomplishedImpl quizAccomplished = userAccomplishedQuizDAO.getAccomplishedQuizById(BigInteger.ONE, BigInteger.ONE);
+      assertNotNull(quizAccomplished);
+    } catch (QuizDoesNotExistException | DAOLogicException e) {
+      log.error("Error while testing пetAccomplishedQuizById " + e.getMessage());
+      fail();
+    }
+  }
 }

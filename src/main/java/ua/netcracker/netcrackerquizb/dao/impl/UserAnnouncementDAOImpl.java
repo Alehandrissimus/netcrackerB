@@ -19,6 +19,7 @@ import java.sql.*;
 import java.util.*;
 
 import static ua.netcracker.netcrackerquizb.dao.AnnouncementDAO.*;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
 
 @Repository
@@ -49,8 +50,8 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
         try {
             connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);
         } catch (DAOConfigException e) {
-            log.error("Error while setting test connection " + e.getMessage());
-            throw new DAOConfigException("Error while setting test connection ", e);
+            log.error(ERROR_TEST_CONNECTION + e.getMessage());
+            throw new DAOConfigException(ERROR_TEST_CONNECTION, e);
         }
     }
 
@@ -65,7 +66,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
             preparedStatement.setLong(1, idUser.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getAnnouncementsLikedByUser");
+                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + MESSAGE_FOR_GET_ANNOUNCEMENTS_LIKED_BY_USER);
                 throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             Set<Announcement> announcements = new HashSet<>();
@@ -98,7 +99,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
             preparedStatement.setLong(1, idAnnouncement.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                log.info(USER_HAS_NOT_BEEN_RECEIVED + " in getUsersLikedAnnouncement");
+                log.info(USER_HAS_NOT_BEEN_RECEIVED + MESSAGE_FOR_GET_USERS_LIKED_ANNOUNCEMENT);
                 throw new UserDoesNotExistException(USER_NOT_FOUND_EXCEPTION);
             }
             Set<User> users = new HashSet<>();
@@ -181,7 +182,7 @@ public class UserAnnouncementDAOImpl implements UserAnnouncementDAO {
             preparedStatement.setLong(1, idUser.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.isBeforeFirst()){
-                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + " in getAllAnnouncement");
+                log.info(ANNOUNCEMENT_HAS_NOT_BEEN_RECEIVED + MESSAGE_FOR_GET_ALL_ANNOUNCEMENTS);
                 throw new AnnouncementDoesNotExistException(ANNOUNCEMENT_NOT_FOUND_EXCEPTION);
             }
             List<Announcement> announcements = new ArrayList<>();
