@@ -15,7 +15,6 @@ import ua.netcracker.netcrackerquizb.service.GameService;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -67,21 +66,21 @@ public class GameServiceImpl implements GameService {
             }
         }
 
-        Set<QuizAccomplishedImpl> quizAccomplishedSet = userAccomplishedQuizDAO.getAccomplishedQuizesByUser(userId);
-        for (QuizAccomplishedImpl quizAccomplishedFromSet: quizAccomplishedSet) {
-            if(quizAccomplishedFromSet.getQuizId().equals(quizId)
-                    && quizAccomplishedFromSet.getCorrectAnswers() < counterOfCorrectAnswers) {
-                quizAccomplishedFromSet.setCorrectAnswers(counterOfCorrectAnswers);
-            } else {
-                QuizAccomplishedImpl quizAccomplished = new QuizAccomplishedImpl(counterOfCorrectAnswers, quizId);
-                userAccomplishedQuizDAO.addAccomplishedQuiz(userId, quizAccomplished);
+        boolean isAccomplishedQuiz = userAccomplishedQuizDAO.isAccomplishedQuiz(userId, quizId);
+        if (isAccomplishedQuiz) {
+            QuizAccomplishedImpl existedQuizAccomplished = userAccomplishedQuizDAO.getAccomplishedQuizById(userId, quizId);
+            if (existedQuizAccomplished.getCorrectAnswers() < counterOfCorrectAnswers) {
+                existedQuizAccomplished.setCorrectAnswers(counterOfCorrectAnswers);
+                userAccomplishedQuizDAO.editAccomplishedQuiz(userId, existedQuizAccomplished);
             }
-            break;
+        } else {
+            QuizAccomplishedImpl quizAccomplished = new QuizAccomplishedImpl(counterOfCorrectAnswers, quizId);
+            userAccomplishedQuizDAO.addAccomplishedQuiz(userId, quizAccomplished);
         }
     }
 
     @Override
-    public void addToFavorite(User user, QuizAccomplishedImpl quizAccomplished) throws DAOLogicException {
+    public void setIsFavorite(User user, QuizAccomplishedImpl quizAccomplished) throws DAOLogicException {
         Boolean isFavorite = quizAccomplished.getFavourite();
         BigInteger userId = user.getId();
         quizAccomplished.setFavourite(!isFavorite);

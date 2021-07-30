@@ -14,5 +14,5 @@ import java.util.List;
 public interface GameService {
     void sendGameQuiz(String title);
     void validateAnswers(Quiz quiz, User user, List<Answer> answers) throws QuestionDoesNotExistException, DAOLogicException, AnswerDoesNotExistException, QuizDoesNotExistException;
-    void addToFavorite(User user, QuizAccomplishedImpl quizAccomplished) throws DAOLogicException;
+    void setIsFavorite(User user, QuizAccomplishedImpl quizAccomplished) throws DAOLogicException;
 }

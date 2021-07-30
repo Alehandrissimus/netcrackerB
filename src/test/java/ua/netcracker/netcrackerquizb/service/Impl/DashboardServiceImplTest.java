@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.DAO_LOGIC_EXCEPTION;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.ERROR_WHILE_SETTING_TEST_CONNECTION;
 
 
@@ -38,16 +39,18 @@ public class DashboardServiceImplTest {
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    void generateDashboard() {
+    void generateDashboard() throws DAOLogicException {
         User user = new UserImpl.UserBuilder()
                 .setId(BigInteger.valueOf(1))
                 .build();
 
         try {
             Dashboard dashboard = dashboardService.generateDashboard(user);
+            System.out.println(dashboard);
             assertNotNull(dashboard);
         } catch (DAOLogicException | AnnouncementException | AnnouncementDoesNotExistException | QuizDoesNotExistException e) {
-            e.printStackTrace();
+            log.error(DAO_LOGIC_EXCEPTION + " in generateDashboard");
+            throw new DAOLogicException(DAO_LOGIC_EXCEPTION);
         }
     }
 }
