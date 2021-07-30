@@ -148,4 +148,17 @@ class UserAccomplishedQuizDAOImplTest {
       fail();
     }
   }
+
+  @Test
+  @Timeout(value = 10000, unit= TimeUnit.MILLISECONDS)
+  void isAccomplishedQuiz() {
+    try {
+      assertTrue(userAccomplishedQuizDAO.isAccomplishedQuiz(BigInteger.ONE, BigInteger.ONE));
+      assertFalse(userAccomplishedQuizDAO.isAccomplishedQuiz(BigInteger.ONE, BigInteger.TWO));
+    } catch (DAOLogicException e) {
+      log.error("Error while testing isAccomplishedQuiz " + e.getMessage());
+      fail();
+    }
+
+  }
 }

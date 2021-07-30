@@ -148,9 +148,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
     }
   }
 
-
-
-
+  @Override
   public QuizAccomplishedImpl getAccomplishedQuizById(BigInteger idUser, BigInteger idQuiz)
           throws QuizDoesNotExistException, DAOLogicException {
     try {
@@ -171,5 +169,23 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
       log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
       throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
     }
+  }
+
+  @Override
+  public boolean isAccomplishedQuiz(BigInteger idUser, BigInteger idQuiz)
+          throws DAOLogicException {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_ACCOMPLISHED_QUIZ));
+      preparedStatement.setLong(1, idUser.longValue());
+      preparedStatement.setLong(2, idQuiz.longValue());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if(resultSet.isBeforeFirst()) {
+        return true;
+      }
+    } catch (SQLException throwables) {
+      log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+    }
+    return false;
   }
 }
