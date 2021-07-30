@@ -358,18 +358,18 @@ class UserDAOImplTest {
     try {
       userDAO.createUser(
           new UserImpl.UserBuilder()
-              .setEmail("test@gmail.c")
+              .setEmail("test@gmail.com")
               .setLastName("testLastName")
               .setFirstName("testFirstName")
               .setPassword("testPassword")
               .setEmailCode("testEmailCode")
               .build());
 
-      userDAO.activateUser(userDAO.getUserByEmail("test@gmail.c").getId());
+      userDAO.activateUser(userDAO.getUserByEmail("test@gmail.com").getId());
 
-      assertTrue(userDAO.getUserByEmail("test@gmail.c").isActive());
+      assertTrue(userDAO.getUserByEmail("test@gmail.com").isActive());
 
-      userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
+      userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.com").getId());
 
     } catch (DAOLogicException | UserDoesNotExistException | UserException e) {
       log.error("Error while testing activateUnverifiedUser " + e.getMessage());
@@ -410,18 +410,18 @@ class UserDAOImplTest {
     try {
       userDAO.createUser(
           new UserImpl.UserBuilder()
-              .setEmail("test@gmail.c")
+              .setEmail("test@gmail.com")
               .setLastName("testLastName")
               .setFirstName("testFirstName")
               .setPassword("testPassword")
               .setEmailCode("testEmailCode")
               .build());
 
-      userDAO.disactivateUser(userDAO.getUserByEmail("test@gmail.c").getId());
+      userDAO.disactivateUser(userDAO.getUserByEmail("test@gmail.com").getId());
 
-      assertFalse(userDAO.getUserByEmail("test@gmail.c").isActive());
+      assertFalse(userDAO.getUserByEmail("test@gmail.com").isActive());
 
-      userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.c").getId());
+      userDAO.deleteUser(userDAO.getUserByEmail("test@gmail.com").getId());
 
     } catch (DAOLogicException | UserDoesNotExistException | UserException e) {
       log.error("Error while testing activateUnverifiedUser " + e.getMessage());
