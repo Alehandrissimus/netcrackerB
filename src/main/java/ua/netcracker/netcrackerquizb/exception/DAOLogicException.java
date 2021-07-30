@@ -1,6 +1,6 @@
 package ua.netcracker.netcrackerquizb.exception;
 
-public class DAOLogicException extends Exception {
+public class DAOLogicException  extends Exception implements MessagesForException {
 
   public DAOLogicException(String message) {
     super(message);

@@ -4,6 +4,7 @@ import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY
 
 import java.math.BigInteger;
 import java.util.Set;
+import org.springframework.util.StringUtils;
 import ua.netcracker.netcrackerquizb.exception.QuizException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
@@ -173,30 +174,34 @@ public class UserImpl implements User {
     }
 
     public UserBuilder setFirstName(String firstName) throws UserException {
-      if (firstName.isBlank())
+      if (firstName.isBlank()) {
         throw new UserException("First name field cannot be empty");
+      }
       newUser.firstName = firstName;
       return this;
     }
 
     public UserBuilder setLastName(String lastName) throws UserException {
-      if (lastName.isBlank())
+      if (lastName.isBlank()) {
         throw new UserException("Last name field cannot be empty");
+      }
 
       newUser.lastName = lastName;
       return this;
     }
 
     public UserBuilder setEmail(String email) throws UserException {
-      if (email.isBlank())
+      if (email.isBlank()) {
         throw new UserException("Email field cannot be empty");
+      }
       newUser.email = email;
       return this;
     }
 
     public UserBuilder setPassword(String password) throws UserException {
-      if (password.isBlank())
+      if (password.isBlank()) {
         throw new UserException("Password field cannot be empty");
+      }
       newUser.password = password;
       return this;
     }
@@ -206,7 +211,7 @@ public class UserImpl implements User {
       return this;
     }
 
-    public UserBuilder setDescription(String description)  {
+    public UserBuilder setDescription(String description) {
 
       newUser.description = description;
       return this;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserDAO;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.exception.MessagesForException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
@@ -50,8 +51,8 @@ public class UserDAOImpl implements UserDAO {
     try {
       connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);
     } catch (DAOConfigException e) {
-      log.error("Error while setting test connection " + e.getMessage());
-      throw new DAOConfigException("Error while setting test connection ", e);
+      log.error(MessagesForException.TEST_CONNECTION_ERR + e.getMessage());
+      throw new DAOConfigException(MessagesForException.TEST_CONNECTION_ERR, e);
     }
   }
 
@@ -66,7 +67,7 @@ public class UserDAOImpl implements UserDAO {
       ResultSet resultSet = statement.executeQuery();
 
       if (!resultSet.next()) {
-        throw new UserDoesNotExistException("User with id=" + id + " does not exist!");
+        throw new UserDoesNotExistException(MessagesForException.INVALID_USERS_ID + id);
       }
 
       return new UserImpl.UserBuilder()
@@ -85,7 +86,7 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic exception while getting user by id=" + id + "!", e);
+      throw new DAOLogicException(MessagesForException.DAO_LOGIC_EXCEPTION + id, e);
     }
   }
 
@@ -100,7 +101,7 @@ public class UserDAOImpl implements UserDAO {
       ResultSet resultSet = statement.executeQuery();
 
       if (!resultSet.next()) {
-        throw new UserDoesNotExistException("User with email=" + email + " does not exist!");
+        throw new UserDoesNotExistException(MessagesForException.INVALID_USERS_EMAIL + email);
       }
 
       return new UserImpl.UserBuilder()
@@ -119,8 +120,7 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic exception while getting user by email=" + email + "!",
-          e);
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION + email, e);
     }
   }
 
@@ -132,7 +132,7 @@ public class UserDAOImpl implements UserDAO {
       statement.executeUpdate();
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic exception while deleting user by id=" + id + "!", e);
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION + id, e);
     }
   }
 
@@ -150,14 +150,14 @@ public class UserDAOImpl implements UserDAO {
       statement.setString(8, user.getEmailCode());
 
       if (statement.executeUpdate() != 1) {
-        throw new DAOLogicException("Unable to create user + " + user);
+        throw new DAOLogicException(MessagesForException.ERROR_WHILE_CREATING_USER + user);
       }
 
       return getUserByEmail(user.getEmail()).getId();
 
     } catch (SQLException | UserDoesNotExistException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic exception while creating user " + user, e);
+      throw new DAOLogicException(MessagesForException.ERROR_WHILE_CREATING_USER + user, e);
     }
   }
 
@@ -171,12 +171,11 @@ public class UserDAOImpl implements UserDAO {
       statement.setLong(3, id.longValue());
 
       if (statement.executeUpdate() != 1) {
-        throw new UserDoesNotExistException(
-            "While updating user's fullname, user with id=" + id + " does not exist!");
+        throw new UserDoesNotExistException(MessagesForException.USERS_DOESNT_EXIT + id);
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic exception while updating users fullname " + id, e);
+      throw new DAOLogicException(MessagesForException.DAO_LOGIC_EXCEPTION + id, e);
     }
 
   }
@@ -190,12 +189,11 @@ public class UserDAOImpl implements UserDAO {
       statement.setLong(2, id.longValue());
 
       if (statement.executeUpdate() != 1) {
-        throw new UserDoesNotExistException(
-            "While updating user's password, user with id=" + id + " does not exist!");
+        throw new UserDoesNotExistException(MessagesForException.USERS_DOESNT_EXIT + id);
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic exception while updating users password " + id, e);
+      throw new DAOLogicException(MessagesForException.USERS_DOESNT_EXIT + id, e);
     }
 
   }
@@ -212,13 +210,13 @@ public class UserDAOImpl implements UserDAO {
 
       if (!resultSet.next()) {
         throw new UserDoesNotExistException(
-            "User with email=" + email + ", password=" + password + " does not exist!");
+            MessagesForException.USERS_DOESNT_EXIT + email + password);
       }
 
       if (resultSet.getInt(properties.getProperty(USER_ACTIVE)) == UserActive.NOT_ACTIVE
           .ordinal()) {
         throw new UserDoesNotConfirmedEmailException(
-            "Authorize user with email=" + email + ", password=" + password + " does not exist!");
+            MessagesForException.USERS_DOESNT_EXIT + email + password);
       }
 
       return new UserImpl.UserBuilder()
@@ -238,8 +236,7 @@ public class UserDAOImpl implements UserDAO {
     } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException(
-          "Dao logic exception while getting authorize user with email=" + email + ", password="
-              + password, e);
+          MessagesForException.DAO_LOGIC_EXCEPTION + email + password, e);
     }
 
   }
@@ -253,13 +250,12 @@ public class UserDAOImpl implements UserDAO {
       statement.setLong(2, id.longValue());
 
       if (statement.executeUpdate() != 1) {
-        throw new UserDoesNotExistException("User with id=" + id + " is not exist!");
+        throw new UserDoesNotExistException(MessagesForException.USERS_DOESNT_EXIT + id);
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException(
-          "Dao logic exception while updating users description with id=" + id
-              + ", new description=" + newDescription, e);
+      throw new DAOLogicException(MessagesForException.DAO_LOGIC_EXCEPTION + id + newDescription,
+          e);
     }
   }
 
@@ -272,13 +268,12 @@ public class UserDAOImpl implements UserDAO {
       statement.setLong(2, id.longValue());
 
       if (statement.executeUpdate() != 1) {
-        throw new UserDoesNotExistException("User with id=" + id + " is not exist!");
+        throw new UserDoesNotExistException(MessagesForException.USERS_DOESNT_EXIT + id);
       }
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException(
-          "Dao logic exception while updating users email code with id=" + id + ", newCode="
-              + newCode, e);
+          MessagesForException.DAO_LOGIC_EXCEPTION + id + newCode, e);
     }
   }
 
@@ -291,7 +286,7 @@ public class UserDAOImpl implements UserDAO {
       ResultSet resultSet = statement.executeQuery();
 
       if (!resultSet.next()) {
-        throw new UserDoesNotExistException("User with code=" + code + " is not exist!");
+        throw new UserDoesNotExistException(MessagesForException.USERS_DOESNT_EXIT + code);
       }
 
       return new UserImpl.UserBuilder()
@@ -310,8 +305,7 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException | UserException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException(
-          "Dao logic exception while getting user by email code with code=" + code, e);
+      throw new DAOLogicException(MessagesForException.DAO_LOGIC_EXCEPTION + code, e);
     }
 
   }
@@ -331,8 +325,7 @@ public class UserDAOImpl implements UserDAO {
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException(
-          "Dao logic exception while comparisonOfPasswords user by id=" + id + ", checkPassword="
-              + checkPassword, e);
+          MessagesForException.DAO_LOGIC_EXCEPTION + id + checkPassword, e);
 
     }
   }
@@ -348,7 +341,7 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic while activating user with id=" + id, e);
+      throw new DAOLogicException(MessagesForException.DAO_LOGIC_EXCEPTION + id, e);
     }
 
   }
@@ -363,7 +356,7 @@ public class UserDAOImpl implements UserDAO {
 
     } catch (SQLException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
-      throw new DAOLogicException("Dao logic while disactivating user with id=" + id, e);
+      throw new DAOLogicException(MessagesForException.DAO_LOGIC_EXCEPTION + id, e);
     }
 
   }

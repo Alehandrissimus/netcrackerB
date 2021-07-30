@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.netcracker.netcrackerquizb.exception.MailException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
@@ -27,7 +28,7 @@ class MailSenderServiceImplTest {
               .setEmail("max.bataiev@gmail.com")
               .build()
       );
-    } catch (UserException e) {
+    } catch (UserException | MailException e) {
       e.printStackTrace();
     }
   }
