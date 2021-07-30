@@ -1,6 +1,6 @@
 package ua.netcracker.netcrackerquizb.exception;
 
-public class AnswerDoesNotExistException extends Exception {
+public class AnswerDoesNotExistException  extends Exception implements MessagesForException {
 
     public AnswerDoesNotExistException (String errorMessage) {
         super(errorMessage);

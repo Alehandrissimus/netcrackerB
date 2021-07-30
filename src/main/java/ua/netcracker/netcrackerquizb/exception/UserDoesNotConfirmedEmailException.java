@@ -1,6 +1,6 @@
 package ua.netcracker.netcrackerquizb.exception;
 
-public class UserDoesNotConfirmedEmailException extends Exception {
+public class UserDoesNotConfirmedEmailException extends Exception implements MessagesForException {
 
   public UserDoesNotConfirmedEmailException(String message) {
     super(message);
