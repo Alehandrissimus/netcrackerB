@@ -2,12 +2,13 @@ package ua.netcracker.netcrackerquizb.model.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import ua.netcracker.netcrackerquizb.exception.QuizException;
+import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.*;
 
@@ -19,6 +20,7 @@ public class QuizImpl implements Quiz {
     private QuizType quizType;
     private Date creationDate;
     private BigInteger creatorId;
+    private List<Question> questions;
 
     private QuizImpl() {
     }
@@ -83,19 +85,30 @@ public class QuizImpl implements Quiz {
         this.creatorId = creatorId;
     }
 
+    @Override
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    @Override
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
     public static Builder QuizBuilder() {
         return new QuizImpl().new Builder();
     }
 
     @Override
     public String toString() {
-        return "QuizBuilder{" +
+        return "QuizImpl{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", quizType=" + quizType +
                 ", creationDate=" + creationDate +
                 ", creatorId=" + creatorId +
+                ", questions=" + questions +
                 '}';
     }
 
@@ -140,6 +153,11 @@ public class QuizImpl implements Quiz {
                 throw new QuizException(OWNER_IS_NULL);
             }
             QuizImpl.this.creatorId = creatorId;
+            return this;
+        }
+
+        public Builder setQuestions(List<Question> questions) {
+            QuizImpl.this.questions = questions;
             return this;
         }
 

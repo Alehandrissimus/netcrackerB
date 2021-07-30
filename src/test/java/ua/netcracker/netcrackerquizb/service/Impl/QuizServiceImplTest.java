@@ -6,11 +6,14 @@ import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.exception.*;
+import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
+import ua.netcracker.netcrackerquizb.service.QuestionService;
 import ua.netcracker.netcrackerquizb.service.QuizService;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,12 +23,15 @@ import static ua.netcracker.netcrackerquizb.exception.MessagesForException.ERROR
 class QuizServiceImplTest {
 
     private QuizService quizService;
+    private QuestionService questionService;
 
     @Autowired
-    private void setTestConnection(QuizService quizService) {
+    private void setTestConnection(QuizService quizService, QuestionService questionService) {
         this.quizService = quizService;
+        this.questionService = questionService;
         try {
             quizService.setTestConnection();
+            questionService.setTestConnection();
         } catch (DAOConfigException e) {
             log.error(ERROR_WHILE_SETTING_TEST_CONNECTION + e.getMessage());
         }
@@ -53,10 +59,14 @@ class QuizServiceImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void buildNewQuiz() {
         try {
+            BigInteger quizId = BigInteger.valueOf(1);
+            List<Question> questions = questionService.getQuestionsByQuiz(quizId);
+
             Quiz quiz = quizService.buildNewQuiz(
                     "Math",
                     "Math quiz",
                     QuizType.MATHEMATICS,
+                    questions,
                     BigInteger.valueOf(1));
 
             log.info("Quiz with id " + quiz.getId() + " was created");
@@ -68,6 +78,8 @@ class QuizServiceImplTest {
         } catch (QuizException | DAOLogicException | QuizDoesNotExistException | UserException | UserDoesNotExistException e) {
             log.error("Error while testing buildNewQuiz in QuizService", e);
             fail();
+        } catch (QuestionDoesNotExistException | AnswerDoesNotExistException e) {
+            e.printStackTrace();
         }
     }
 

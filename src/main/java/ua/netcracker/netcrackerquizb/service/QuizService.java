@@ -1,6 +1,7 @@
 package ua.netcracker.netcrackerquizb.service;
 
 import ua.netcracker.netcrackerquizb.exception.*;
+import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public interface QuizService {
 
-    Quiz buildNewQuiz(String title, String description, QuizType quizType, BigInteger userId) throws QuizException, DAOLogicException, UserException;
+    Quiz buildNewQuiz(String title, String description, QuizType quizType, List<Question> questions, BigInteger userId) throws QuizException, DAOLogicException, UserException;
 
     void updateQuiz(Quiz updatedQuiz) throws QuizDoesNotExistException, DAOLogicException;
 

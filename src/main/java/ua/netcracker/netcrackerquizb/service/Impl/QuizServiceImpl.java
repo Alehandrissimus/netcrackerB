@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.QuizDAO;
 import ua.netcracker.netcrackerquizb.exception.*;
+import ua.netcracker.netcrackerquizb.model.Question;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
 import ua.netcracker.netcrackerquizb.model.impl.QuizImpl;
@@ -30,9 +31,10 @@ public class QuizServiceImpl implements QuizService {
         quizDAO.setTestConnection();
     }
 
+
     @Override
-    public Quiz buildNewQuiz(String title, String description, QuizType quizType, BigInteger userId)
-            throws QuizException, DAOLogicException {
+    public Quiz buildNewQuiz(String title, String description, QuizType quizType,
+                             List<Question> questions, BigInteger userId) throws QuizException, DAOLogicException {
         try {
             boolean isExist = quizDAO.existQuizByTitle(title);
 
@@ -45,6 +47,7 @@ public class QuizServiceImpl implements QuizService {
                     .setDescription(description)
                     .setQuizType(quizType)
                     .setCreationDate(new Date(System.currentTimeMillis()))
+                    .setQuestions(questions)
                     .setCreatorId(userId)
                     .build();
 
@@ -56,6 +59,7 @@ public class QuizServiceImpl implements QuizService {
         }
 
     }
+
 
     @Override
     public void updateQuiz(Quiz updatedQuiz)

@@ -2,6 +2,7 @@ package ua.netcracker.netcrackerquizb.model;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 public interface Quiz {
 
@@ -28,6 +29,10 @@ public interface Quiz {
     void setCreatorId(BigInteger creatorId);
 
     BigInteger getCreatorId();
+
+    List<Question> getQuestions();
+
+    void setQuestions(List<Question> questions);
 
 }
 
