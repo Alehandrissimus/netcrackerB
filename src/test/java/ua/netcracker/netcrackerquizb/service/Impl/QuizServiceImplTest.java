@@ -13,6 +13,7 @@ import ua.netcracker.netcrackerquizb.service.QuestionService;
 import ua.netcracker.netcrackerquizb.service.QuizService;
 
 import java.math.BigInteger;
+import java.sql.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -41,22 +42,6 @@ class QuizServiceImplTest {
 
     @Test
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    void getQuizByIdTest() {
-        try {
-            Quiz quiz = quizService.getQuizById(BigInteger.valueOf(1));
-            assertNotNull(quiz);
-            assertEquals(1, quiz.getId().intValue());
-
-            log.info("Quiz was found by id: " + quiz.getId());
-
-        } catch (QuizDoesNotExistException | DAOLogicException e) {
-            log.error("Error while testing getQuizById in QuizService", e);
-            fail();
-        }
-    }
-
-    @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void buildNewQuiz() {
         try {
             BigInteger quizId = BigInteger.valueOf(1);
@@ -75,13 +60,100 @@ class QuizServiceImplTest {
             log.info("Quiz with id " + quiz.getId() + " was deleted");
             quizService.deleteQuiz(quiz);
 
-        } catch (QuizException | DAOLogicException | QuizDoesNotExistException | UserException | UserDoesNotExistException e) {
+        } catch (QuizException | DAOLogicException | QuizDoesNotExistException |
+                QuestionDoesNotExistException | AnswerDoesNotExistException | UserException |
+                UserDoesNotExistException e) {
             log.error("Error while testing buildNewQuiz in QuizService", e);
             fail();
-        } catch (QuestionDoesNotExistException | AnswerDoesNotExistException e) {
-            e.printStackTrace();
         }
     }
 
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getQuizByIdTest() {
+        try {
+            Quiz quiz = quizService.getQuizById(BigInteger.valueOf(1));
+
+            assertNotNull(quiz);
+            assertEquals(1, quiz.getId().intValue());
+
+            log.info("Quiz was found by id: " + quiz.getId());
+
+        } catch (QuizDoesNotExistException | DAOLogicException | QuizException e) {
+            log.error("Error while testing getQuizById in QuizService", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void updateQuizTest() {
+        try {
+            Quiz quiz = quizService.getQuizById(BigInteger.valueOf(1));
+            Quiz updatedQuiz = quizService.getQuizById(quiz.getId());
+
+            updatedQuiz.setCreationDate(new Date(System.currentTimeMillis()));
+
+            quizService.updateQuiz(updatedQuiz);
+            log.info("Quiz with id " + updatedQuiz.getId() + " was updated");
+
+            assertNotEquals(quiz.getCreationDate(), updatedQuiz.getCreationDate());
+
+        } catch (QuizDoesNotExistException | DAOLogicException | QuizException e) {
+            log.error("Error while testing updateQuiz in quizService", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getAllQuizzesTest() {
+        try {
+            List<Quiz> quizList = quizService.getAllQuizzes();
+
+            if (!quizList.isEmpty()) {
+                assertNotNull(quizList);
+            }
+
+            log.info("Get all quizzes in test");
+        } catch (QuizDoesNotExistException | DAOLogicException e) {
+            log.error("Error while testing getAllQuizzes ", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getQuizByTitleTest() {
+        try {
+            String title = "ZNO";
+            Quiz quiz = quizService.getQuizByTitle(title);
+            log.info("Get quiz by title in test");
+            if (quiz != null) {
+                assertEquals(title, quiz.getTitle());
+            }
+        } catch (QuizDoesNotExistException | DAOLogicException | QuizException e) {
+            log.error("Error while testing getQuizByTitle ", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getLastCreatedQuizzesTest() {
+        try {
+            List<Quiz> quizList = quizService.getLastCreatedQuizzes(BigInteger.valueOf(3));
+
+            if (!quizList.isEmpty()) {
+                assertNotNull(quizList);
+            }
+
+            log.info("Get getLastCreatedQuizzes in test");
+        } catch (DAOLogicException | QuizDoesNotExistException e) {
+            log.error("Error while testing getAllQuizzes ", e);
+            fail();
+        }
+    }
 
 }

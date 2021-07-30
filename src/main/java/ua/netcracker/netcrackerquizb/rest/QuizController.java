@@ -34,7 +34,7 @@ public class QuizController {
     }
 
     @GetMapping("/{id}")
-    public Quiz getQuizById(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException {
+    public Quiz getQuizById(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException, QuizException {
         Quiz quiz = quizService.getQuizById(id);
         if(quiz == null) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);
@@ -44,7 +44,7 @@ public class QuizController {
     }
 
     @PostMapping("/create")
-    public Quiz createGame(String title, String description, QuizType quizType,
+    public Quiz createQuiz(String title, String description, QuizType quizType,
                            List<Question> questions, BigInteger creatorId) throws DAOLogicException, UserException, QuizException {
         if(StringUtils.isBlank(title)) {
             throw new QuizException(EMPTY_TITLE);
@@ -59,7 +59,7 @@ public class QuizController {
     }
 
     @PutMapping("/{id}")
-    public void updateQuiz(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException {
+    public void updateQuiz(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException, QuizException {
         Quiz updatedQuiz = quizService.getQuizById(id);
         if(updatedQuiz == null) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);
@@ -69,7 +69,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteQuiz(@PathVariable BigInteger id) throws QuizDoesNotExistException, DAOLogicException {
+    public void deleteQuiz(@PathVariable BigInteger id) throws QuizDoesNotExistException, DAOLogicException, QuizException {
         Quiz quiz = quizService.getQuizById(id);
         if(quiz == null) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);

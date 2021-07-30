@@ -89,7 +89,11 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DAOLogicException {
+    public Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DAOLogicException, QuizException {
+        if(id == null) {
+            log.error(EMPTY_ID);
+            throw new QuizException(EMPTY_ID);
+        }
         return quizDAO.getQuizById(id);
     }
 
@@ -118,7 +122,5 @@ public class QuizServiceImpl implements QuizService {
         }
         return quizDAO.getQuizByTitle(title);
     }
-
-
 
 }

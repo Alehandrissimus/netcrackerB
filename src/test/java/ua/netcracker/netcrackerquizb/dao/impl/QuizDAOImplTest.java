@@ -202,7 +202,5 @@ class QuizDAOImplTest {
             log.error("Error while testing getAllQuizzes ", e);
             fail();
         }
-
-
     }
 }

@@ -16,7 +16,7 @@ public interface QuizService {
 
     void deleteQuiz(Quiz quiz) throws QuizDoesNotExistException, DAOLogicException, UserDoesNotExistException, UserException;
 
-    Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DAOLogicException;
+    Quiz getQuizById(BigInteger id) throws QuizDoesNotExistException, DAOLogicException, QuizException;
 
     List<Quiz> getQuizzesByType(QuizType quizType) throws QuizDoesNotExistException, DAOLogicException;
 
