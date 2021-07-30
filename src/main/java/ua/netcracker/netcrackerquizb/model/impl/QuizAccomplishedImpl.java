@@ -1,21 +1,24 @@
 package ua.netcracker.netcrackerquizb.model.impl;
 
-import ua.netcracker.netcrackerquizb.model.Quiz;
-
 import java.math.BigInteger;
-import java.util.Objects;
 
 public class QuizAccomplishedImpl {
     private int correctAnswers;
     private Boolean isFavourite;
-    private BigInteger quiz;
+    private BigInteger quizId;
 
-    public QuizAccomplishedImpl(int correctAnswers, Boolean isFavourite, BigInteger quiz) {
+    public QuizAccomplishedImpl(int correctAnswers, Boolean isFavourite, BigInteger quizId) {
         this.correctAnswers = correctAnswers;
         this.isFavourite = isFavourite;
-        this.quiz = quiz;
+        this.quizId = quizId;
     }
-    public QuizAccomplishedImpl(){
+
+    public QuizAccomplishedImpl(int correctAnswers, BigInteger quizId) {
+        this.correctAnswers = correctAnswers;
+        this.quizId = quizId;
+    }
+
+    public QuizAccomplishedImpl() {
     }
 
     public int getCorrectAnswers() {
@@ -30,14 +33,14 @@ public class QuizAccomplishedImpl {
         return isFavourite;
     }
 
-    public void setBoolFavourite(int isFavourite){
+    public void setBoolFavourite(int isFavourite) {
         if(isFavourite == 1)
             this.isFavourite = true;
         else if(isFavourite == 0)
             this.isFavourite = false;
     }
 
-    public int getIntFavourite(){
+    public int getIntFavourite() {
         if(this.isFavourite)
             return 1;
         else return 0;
@@ -47,34 +50,12 @@ public class QuizAccomplishedImpl {
         isFavourite = favourite;
     }
 
-    public BigInteger getQuiz() {
-        return quiz;
+    public BigInteger getQuizId() {
+        return quizId;
     }
 
-    public void setQuiz(BigInteger quiz) {
-        this.quiz = quiz;
-    }
-
-    @Override
-    public String toString() {
-        return "QuizAccomplishedImpl{" +
-                "correctAnswers=" + correctAnswers +
-                ", isFavourite=" + isFavourite +
-                ", quiz=" + quiz +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        QuizAccomplishedImpl that = (QuizAccomplishedImpl) o;
-        return Objects.equals(correctAnswers, that.correctAnswers) && Objects.equals(isFavourite, that.isFavourite) && Objects.equals(quiz, that.quiz);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(correctAnswers, isFavourite, quiz);
+    public void setQuizId(BigInteger quizId) {
+        this.quizId = quizId;
     }
 
 }

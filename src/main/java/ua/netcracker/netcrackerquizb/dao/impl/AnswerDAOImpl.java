@@ -13,7 +13,7 @@ import ua.netcracker.netcrackerquizb.util.DAOUtil;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 @Repository
@@ -31,9 +31,9 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
 
     @Autowired
     AnswerDAOImpl(
-            @Value("${spring.datasource.url}") String URL,
-            @Value("${spring.datasource.username}") String USERNAME,
-            @Value("${spring.datasource.password}") String PASSWORD
+            @Value(URL_PROPERTY) String URL,
+            @Value(USER_PROPERTY) String USERNAME,
+            @Value(PASSWORD_PROPERTY) String PASSWORD
     ) throws DAOConfigException {
         this.URL = URL;
         this.USERNAME = USERNAME;
@@ -56,7 +56,7 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
     public Answer getAnswerById(BigInteger answerId) throws DAOLogicException, AnswerDoesNotExistException {
         try  {
             PreparedStatement preparedStatement =
-                    connection.prepareStatement(properties.getProperty("GET_ANSWER_BY_ID"));
+                    connection.prepareStatement(properties.getProperty(GET_ANSWER_BY_ID));
             preparedStatement.setLong(1, answerId.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) {
@@ -78,7 +78,7 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
     @Override
     public BigInteger getLastAnswerIdByTitle(String title) throws DAOLogicException, AnswerDoesNotExistException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_LAST_ANSWER_ID_BY_TITLE"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_LAST_ANSWER_ID_BY_TITLE));
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!resultSet.next()) {
@@ -96,7 +96,7 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
     public BigInteger createAnswer(Answer answer) throws DAOLogicException, AnswerDoesNotExistException {
         try {
             String title = answer.getValue();
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("CREATE_ANSWER"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(CREATE_ANSWER));
             preparedStatement.setString(1, title);
             preparedStatement.setInt(2, answer.getAnswer() ? SQL_TRUE : SQL_FALSE);
             preparedStatement.setLong(3, answer.getQuestionId().longValue());
@@ -111,7 +111,7 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
     @Override
     public void deleteAnswer(BigInteger id) throws DAOLogicException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("DELETE_ANSWER"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(DELETE_ANSWER));
             preparedStatement.setLong(1, id.longValue());
             preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
@@ -124,7 +124,7 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
     public BigInteger updateAnswer(Answer answer) throws DAOLogicException {
         try {
             BigInteger id = answer.getId();
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("UPDATE_ANSWER"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(UPDATE_ANSWER));
             preparedStatement.setString(1, answer.getValue());
             preparedStatement.setInt(2, answer.getAnswer() ? SQL_TRUE : SQL_FALSE);
             preparedStatement.setLong(3, answer.getQuestionId().longValue());
@@ -138,13 +138,13 @@ public class AnswerDAOImpl implements AnswerDAO, MessagesForException {
     }
 
     @Override
-    public Collection<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException, AnswerDoesNotExistException {
+    public List<Answer> getAnswersByQuestionId(BigInteger questionId) throws DAOLogicException, AnswerDoesNotExistException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty("GET_ANSWERS_BY_QUESTION_ID"));
+            PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_ANSWERS_BY_QUESTION_ID));
             preparedStatement.setLong(1, questionId.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            Collection<Answer> answers = new ArrayList<>();
+            List<Answer> answers = new ArrayList<>();
             while (resultSet.next()) {
                 answers.add(new AnswerImpl(
                         BigInteger.valueOf(resultSet.getLong(SQL_ANSWER_ID)),
