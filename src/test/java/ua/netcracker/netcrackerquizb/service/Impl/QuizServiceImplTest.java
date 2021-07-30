@@ -14,12 +14,22 @@ import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.ERROR_WHILE_SETTING_TEST_CONNECTION;
 
 @SpringBootTest
 class QuizServiceImplTest {
 
-    @Autowired
     private QuizService quizService;
+
+    @Autowired
+    private void setTestConnection(QuizService quizService) {
+        this.quizService = quizService;
+        try {
+            quizService.setTestConnection();
+        } catch (DAOConfigException e) {
+            log.error(ERROR_WHILE_SETTING_TEST_CONNECTION + e.getMessage());
+        }
+    }
 
     private static final Logger log = Logger.getLogger(QuizServiceImplTest.class);
 
@@ -28,7 +38,6 @@ class QuizServiceImplTest {
     void getQuizByIdTest() {
         try {
             Quiz quiz = quizService.getQuizById(BigInteger.valueOf(1));
-
             assertNotNull(quiz);
             assertEquals(1, quiz.getId().intValue());
 

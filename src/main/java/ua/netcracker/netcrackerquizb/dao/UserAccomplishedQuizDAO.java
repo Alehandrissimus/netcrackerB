@@ -27,6 +27,11 @@ public interface UserAccomplishedQuizDAO {
 
   void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz) throws DAOLogicException;
 
+  QuizAccomplishedImpl getAccomplishedQuizById(BigInteger idUser, BigInteger idQuiz)
+          throws QuizDoesNotExistException, DAOLogicException;
+
+  boolean isAccomplishedQuiz(BigInteger idUser, BigInteger idQuiz)
+          throws DAOLogicException;
 
   String SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID = "SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID";
   String ADD_ACCOMPLISHED_QUIZ = "ADD_ACCOMPLISHED_QUIZ";

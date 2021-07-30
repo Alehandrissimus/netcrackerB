@@ -3,6 +3,7 @@ package ua.netcracker.netcrackerquizb.model.impl;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
 import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 
@@ -109,9 +110,9 @@ public class AnnouncementImpl implements Announcement {
     }
 
     public AnnouncementBuilder setTitle(String title) throws AnnouncementException{
-      title = title.trim();
-      if(title.isBlank())
+      if(StringUtils.isBlank(title))
         throw new AnnouncementException(EMPTY_ANNOUNCEMENT_TITLE);
+      title = title.trim();
       if(title.length()>MAX_LENGTH_TITLE)
         throw new AnnouncementException(TITLE_TOO_LONG);
       newAnnouncement.title = title;
@@ -119,9 +120,9 @@ public class AnnouncementImpl implements Announcement {
     }
 
     public AnnouncementBuilder setDescription(String description) throws AnnouncementException{
-      description = description.trim();
-      if(description.isBlank())
+      if(StringUtils.isBlank(description))
         throw new AnnouncementException(EMPTY_ANNOUNCEMENT_DESCRIPTION);
+      description = description.trim();
       if(description.length()>MAX_LENGTH_DESCRIPTION)
         throw new AnnouncementException(DESCRIPTION_TOO_LONG);
       newAnnouncement.description = description;
@@ -141,9 +142,9 @@ public class AnnouncementImpl implements Announcement {
     }
 
     public AnnouncementBuilder setAddress(String address) throws AnnouncementException{
-      address = address.trim();
-      if(address.isBlank())
+      if(StringUtils.isBlank(address))
         throw new AnnouncementException(EMPTY_ANNOUNCEMENT_ADDRESS);
+      address = address.trim();
       if(address.length()>MAX_LENGTH_ADDRESS)
         throw new AnnouncementException(ADDRESS_TOO_LONG);
       newAnnouncement.address = address;

@@ -1,5 +1,6 @@
 package ua.netcracker.netcrackerquizb.dao;
 
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
@@ -30,7 +31,7 @@ public interface QuizDAO {
     String SELECT_ALL_QUIZZES = "SELECT_ALL_QUIZZES";
     String SELECT_QUIZ_BY_TITLE = "SELECT_QUIZ_BY_TITLE";
     String SELECT_QUIZZES_BY_TYPE = "SELECT_QUIZZES_BY_TYPE";
-    String SELECT_LAST_THREE_CREATED_QUIZZES = "SELECT_LAST_THREE_CREATED_QUIZZES";
+    String SELECT_LAST_CREATED_QUIZZES = "SELECT_LAST_CREATED_QUIZZES";
 
     Quiz createQuiz(Quiz quiz) throws DAOLogicException, UserDoesNotExistException;
 
@@ -46,8 +47,9 @@ public interface QuizDAO {
 
     List<Quiz> getAllQuizzes() throws QuizDoesNotExistException, DAOLogicException;
 
-    List<Quiz> getLastThreeCreatedQuizzes() throws DAOLogicException, QuizDoesNotExistException;
+    List<Quiz> getLastCreatedQuizzes(BigInteger count) throws DAOLogicException, QuizDoesNotExistException;
 
     Quiz getQuizByTitle(String title) throws QuizDoesNotExistException, DAOLogicException;
 
+    void setTestConnection() throws DAOConfigException;
 }

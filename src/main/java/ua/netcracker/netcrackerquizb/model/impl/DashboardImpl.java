@@ -49,4 +49,13 @@ public class DashboardImpl implements Dashboard {
     public void setLikedAnnouncement(Set<Announcement> likedAnnouncement) {
         this.likedAnnouncement = likedAnnouncement;
     }
+
+    @Override
+    public String toString() {
+        return "DashboardImpl{" +
+                "lastQuizzes=" + lastQuizzes +
+                ", popularAnnouncement=" + popularAnnouncement +
+                ", likedAnnouncement=" + likedAnnouncement +
+                '}';
+    }
 }

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -39,6 +39,7 @@ public class AnswerDAOImplTest {
     void getAnswerByIdTest() {
         try {
             Answer answer = answerDAO.getAnswerById(BigInteger.ONE);
+            log.debug("TEST AnswerDAOImplTest");
             assertNotNull(answer);
             assertEquals("America", answer.getValue());
         } catch (DAOLogicException | AnswerDoesNotExistException e) {
@@ -77,6 +78,7 @@ public class AnswerDAOImplTest {
             String antarctica = "Antarctica";
             Answer answerImpl = new AnswerImpl(antarctica, false, BigInteger.ONE);
 
+            log.debug("createAnswerTest: value = " + antarctica);
             answerDAO.createAnswer(answerImpl);
             BigInteger id = answerDAO.getLastAnswerIdByTitle(antarctica);
             Answer anAnswer = answerDAO.getAnswerById(id);
@@ -104,6 +106,7 @@ public class AnswerDAOImplTest {
             BigInteger id = answerDAO.getLastAnswerIdByTitle(mars);
             Answer nullAnswer = answerDAO.getAnswerById(id);
             assertNotNull(nullAnswer);
+            log.debug("deleteAnswerTest: id = " + id);
 
             answerDAO.deleteAnswer(id);
         } catch (DAOLogicException | AnswerDoesNotExistException e) {
@@ -149,13 +152,13 @@ public class AnswerDAOImplTest {
     void getAnswersByQuestionIdTest() {
         try {
             BigInteger questionId = BigInteger.TWO;
-            if (answerDAO.getAnswersByQuestionId(questionId).getClass().getName().equals(ArrayList.class.getName())) {
-                ArrayList<Answer> answersForSecondQuestion = new ArrayList<>(answerDAO.getAnswersByQuestionId(questionId));
-                assertEquals("America", answersForSecondQuestion.get(0).getValue());
-                assertEquals("Asia", answersForSecondQuestion.get(1).getValue());
-                assertEquals("Africa", answersForSecondQuestion.get(2).getValue());
-                assertEquals("Europe", answersForSecondQuestion.get(3).getValue());
-            }
+
+            List<Answer> answersForSecondQuestion = answerDAO.getAnswersByQuestionId(questionId);
+            assertEquals("America", answersForSecondQuestion.get(0).getValue());
+            assertEquals("Asia", answersForSecondQuestion.get(1).getValue());
+            assertEquals("Africa", answersForSecondQuestion.get(2).getValue());
+            assertEquals("Europe", answersForSecondQuestion.get(3).getValue());
+
         } catch (DAOLogicException | AnswerDoesNotExistException e) {
             log.error("Error while testing getAnswersByQuestionIdTest " + e.getMessage());
             fail();

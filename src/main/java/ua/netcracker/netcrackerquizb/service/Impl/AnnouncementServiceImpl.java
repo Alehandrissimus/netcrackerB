@@ -30,6 +30,17 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     UserDAOImpl userDAO;
 
     @Override
+    public void setTestConnection() throws DAOConfigException {
+        try {
+            announcementDAO.setTestConnection();
+            userAnnouncementDAO.setTestConnection();
+            userDAO.setTestConnection();
+        } catch (DAOConfigException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public List<Announcement> getAllAnnouncements(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
         return userAnnouncementDAO.getAllAnnouncements(idUser);
@@ -119,4 +130,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException {
         return userAnnouncementDAO.getAnnouncementsLikedByUser(idUser);
     }
+
+
 }

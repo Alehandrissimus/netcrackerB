@@ -1,7 +1,5 @@
 package ua.netcracker.netcrackerquizb.dao.impl;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.Collections;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ua.netcracker.netcrackerquizb.dao.UserAccomplishedQuizDAO;
 import ua.netcracker.netcrackerquizb.exception.*;
-import ua.netcracker.netcrackerquizb.model.Announcement;
-import ua.netcracker.netcrackerquizb.model.impl.AnnouncementImpl;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 import ua.netcracker.netcrackerquizb.util.DAOUtil;
 
@@ -71,7 +67,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
         QuizAccomplishedImpl quiz = new QuizAccomplishedImpl();
         quiz.setCorrectAnswers(resultSet.getInt(CORRECT_ANSWERS));
         quiz.setBoolFavourite(resultSet.getInt(IS_FAVOURITE));
-        quiz.setQuiz(BigInteger.valueOf(resultSet.getLong(QUIZ)));
+        quiz.setQuizId(BigInteger.valueOf(resultSet.getLong(QUIZ)));
         quizes.add(quiz);
       }
       return quizes;
@@ -106,7 +102,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
               properties.getProperty(ADD_ACCOMPLISHED_QUIZ));
       preparedStatement.setLong(1, idUser.longValue());
       preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
-      preparedStatement.setLong(3, quiz.getQuiz().longValue());
+      preparedStatement.setLong(3, quiz.getQuizId().longValue());
       preparedStatement.setInt(4, quiz.getCorrectAnswers());
       preparedStatement.setInt(5, quiz.getIntFavourite());
       preparedStatement.executeUpdate();
@@ -124,7 +120,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
       preparedStatement.setInt(2, newQuiz.getCorrectAnswers());
       preparedStatement.setInt(3, newQuiz.getIntFavourite());
       preparedStatement.setLong(4, idUser.longValue());
-      preparedStatement.setLong(5, newQuiz.getQuiz().longValue());
+      preparedStatement.setLong(5, newQuiz.getQuizId().longValue());
       preparedStatement.executeUpdate();
     } catch (SQLException throwables) {
       log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
@@ -140,7 +136,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
               properties.getProperty(SET_IS_FAVOURITE));
       preparedStatement.setInt(1, quiz.getIntFavourite());
       preparedStatement.setLong(2, idUser.longValue());
-      preparedStatement.setLong(3, quiz.getQuiz().longValue());
+      preparedStatement.setLong(3, quiz.getQuizId().longValue());
       preparedStatement.executeUpdate();
     } catch (SQLException throwables) {
       log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
@@ -148,9 +144,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
     }
   }
 
-
-
-
+  @Override
   public QuizAccomplishedImpl getAccomplishedQuizById(BigInteger idUser, BigInteger idQuiz)
           throws QuizDoesNotExistException, DAOLogicException {
     try {
@@ -171,5 +165,23 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
       log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
       throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
     }
+  }
+
+  @Override
+  public boolean isAccomplishedQuiz(BigInteger idUser, BigInteger idQuiz)
+          throws DAOLogicException {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(properties.getProperty(GET_ACCOMPLISHED_QUIZ));
+      preparedStatement.setLong(1, idUser.longValue());
+      preparedStatement.setLong(2, idQuiz.longValue());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if(resultSet.isBeforeFirst()) {
+        return true;
+      }
+    } catch (SQLException throwables) {
+      log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+    }
+    return false;
   }
 }
