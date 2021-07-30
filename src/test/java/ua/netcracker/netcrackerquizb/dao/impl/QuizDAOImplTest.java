@@ -89,7 +89,6 @@ class QuizDAOImplTest {
     void deleteQuizTest() {
 
         try {
-
             String title = "newOlo";
             String description = "Horror quiz";
             QuizType quizType = QuizType.SCIENCE;
@@ -152,8 +151,6 @@ class QuizDAOImplTest {
             log.error("Error while testing getAllQuizzes ", e);
             fail();
         }
-
-
     }
 
     @Test
@@ -188,5 +185,25 @@ class QuizDAOImplTest {
             log.error("Error while testing getQuizzesByType ", e);
             fail();
         }
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    void getLastCreatedQuizzesTest() {
+        try {
+            List<Quiz> quizList = quizDAO.getLastCreatedQuizzes(BigInteger.valueOf(3));
+            System.out.println(quizList);
+
+            if (!quizList.isEmpty()) {
+                assertNotNull(quizList);
+            }
+
+            log.info("Get getLastThreeCreatedQuizzes in test");
+        } catch (DAOLogicException e) {
+            log.error("Error while testing getAllQuizzes ", e);
+            fail();
+        }
+
+
     }
 }

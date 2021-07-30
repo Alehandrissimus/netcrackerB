@@ -205,16 +205,16 @@ public class QuizDAOImpl implements QuizDAO {
     }
 
     @Override
-    public List<Quiz> getLastThreeCreatedQuizzes() throws DAOLogicException {
+    public List<Quiz> getLastCreatedQuizzes(BigInteger count) throws DAOLogicException {
         try (PreparedStatement preparedStatement =
-                     connection.prepareStatement(properties.getProperty(SELECT_LAST_THREE_CREATED_QUIZZES))) {
+                     connection.prepareStatement(properties.getProperty(SELECT_LAST_CREATED_QUIZZES))) {
 
+            preparedStatement.setLong(1, count.longValue());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<Quiz> quizzes = new ArrayList<>();
 
             while (resultSet.next()) {
-
                 Quiz quiz = QuizImpl.QuizBuilder()
                         .setId(BigInteger.valueOf(resultSet.getLong(ID_QUIZ)))
                         .setTitle(resultSet.getString(TITLE))
@@ -223,14 +223,13 @@ public class QuizDAOImpl implements QuizDAO {
                         .setCreationDate(resultSet.getDate(CREATION_DATE))
                         .setCreatorId(BigInteger.valueOf(resultSet.getInt(CREATOR)))
                         .build();
-
                 quizzes.add(quiz);
             }
-
             return quizzes;
+
         } catch (SQLException | QuizException e) {
-            log.error(GET_LAST_THREE_CREATED_QUIZZES_EXCEPTION + e.getMessage());
-            throw new DAOLogicException(GET_LAST_THREE_CREATED_QUIZZES_EXCEPTION, e);
+            log.error(GET_LAST_CREATED_QUIZZES_EXCEPTION + e.getMessage());
+            throw new DAOLogicException(GET_LAST_CREATED_QUIZZES_EXCEPTION, e);
         }
     }
 

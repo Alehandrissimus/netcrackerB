@@ -1,9 +1,6 @@
 package ua.netcracker.netcrackerquizb.service;
 
-import ua.netcracker.netcrackerquizb.exception.AnnouncementDoesNotExistException;
-import ua.netcracker.netcrackerquizb.exception.AnnouncementException;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.UserException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Announcement;
 import java.math.BigInteger;
 import java.util.List;
@@ -40,4 +37,6 @@ public interface AnnouncementService {
 
     Set<Announcement> getAnnouncementsLikedByUser(BigInteger idUser)
             throws AnnouncementDoesNotExistException, DAOLogicException, AnnouncementException;
+
+    void setTestConnection() throws DAOConfigException;
 }

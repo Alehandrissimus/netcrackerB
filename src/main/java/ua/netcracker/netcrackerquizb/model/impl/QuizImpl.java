@@ -1,5 +1,6 @@
 package ua.netcracker.netcrackerquizb.model.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import ua.netcracker.netcrackerquizb.exception.QuizException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.QuizType;
@@ -111,14 +112,14 @@ public class QuizImpl implements Quiz {
         }
 
         public Builder setTitle(String title) throws QuizException {
-            if (title.isBlank())
+            if (StringUtils.isBlank(title))
                 throw new QuizException(EMPTY_TITLE);
             QuizImpl.this.title = title;
             return this;
         }
 
         public Builder setDescription(String description) throws QuizException {
-            if (description.isBlank())
+            if (StringUtils.isBlank(description))
                 throw new QuizException(EMPTY_DESCRIPTION);
             QuizImpl.this.description = description;
             return this;
