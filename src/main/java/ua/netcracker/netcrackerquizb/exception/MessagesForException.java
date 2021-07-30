@@ -35,7 +35,7 @@ public interface MessagesForException {
   String DELETE_QUIZ_EXCEPTION = "SQL Exception while deleteQuiz in QuizDAOImpl";
   String GET_QUIZ_BY_ID_EXCEPTION = "SQL Exception while getQuizById in QuizDAOImpl";
   String GET_ALL_QUIZZES_EXCEPTION = "SQL Exception while getAllQuizzes in QuizDAOImpl";
-  String GET_LAST_THREE_CREATED_QUIZZES_EXCEPTION = "SQL Exception while getLastThreeCreatedQuizzes in QuizDAOImpl";
+  String GET_LAST_CREATED_QUIZZES_EXCEPTION = "SQL Exception while getLastThreeCreatedQuizzes in QuizDAOImpl";
   String GET_QUIZ_BY_TITLE_EXCEPTION = "SQL Exception while getQuizByTitle in QuizDAOImpl";
   String GET_QUIZZES_BY_TYPE_EXCEPTION = "SQL Exception while getQuizzesByType in QuizDAOImpl";
     String ACCOMPLISHED_QUIZ_HAS_NOT_BEEN_FOUNDED = "Accomplished quiz has not been founded";
