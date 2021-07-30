@@ -3,6 +3,8 @@ package ua.netcracker.netcrackerquizb.service.Impl;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.DAO_LOGIC_EXCEPTION;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMAIL_ERROR;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.INVALID_USERS_EMAIL;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.USERS_DOESNT_EXIT;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.USER_ALREADY_EXIST;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.USER_NOT_FOUND_EXCEPTION;
 
 import java.math.BigInteger;
@@ -37,11 +39,10 @@ public class UserServiceImpl implements UserService {
   public BigInteger buildNewUser(String email, String password, String firstName, String lastName)
       throws UserException, DAOLogicException {
     try {
-
       validateNewUser(email, password, firstName, lastName);
 
       if (userDAO.getUserByEmail(email) != null) {
-        throw new UserException("User already exist");
+        throw new UserException(USER_ALREADY_EXIST);
       }
 
       User user = new UserImpl.UserBuilder()
@@ -53,9 +54,8 @@ public class UserServiceImpl implements UserService {
 
       return userDAO.createUser(user);
 
-
     } catch (DAOLogicException | UserDoesNotExistException e) {
-      log.info(DAO_LOGIC_EXCEPTION + " in buildNewUser()");
+      log.info(DAO_LOGIC_EXCEPTION);
       throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
     }
 
@@ -63,14 +63,13 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User authorize(User user) throws DAOLogicException, UserException {
-
     try {
       if (user != null) {
         return userDAO.getAuthorizeUser(user.getEmail(), user.getPassword());
       }
-      throw new UserException("Invalid user");
+      throw new UserException(USERS_DOESNT_EXIT);
     } catch (DAOLogicException | UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
-      log.info(DAO_LOGIC_EXCEPTION + " in authorize()");
+      log.info(DAO_LOGIC_EXCEPTION);
       throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
     }
   }
@@ -96,16 +95,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public void validateNewUser(String email, String password, String firstName, String lastName)
       throws UserException {
-
     Pattern pattern = Pattern.compile(EMAIL_PATTERN);
     Matcher matcher = pattern.matcher(email);
-
     if (!matcher.find()) {
       log.error(MessagesForException.INVALID_USERS_EMAIL);
       throw new UserException(INVALID_USERS_EMAIL);
     }
-
-
   }
 
 
