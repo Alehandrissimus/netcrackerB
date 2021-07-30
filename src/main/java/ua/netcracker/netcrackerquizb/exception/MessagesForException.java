@@ -68,4 +68,7 @@ public interface MessagesForException {
     String USER_NOT_FOUND_EXCEPTION = "User does not exist!";
     String USER_HAS_NOT_BEEN_RECEIVED = "User has not been received";
     String INVALID_USERS_EMAIL = "Invalid users email error ";
+    String INVALID_USERS_ID = "Invalid users id";
+    String ERROR_WHILE_CREATING_USER = "Error while creating user";
+    String USERS_DOESNT_EXIT = "User doesnt exist";
 }
