@@ -1,10 +1,23 @@
 package ua.netcracker.netcrackerquizb.model.impl;
 
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_EMAIL;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_FIRST_NAME;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_LAST_NAME;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_PASSWORD;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_TITLE;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_USER_ID;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.INVALID_USERS_EMAIL;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.NULL_EMAIL;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.NULL_FIRST_NAME;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.NULL_LAST_NAME;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.NULL_PASSWORD;
 
 import java.math.BigInteger;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.springframework.util.StringUtils;
+import ua.netcracker.netcrackerquizb.exception.MessagesForException;
 import ua.netcracker.netcrackerquizb.exception.QuizException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
@@ -168,22 +181,32 @@ public class UserImpl implements User {
       newUser = new UserImpl();
     }
 
-    public UserBuilder setId(BigInteger id) {
+    public UserBuilder setId(BigInteger id) throws UserException {
+
+      if (id == null) {
+        throw new UserException(EMPTY_USER_ID);
+      }
       newUser.id = id;
       return this;
     }
 
     public UserBuilder setFirstName(String firstName) throws UserException {
-      if (firstName.isBlank()) {
-        throw new UserException("First name field cannot be empty");
+      if (firstName == null) {
+        throw new UserException(NULL_FIRST_NAME);
+      }
+      if (firstName.isBlank() || firstName.length() < 3) {
+        throw new UserException(EMPTY_FIRST_NAME);
       }
       newUser.firstName = firstName;
       return this;
     }
 
     public UserBuilder setLastName(String lastName) throws UserException {
-      if (lastName.isBlank()) {
-        throw new UserException("Last name field cannot be empty");
+      if (lastName == null) {
+        throw new UserException(NULL_LAST_NAME);
+      }
+      if (lastName.isBlank() || lastName.length() < 3) {
+        throw new UserException(EMPTY_LAST_NAME);
       }
 
       newUser.lastName = lastName;
@@ -191,16 +214,28 @@ public class UserImpl implements User {
     }
 
     public UserBuilder setEmail(String email) throws UserException {
+      if (email == null) {
+        throw new UserException(NULL_EMAIL);
+      }
       if (email.isBlank()) {
-        throw new UserException("Email field cannot be empty");
+        throw new UserException(EMPTY_EMAIL);
+      }
+      Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+      Matcher matcher = pattern.matcher(email);
+
+      if (!matcher.find()) {
+        throw new UserException(INVALID_USERS_EMAIL);
       }
       newUser.email = email;
       return this;
     }
 
     public UserBuilder setPassword(String password) throws UserException {
+      if (password == null) {
+        throw new UserException(NULL_PASSWORD);
+      }
       if (password.isBlank()) {
-        throw new UserException("Password field cannot be empty");
+        throw new UserException(EMPTY_PASSWORD);
       }
       newUser.password = password;
       return this;

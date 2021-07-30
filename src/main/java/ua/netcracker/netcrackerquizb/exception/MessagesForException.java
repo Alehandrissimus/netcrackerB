@@ -71,4 +71,14 @@ public interface MessagesForException {
     String INVALID_USERS_ID = "Invalid users id";
     String ERROR_WHILE_CREATING_USER = "Error while creating user";
     String USERS_DOESNT_EXIT = "User doesnt exist";
+    String EMPTY_USER_ID= "Empty user id";
+    String NULL_FIRST_NAME= "Null first name";
+    String EMPTY_FIRST_NAME = "First name field cannot be empty";
+    String NULL_LAST_NAME = "Null last name";
+    String EMPTY_LAST_NAME = "Last name field cannot be empty";
+    String NULL_EMAIL = "Null email";
+    String EMPTY_EMAIL = "Email field cannot be empty";
+    String NULL_PASSWORD = "Null password";
+    String EMPTY_PASSWORD = "Password field cannot be empty";
+
 }
