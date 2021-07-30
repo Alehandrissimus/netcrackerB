@@ -1,11 +1,10 @@
-package ua.netcracker.netcrackerquizb.controller.impl;
+package ua.netcracker.netcrackerquizb.rest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import ua.netcracker.netcrackerquizb.controller.UserController;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.MailException;
 import ua.netcracker.netcrackerquizb.exception.MessagesForException;
@@ -13,7 +12,6 @@ import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
-import ua.netcracker.netcrackerquizb.service.Impl.UserServiceImpl;
 import ua.netcracker.netcrackerquizb.service.MailSenderService;
 import ua.netcracker.netcrackerquizb.service.UserService;
 import ua.netcracker.netcrackerquizb.util.RegexPatterns;
@@ -22,7 +20,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Controller
-public class UserControllerImpl implements UserController, RegexPatterns {
+public class UserControllerImpl implements RegexPatterns {
 
     private static final Logger log = Logger.getLogger(UserControllerImpl.class);
 
@@ -32,7 +30,7 @@ public class UserControllerImpl implements UserController, RegexPatterns {
     @Autowired
     private MailSenderService mailSenderService;
 
-    @Override
+    @PostMapping("/register")
     public void createUser(String email, String password, String name, String surname) {
         try {
             userService.validateNewUser(email, password, name, surname);
@@ -53,7 +51,7 @@ public class UserControllerImpl implements UserController, RegexPatterns {
         }
     }
 
-    @Override
+    @PostMapping("/login")
     public void tryToAuthorize(String email, String password) {
         try {
             if(!email.matches(mailPattern)) {
@@ -66,7 +64,7 @@ public class UserControllerImpl implements UserController, RegexPatterns {
                     .setEmail(email)
                     .setPassword(password)
                     .build();
-            userService.authorize(user);
+            User receivedUser = userService.authorize(user);
         } catch (DAOLogicException e) {
             log.error("a");
         } catch (UserException e) {
@@ -74,18 +72,15 @@ public class UserControllerImpl implements UserController, RegexPatterns {
         }
     }
 
-    @Override
     public void deleteUser(User user) {
 
     }
 
-    @Override
     public void editUser(User user) {
 
     }
 
     @PostMapping("/recover")
-    @Override
     public void recoverPassword(User user) {
         try {
             userService.recoverPassword(user);
@@ -99,27 +94,22 @@ public class UserControllerImpl implements UserController, RegexPatterns {
     }
 
 
-    @Override
     public void updatePassword() {
 
     }
 
-    @Override
     public void registrationConfirm(User user) {
 
     }
 
-    @Override
     public void confirmEmail(String confirmationCode) {
 
     }
 
-    @Override
     public User getUser(BigInteger userId) {
         return null;
     }
 
-    @Override
     public List<Quiz> getAccomplishedQuizes(BigInteger userId) {
         return null;
     }
