@@ -22,35 +22,35 @@ import static ua.netcracker.netcrackerquizb.exception.MessagesForException.ERROR
 @SpringBootTest
 public class DashboardServiceImplTest {
 
-    @Autowired
-    private DashboardService dashboardService;
+  @Autowired
+  private DashboardService dashboardService;
 
-    private static final Logger log = Logger.getLogger(DashboardServiceImplTest.class);
+  private static final Logger log = Logger.getLogger(DashboardServiceImplTest.class);
 
-    @Autowired
-    private void setTestConnection(DashboardService dashboardService) {
-        this.dashboardService = dashboardService;
-        try {
-            dashboardService.setTestConnection();
-        } catch (DAOConfigException e) {
-            log.error(ERROR_WHILE_SETTING_TEST_CONNECTION + e.getMessage());
-        }
+  @Autowired
+  private void setTestConnection(DashboardService dashboardService) {
+    this.dashboardService = dashboardService;
+    try {
+      dashboardService.setTestConnection();
+    } catch (DAOConfigException e) {
+      log.error(ERROR_WHILE_SETTING_TEST_CONNECTION + e.getMessage());
     }
+  }
 
-    @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    void generateDashboard() throws DAOLogicException {
-        User user = new UserImpl.UserBuilder()
-                .setId(BigInteger.valueOf(1))
-                .build();
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+  void generateDashboard() throws DAOLogicException {
+    try {
+      User user = new UserImpl.UserBuilder()
+          .setId(BigInteger.valueOf(1))
+          .build();
 
-        try {
-            Dashboard dashboard = dashboardService.generateDashboard(user);
-            System.out.println(dashboard);
-            assertNotNull(dashboard);
-        } catch (DAOLogicException | AnnouncementException | AnnouncementDoesNotExistException | QuizDoesNotExistException e) {
-            log.error(DAO_LOGIC_EXCEPTION + " in generateDashboard");
-            throw new DAOLogicException(DAO_LOGIC_EXCEPTION);
-        }
+      Dashboard dashboard = dashboardService.generateDashboard(user);
+      System.out.println(dashboard);
+      assertNotNull(dashboard);
+    } catch (DAOLogicException | AnnouncementException | AnnouncementDoesNotExistException | QuizDoesNotExistException | UserException e) {
+      log.error(DAO_LOGIC_EXCEPTION + " in generateDashboard");
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION);
     }
+  }
 }
