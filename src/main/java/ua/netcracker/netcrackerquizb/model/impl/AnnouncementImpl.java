@@ -55,6 +55,8 @@ public class AnnouncementImpl implements Announcement {
   public int getParticipantsCap() {
     return participantsCap;
   }
+  @Override
+  public boolean getIsLiked(){return isLiked;}
 
   @Override
   public void setId(BigInteger id) {
@@ -88,6 +90,8 @@ public class AnnouncementImpl implements Announcement {
   public void setParticipantsCap(int participantsCap) {
     this.participantsCap = participantsCap;
   }
+  @Override
+  public void setIsLiked(boolean isLiked){this.isLiked = isLiked;}
 
   public static class AnnouncementBuilder {
 

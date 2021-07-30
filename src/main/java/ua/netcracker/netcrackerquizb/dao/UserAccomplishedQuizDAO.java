@@ -23,15 +23,19 @@ public interface UserAccomplishedQuizDAO {
 
   void editAccomplishedQuiz(BigInteger idUser, QuizAccomplishedImpl newQuiz) throws DAOLogicException;
 
-  void addFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
+  void setIsFavoriteQuiz(BigInteger idUser, QuizAccomplishedImpl quiz) throws DAOLogicException;
 
   void addAccomplishedQuiz(BigInteger id, QuizAccomplishedImpl quiz) throws DAOLogicException;
 
-  void removeFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz);
 
   String SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID = "SEARCH_ACCOMPLISHED_QUIZES_BY_USER_ID";
   String ADD_ACCOMPLISHED_QUIZ = "ADD_ACCOMPLISHED_QUIZ";
   String UPDATE_ACCOMPLISHED_QUIZ = "UPDATE_ACCOMPLISHED_QUIZ";
+  String SET_IS_FAVOURITE = "SET_IS_FAVOURITE";
+
+  String CORRECT_ANSWERS = "correct_answers";
+  String IS_FAVOURITE = "is_favourite";
+  String QUIZ = "quiz";
 
   int TRUE_SQL = 1;
 }

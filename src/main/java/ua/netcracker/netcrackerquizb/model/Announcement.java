@@ -18,6 +18,7 @@ public interface Announcement {
   String getAddress();
   Collection<BigInteger> getParticipants();
   int getParticipantsCap();
+  boolean getIsLiked();
 
   void setId(BigInteger id);
   void setTitle(String title);
@@ -27,5 +28,5 @@ public interface Announcement {
   void setAddress(String address);
   void setParticipants(Collection<BigInteger> participants);
   void setParticipantsCap(int participantsCap);
-
+  void setIsLiked(boolean isLiked);
 }

@@ -55,9 +55,7 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
     }
   }
 
-  String CORRECT_ANSWERS = "correct_answers";
-  String IS_FAVOURITE = "is_favourite";
-  String QUIZ = "quiz";
+
   @Override
   public Set<QuizAccomplishedImpl> getAccomplishedQuizesByUser(BigInteger idUser)
       throws DAOLogicException, QuizDoesNotExistException {
@@ -135,12 +133,18 @@ public class UserAccomplishedQuizDAOImpl implements UserAccomplishedQuizDAO {
   }
 
   @Override
-  public void addFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz) {
+  public void setIsFavoriteQuiz(BigInteger idUser, QuizAccomplishedImpl quiz) throws DAOLogicException {
 
-  }
-
-  @Override
-  public void removeFavoriteQuiz(BigInteger id, QuizAccomplishedImpl quiz) {
-
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(
+              properties.getProperty(SET_IS_FAVOURITE));
+      preparedStatement.setInt(1, quiz.getIntFavourite());
+      preparedStatement.setLong(2, idUser.longValue());
+      preparedStatement.setLong(3, quiz.getQuiz().longValue());
+      preparedStatement.executeUpdate();
+    } catch (SQLException throwables) {
+      log.error(DAO_LOGIC_EXCEPTION + throwables.getMessage());
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION, throwables);
+    }
   }
 }
