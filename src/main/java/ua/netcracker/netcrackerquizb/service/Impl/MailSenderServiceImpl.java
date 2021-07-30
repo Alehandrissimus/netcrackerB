@@ -2,7 +2,6 @@ package ua.netcracker.netcrackerquizb.service.Impl;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message.RecipientType;
@@ -33,7 +32,6 @@ public class MailSenderServiceImpl implements MailSenderService {
 
   @Autowired
   private UserDAOImpl userDAO;
-
 
   @Override
   public void sendEmail(User user) throws UserException, MailException {
@@ -114,6 +112,7 @@ public class MailSenderServiceImpl implements MailSenderService {
       }
       try {
         userDAO.getUserByEmailCode(String.valueOf(randString));
+
       } catch (UserDoesNotExistException e) {
         break;
       } catch (DAOLogicException e) {

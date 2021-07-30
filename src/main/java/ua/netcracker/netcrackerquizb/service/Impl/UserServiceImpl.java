@@ -2,7 +2,12 @@ package ua.netcracker.netcrackerquizb.service.Impl;
 
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.DAO_LOGIC_EXCEPTION;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMAIL_ERROR;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_FIRST_NAME;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_LAST_NAME;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.EMPTY_PASSWORD;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.INVALID_USERS_EMAIL;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.INVALID_USERS_FIRST_NAME;
+import static ua.netcracker.netcrackerquizb.exception.MessagesForException.INVALID_USERS_LAST_NAME;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.USERS_DOESNT_EXIT;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.USER_ALREADY_EXIST;
 import static ua.netcracker.netcrackerquizb.exception.MessagesForException.USER_NOT_FOUND_EXCEPTION;
@@ -101,8 +106,26 @@ public class UserServiceImpl implements UserService {
       log.error(MessagesForException.INVALID_USERS_EMAIL);
       throw new UserException(INVALID_USERS_EMAIL);
     }
+    if (password == null) {
+      log.error(EMPTY_PASSWORD);
+      throw new UserException(INVALID_USERS_EMAIL);
+    }
+    if (firstName == null) {
+      log.error(EMPTY_FIRST_NAME);
+      throw new UserException(INVALID_USERS_FIRST_NAME);
+    }
+    if (firstName.length() < 3) {
+      log.error(EMPTY_FIRST_NAME);
+      throw new UserException(INVALID_USERS_FIRST_NAME);
+    }
+    if (lastName == null) {
+      log.error(EMPTY_LAST_NAME);
+      throw new UserException(INVALID_USERS_LAST_NAME);
+    }
+    if (lastName.length() < 3) {
+      log.error(EMPTY_LAST_NAME);
+      throw new UserException(INVALID_USERS_LAST_NAME);
+    }
   }
-
-
 }
 
