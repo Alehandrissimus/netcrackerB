@@ -80,6 +80,9 @@ public interface MessagesForException {
     String EMPTY_EMAIL = "Email field cannot be empty";
     String NULL_PASSWORD = "Null password";
     String EMPTY_PASSWORD = "Password field cannot be empty";
-  String INVALID_USERS_FIRST_NAME = "Invalid users first name";
-  String INVALID_USERS_LAST_NAME = "Invalid users last name";
+    String INVALID_USERS_FIRST_NAME = "Invalid users first name";
+    String INVALID_USERS_LAST_NAME = "Invalid users last name";
+
+    String INVALID_EMAIL = "Invalid user email";
+    String INVALID_PASSWORD = "Invalid password";
 }
