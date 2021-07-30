@@ -112,7 +112,7 @@ class QuestionServiceImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void updateQuestionTest() {
         try {
-            String questionText = "" + new Random().nextInt(500000);
+            String questionText = "q" + new Random().nextInt(500000);
             Question questionModel = new QuestionImpl(
                     BigInteger.valueOf(5),
                     questionText,
@@ -177,7 +177,7 @@ class QuestionServiceImplTest {
     @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
     void getQuestionsByQuizTest() {
         try {
-            BigInteger quizId = BigInteger.valueOf(1);
+            BigInteger quizId = BigInteger.valueOf(4);
             ArrayList<Question> questions = (ArrayList<Question>) questionService.getQuestionsByQuiz(quizId);
             assertEquals(questions.size(), 10);
             assertNotNull(questions.get(3).getAnswers());
