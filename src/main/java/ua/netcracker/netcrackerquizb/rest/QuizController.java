@@ -26,7 +26,7 @@ public class QuizController {
     @GetMapping("/")
     public List<Quiz> showAllQuizzes() throws DAOLogicException, QuizDoesNotExistException {
         List<Quiz> quizzes = quizService.getAllQuizzes();
-        if(quizzes.isEmpty()) {
+        if (quizzes.isEmpty()) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
@@ -36,7 +36,7 @@ public class QuizController {
     @GetMapping("/{id}")
     public Quiz getQuizById(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException, QuizException {
         Quiz quiz = quizService.getQuizById(id);
-        if(quiz == null) {
+        if (quiz == null) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
@@ -54,18 +54,18 @@ public class QuizController {
     @PutMapping("/{id}")
     public Quiz updateQuiz(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException, QuizException {
         Quiz updatedQuiz = quizService.getQuizById(id);
-        if(updatedQuiz == null) {
+        if (updatedQuiz == null) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
-       quizService.updateQuiz(updatedQuiz);
+        quizService.updateQuiz(updatedQuiz);
         return updatedQuiz;
     }
 
     @DeleteMapping("/{id}")
     public void deleteQuiz(@PathVariable BigInteger id) throws QuizDoesNotExistException, DAOLogicException, QuizException {
         Quiz quiz = quizService.getQuizById(id);
-        if(quiz == null) {
+        if (quiz == null) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
@@ -79,7 +79,7 @@ public class QuizController {
 
     @GetMapping("/filter")
     public List<Quiz> showAllFilterQuizzes(@RequestBody User user, Filter filter) {
-        switch(filter) {
+        switch (filter) {
             case DATE:
                 break;
             case QUIZTYPE:

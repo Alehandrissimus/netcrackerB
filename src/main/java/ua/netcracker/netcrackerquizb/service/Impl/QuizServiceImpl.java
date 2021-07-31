@@ -43,8 +43,6 @@ public class QuizServiceImpl implements QuizService {
                 throw new QuizException(QUIZ_ALREADY_EXISTS);
             }
 
-            validateNewQuiz(title, description, questions, userId);
-
             Quiz quiz = QuizImpl.QuizBuilder()
                     .setTitle(title)
                     .setDescription(description)
@@ -54,15 +52,14 @@ public class QuizServiceImpl implements QuizService {
                     .setCreatorId(userId)
                     .build();
 
+            //validateNewQuiz(title, description, questions, userId);
+
             return quizDAO.createQuiz(quiz);
 
         } catch (DAOLogicException e) {
             log.error(DAO_LOGIC_EXCEPTION + " in buildNewQuiz()");
             throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
-        } catch (QuestionException e) {
-            log.error(QUESTION_NOT_FOUND + " in buildNewQuiz()");
-            throw new QuestionException(QUESTION_NOT_FOUND, e);
-        } catch (UserDoesNotExistException | UserException e) {
+        } catch (UserDoesNotExistException e) {
             log.error(USER_NOT_FOUND_EXCEPTION + " in buildNewQuiz()");
             throw new QuestionException(USER_NOT_FOUND_EXCEPTION, e);
         }
