@@ -3,11 +3,9 @@ package ua.netcracker.netcrackerquizb.rest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
-import ua.netcracker.netcrackerquizb.exception.MailException;
-import ua.netcracker.netcrackerquizb.exception.MessagesForException;
-import ua.netcracker.netcrackerquizb.exception.UserException;
+import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
@@ -41,11 +39,7 @@ public class UserController implements RegexPatterns {
                     .build();
 
             mailSenderService.sendEmail(user);
-        } catch (DAOLogicException e) {
-            log.error("a");
-        } catch (UserException e) {
-            log.error("a");
-        } catch (MailException e) {
+        } catch (DAOLogicException | MailException | UserException e) {
             log.error("a");
         }
     }
@@ -65,9 +59,7 @@ public class UserController implements RegexPatterns {
                     .setPassword(password)
                     .build();
             User receivedUser = userService.authorize(user);
-        } catch (DAOLogicException e) {
-            log.error("a");
-        } catch (UserException e) {
+        } catch (DAOLogicException | UserException e) {
             log.error("a");
         }
     }
@@ -84,33 +76,34 @@ public class UserController implements RegexPatterns {
     public void recoverPassword(User user) {
         try {
             userService.recoverPassword(user);
-        } catch (DAOLogicException e) {
-            log.error("a");
-        } catch (MailException e) {
-            log.error("a");
-        } catch (UserException e) {
+        } catch (DAOLogicException | MailException | UserException e) {
             log.error("a");
         }
     }
 
+    @PutMapping("/updatePassword")
+    public void updatePassword(BigInteger id, String newPassword) {
 
-    public void updatePassword() {
-
+        //free
+        //userService.updateUsersPassword(id, newPassword);
     }
 
     public void registrationConfirm(User user) {
-
+        //free
     }
 
     public void confirmEmail(String confirmationCode) {
-
+        //free
     }
 
     public User getUser(BigInteger userId) {
+        //User user = userService.getUserById(userId);
         return null;
     }
 
     public List<Quiz> getAccomplishedQuizes(BigInteger userId) {
+        //free
+        //return userService.getAccomplishedQuizById(userId);
         return null;
     }
 }
