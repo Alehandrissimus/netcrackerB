@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import ua.netcracker.netcrackerquizb.dao.impl.UserDAOImpl;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.MailException;
+import ua.netcracker.netcrackerquizb.exception.MessagesForException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.User;
@@ -19,6 +21,8 @@ import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
 
 @SpringBootTest
 class MailSenderServiceImplTest {
+
+  private static final Logger log = Logger.getLogger(UserServiceImplTest.class);
 
   private MailSenderServiceImpl mailSenderService;
   private UserDAOImpl userDAO;
@@ -31,6 +35,7 @@ class MailSenderServiceImplTest {
       mailSenderService.setTestConnection();
       userDAO.setTestConnection();
     } catch (DAOConfigException e) {
+      log.error(MessagesForException.DAO_CONFIG_EXCEPTION + e.getMessage());
       fail();
     }
   }
@@ -42,6 +47,7 @@ class MailSenderServiceImplTest {
       try {
         userDAO.getUserByEmail("max.bataiev@gmail.com");
       } catch (DAOLogicException e) {
+        log.error(MessagesForException.DAO_LOGIC_EXCEPTION + e.getMessage());
         fail();
       } catch (UserDoesNotExistException e) {
         userDAO.createUser(
@@ -66,6 +72,7 @@ class MailSenderServiceImplTest {
                   .build()
           ));
     } catch (UserException | MailException | DAOLogicException e) {
+      log.error(MessagesForException.DAO_LOGIC_EXCEPTION + e.getMessage());
       fail();
     }
   }
@@ -83,6 +90,7 @@ class MailSenderServiceImplTest {
               .setEmail("wrong.email@gmail.ua")
               .build()
       );
+      log.error(MessagesForException.INVALID_EMAIL);
       fail();
     } catch (UserException | MailException e) {
       assertTrue(true);
@@ -98,6 +106,7 @@ class MailSenderServiceImplTest {
     } catch (UserDoesNotExistException e) {
       assertTrue(true);
     } catch (DAOLogicException e) {
+      log.error(MessagesForException.DAO_LOGIC_EXCEPTION + e.getMessage());
       fail();
     }
   }
@@ -113,6 +122,7 @@ class MailSenderServiceImplTest {
       assertNull(user.getEmailCode());
       assertTrue(user.isActive());
     } catch (DAOLogicException | UserDoesNotExistException | UserException e) {
+      log.error(MessagesForException.DAO_LOGIC_EXCEPTION + e.getMessage());
       fail();
     }
   }
@@ -126,6 +136,7 @@ class MailSenderServiceImplTest {
     } catch (UserException e) {
       assertTrue(true);
     } catch (DAOLogicException e) {
+      log.error(MessagesForException.DAO_LOGIC_EXCEPTION + e.getMessage());
       fail();
     }
   }
@@ -141,6 +152,7 @@ class MailSenderServiceImplTest {
       mailSenderService.generateNewPassword(email);
       assertFalse(userDAO.comparisonOfPasswords(BigInteger.TWO, password));
     } catch (DAOLogicException | MailException | UserDoesNotExistException e) {
+      log.error(MessagesForException.DAO_LOGIC_EXCEPTION + e.getMessage());
       fail();
     }
   }

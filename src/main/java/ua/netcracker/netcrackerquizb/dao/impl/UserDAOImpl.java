@@ -47,6 +47,7 @@ public class UserDAOImpl implements UserDAO {
     connection = DAOUtil.getDataSource(URL, USERNAME, PASSWORD, properties);
   }
 
+  @Override
   public void setTestConnection() throws DAOConfigException {
     try {
       connection = DAOUtil.getDataSource(URL, USERNAME + "_TEST", PASSWORD, properties);

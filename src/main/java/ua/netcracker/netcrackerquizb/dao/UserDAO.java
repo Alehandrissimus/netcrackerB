@@ -1,12 +1,15 @@
 package ua.netcracker.netcrackerquizb.dao;
 
 import java.math.BigInteger;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotConfirmedEmailException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.model.User;
 
 public interface UserDAO {
+
+  public void setTestConnection() throws DAOConfigException;
 
   User getUserById(BigInteger id) throws UserDoesNotExistException, DAOLogicException;
 

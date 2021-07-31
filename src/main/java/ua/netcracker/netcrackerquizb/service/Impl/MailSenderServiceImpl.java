@@ -9,7 +9,7 @@ import javax.mail.PasswordAuthentication;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.netcracker.netcrackerquizb.dao.impl.UserDAOImpl;
+import ua.netcracker.netcrackerquizb.dao.UserDAO;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.MailException;
@@ -32,7 +32,7 @@ public class MailSenderServiceImpl implements MailSenderService {
   private static final Logger log = Logger.getLogger(MailSenderServiceImpl.class);
 
   @Autowired
-  private UserDAOImpl userDAO;
+  private UserDAO userDAO;
 
 
   public void setTestConnection() throws DAOConfigException {
