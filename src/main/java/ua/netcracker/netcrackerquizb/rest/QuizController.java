@@ -45,27 +45,21 @@ public class QuizController {
 
     @PostMapping("/create")
     public Quiz createQuiz(String title, String description, QuizType quizType,
-                           List<Question> questions, BigInteger creatorId) throws DAOLogicException, UserException, QuizException {
-        if(StringUtils.isBlank(title)) {
-            throw new QuizException(EMPTY_TITLE);
-        }
-        if(StringUtils.isBlank(description)) {
-            throw new QuizException(EMPTY_DESCRIPTION);
-        }
-        if(creatorId == null) {
-            throw new UserException(USER_NOT_FOUND_EXCEPTION);
-        }
+                           List<Question> questions, BigInteger creatorId)
+            throws DAOLogicException, UserException, QuizException, QuestionException {
+
         return quizService.buildNewQuiz(title, description, quizType, questions, creatorId);
     }
 
     @PutMapping("/{id}")
-    public void updateQuiz(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException, QuizException {
+    public Quiz updateQuiz(@PathVariable BigInteger id) throws DAOLogicException, QuizDoesNotExistException, QuizException {
         Quiz updatedQuiz = quizService.getQuizById(id);
         if(updatedQuiz == null) {
             log.error(QUIZ_NOT_FOUND_EXCEPTION);
             throw new QuizDoesNotExistException(QUIZ_NOT_FOUND_EXCEPTION);
         }
        quizService.updateQuiz(updatedQuiz);
+        return updatedQuiz;
     }
 
     @DeleteMapping("/{id}")
@@ -84,7 +78,7 @@ public class QuizController {
 
 
     @GetMapping("/filter")
-    public List<Quiz> showAllFilterQuizzes(User user, Filter filter) {
+    public List<Quiz> showAllFilterQuizzes(@RequestBody User user, Filter filter) {
         switch(filter) {
             case DATE:
                 break;

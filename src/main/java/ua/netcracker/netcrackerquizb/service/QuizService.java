@@ -10,7 +10,10 @@ import java.util.List;
 
 public interface QuizService {
 
-    Quiz buildNewQuiz(String title, String description, QuizType quizType, List<Question> questions, BigInteger userId) throws QuizException, DAOLogicException, UserException;
+    int MIN_LENGTH_TITLE = 5;
+    int MIN_LENGTH_DESCRIPTION = 5;
+
+    Quiz buildNewQuiz(String title, String description, QuizType quizType, List<Question> questions, BigInteger userId) throws QuizException, DAOLogicException, UserException, QuestionException;
 
     void updateQuiz(Quiz updatedQuiz) throws QuizDoesNotExistException, DAOLogicException;
 
@@ -25,6 +28,8 @@ public interface QuizService {
     List<Quiz> getLastCreatedQuizzes(BigInteger count) throws QuizDoesNotExistException, DAOLogicException;
 
     Quiz getQuizByTitle(String title) throws QuizDoesNotExistException, DAOLogicException, QuizException;
+
+    void validateNewQuiz(String title, String description, List<Question> questions, BigInteger creatorId) throws QuizException, UserException, QuestionException;
 
     void setTestConnection() throws DAOConfigException;
 }

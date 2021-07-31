@@ -62,7 +62,7 @@ class QuizServiceImplTest {
 
         } catch (QuizException | DAOLogicException | QuizDoesNotExistException |
                 QuestionDoesNotExistException | AnswerDoesNotExistException | UserException |
-                UserDoesNotExistException e) {
+                UserDoesNotExistException | QuestionException e) {
             log.error("Error while testing buildNewQuiz in QuizService", e);
             fail();
         }
