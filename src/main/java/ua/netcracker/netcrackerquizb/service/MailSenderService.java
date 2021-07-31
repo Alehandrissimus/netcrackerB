@@ -1,6 +1,8 @@
 package ua.netcracker.netcrackerquizb.service;
 
-import java.math.BigInteger;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.Session;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.MailException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
@@ -17,11 +19,16 @@ public interface MailSenderService {
   String HOST_EMAIL_NAME = "HOST_EMAIL_NAME";
   String HOST_EMAIL_PASSWORD = "HOST_EMAIL_PASSWORD";
 
-  void sendEmail(User user) throws UserException, MailException;
+  boolean sendEmail(User user) throws UserException, MailException;
 
   String generateCode() throws DAOLogicException;
 
   User confirmEmail(String code) throws UserException, DAOLogicException;
 
   void generateNewPassword(String email) throws MailException;
+
+  void setProperties(Properties properties) throws MailException;
+
+  Message prepareMessage(Session session, String from, String to, String code)
+      throws MailException;
 }

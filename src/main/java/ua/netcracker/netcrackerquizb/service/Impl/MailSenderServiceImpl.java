@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.impl.UserDAOImpl;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.MailException;
 import ua.netcracker.netcrackerquizb.exception.MessagesForException;
@@ -33,8 +34,13 @@ public class MailSenderServiceImpl implements MailSenderService {
   @Autowired
   private UserDAOImpl userDAO;
 
+
+  public void setTestConnection() throws DAOConfigException {
+    userDAO.setTestConnection();
+  }
+
   @Override
-  public void sendEmail(User user) throws UserException, MailException {
+  public boolean sendEmail(User user) throws UserException, MailException {
     try {
       User userInDatabase = userDAO.getUserByEmail(user.getEmail());
 
@@ -69,14 +75,15 @@ public class MailSenderServiceImpl implements MailSenderService {
 
       Message message = prepareMessage(session, from, to, code);
       Transport.send(message);
-
+      return true;
     } catch (DAOLogicException | UserDoesNotExistException | MessagingException e) {
       log.error(MessagesForException.EMAIL_ERROR + e.getMessage());
       throw new MailException(MessagesForException.EMAIL_ERROR);
     }
   }
 
-  private Message prepareMessage(Session session, String from, String to, String code)
+  @Override
+  public Message prepareMessage(Session session, String from, String to, String code)
       throws MailException {
     try {
       Message message = new MimeMessage(session);
@@ -93,7 +100,8 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
   }
 
-  private void setProperties(Properties properties) throws MailException {
+  @Override
+  public void setProperties(Properties properties) throws MailException {
     try (FileInputStream fis = new FileInputStream(PATH_PROPERTY)) {
       properties.load(fis);
     } catch (IOException e) {
@@ -142,7 +150,6 @@ public class MailSenderServiceImpl implements MailSenderService {
       log.error(MessagesForException.DAO_LOGIC_EXCEPTION + e.getMessage());
       throw new DAOLogicException(MessagesForException.DAO_LOGIC_EXCEPTION, e);
     }
-
   }
 
   @Override
