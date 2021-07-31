@@ -96,10 +96,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public void recoverPassword(User user) throws UserException, DAOLogicException, MailException {
     try {
-      if (userDAO.getAuthorizeUser(user.getEmail(), user.getPassword()) != null) {
+      if (userDAO.getUserByEmail(user.getEmail()).isActive()) {
         mailSenderService.generateNewPassword(user.getEmail());
       }
-    } catch (UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
+    } catch (UserDoesNotExistException e) {
       log.error(MessagesForException.USER_NOT_FOUND_EXCEPTION + e.getMessage());
       throw new UserException(USER_NOT_FOUND_EXCEPTION, e);
     } catch (DAOLogicException e) {
@@ -121,6 +121,10 @@ public class UserServiceImpl implements UserService {
       throw new UserException(INVALID_USERS_EMAIL);
     }
     if (password == null) {
+      log.error(EMPTY_PASSWORD);
+      throw new UserException(INVALID_USERS_EMAIL);
+    }
+    if (password.length() < 8) {
       log.error(EMPTY_PASSWORD);
       throw new UserException(INVALID_USERS_EMAIL);
     }
@@ -146,6 +150,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUserById(BigInteger id) throws UserDoesNotExistException, DAOLogicException {
     if (id == null) {
+      log.error(USER_NOT_FOUND_EXCEPTION);
+      throw new UserDoesNotExistException(USER_NOT_FOUND_EXCEPTION);
+    }
+    if (id.longValue() < 1) {
       log.error(USER_NOT_FOUND_EXCEPTION);
       throw new UserDoesNotExistException(USER_NOT_FOUND_EXCEPTION);
     }

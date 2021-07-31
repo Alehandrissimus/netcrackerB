@@ -13,6 +13,7 @@ import ua.netcracker.netcrackerquizb.dao.UserDAO;
 import ua.netcracker.netcrackerquizb.dao.impl.UserDAOImpl;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
+import ua.netcracker.netcrackerquizb.exception.MailException;
 import ua.netcracker.netcrackerquizb.exception.MessagesForException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
@@ -99,9 +100,12 @@ class UserServiceImplTest {
   @Test
   void testAuthorizeActiveValidUser() {
     try {
-      userDAO.updateUsersPassword(BigInteger.TWO, "testPassword");
+      String password = "testPassword";
       userDAO.activateUser(BigInteger.TWO);
-      assertNotNull(userService.authorize(userDAO.getUserById(BigInteger.TWO)));
+      userDAO.updateUsersPassword(BigInteger.TWO, password);
+      User user = userDAO.getUserById(BigInteger.TWO);
+      user.setPassword(password);
+      assertNotNull(userService.authorize(user));
     } catch (DAOLogicException | UserException | UserDoesNotExistException e) {
       log.error(DAO_LOGIC_EXCEPTION + e.getMessage());
       fail();
@@ -121,6 +125,126 @@ class UserServiceImplTest {
     }
   }
 
+  @Test
+  void testRecoverPassword() {
+    try {
+      userDAO.updateUsersPassword(BigInteger.TWO, "testPassword");
+      userDAO.activateUser(BigInteger.TWO);
+
+      userService.recoverPassword(userDAO.getUserById(BigInteger.TWO));
+
+      assertFalse(userDAO.comparisonOfPasswords(BigInteger.TWO, "testPassword"));
+    } catch (DAOLogicException e) {
+      e.printStackTrace();
+    } catch (UserException e) {
+      e.printStackTrace();
+    } catch (MailException e) {
+      e.printStackTrace();
+    } catch (UserDoesNotExistException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  void testValidateNewUser() {
+    try {
+      userService
+          .validateNewUser("max.bataiev@gmail.com", "qwertyui", "testFirstName", "testLastName");
+      assertTrue(true);
+    } catch (UserException e) {
+      fail();
+    }
+  }
+
+  @Test
+  void testNotValidEmailValidateNewUser() {
+    try {
+      userService
+          .validateNewUser("max.bataievgmail.com", "qwertyui", "testFirstName", "testLastName");
+      fail();
+    } catch (UserException e) {
+      assertTrue(true);
+    }
+  }
+
+  @Test
+  void testNotValidPasswordValidateNewUser() {
+    try {
+      userService.validateNewUser("max.bataiev@gmail.com", "qwer", "testFirstName", "testLastName");
+      fail();
+    } catch (UserException e) {
+      assertTrue(true);
+    }
+  }
+
+  @Test
+  void testNotValidFirstNameValidateNewUser() {
+    try {
+      userService.validateNewUser("max.bataiev@gmail.com", "qwertyui", "te", "testLastName");
+      fail();
+    } catch (UserException e) {
+      assertTrue(true);
+    }
+  }
+
+  @Test
+  void testNotValidLastNameValidateNewUser() {
+    try {
+      userService.validateNewUser("max.bataiev@gmail.com", "qwertyui", "testFirstName", "te");
+      fail();
+    } catch (UserException e) {
+      assertTrue(true);
+    }
+  }
+
+  @Test
+  void testUserGetById() {
+    try {
+      assertNotNull(userService.getUserById(BigInteger.ONE));
+    } catch (DAOLogicException | UserDoesNotExistException e) {
+      fail();
+    }
+  }
+
+  @Test
+  void testUserGetByInvalidId() {
+    try {
+      userService.getUserById(null);
+      fail();
+    } catch (DAOLogicException | UserDoesNotExistException e) {
+      assertTrue(true);
+    }
+  }
+
+  @Test
+  void testComparisonOfPasswrods() {
+    try {
+      userDAO.updateUsersPassword(BigInteger.TWO, "testPassword");
+      assertTrue(userService.comparisonOfPasswords(BigInteger.TWO, "testPassword"));
+    } catch (DAOLogicException | UserDoesNotExistException e) {
+      fail();
+    }
+  }
+
+  @Test
+  void testActiveUser() {
+    try {
+      userDAO.activateUser(BigInteger.TWO);
+      assertTrue(userDAO.getUserById(BigInteger.TWO).isActive());
+    } catch (DAOLogicException | UserDoesNotExistException e) {
+      fail();
+    }
+  }
+
+  @Test
+  void testDisactiveUser() {
+    try {
+      userDAO.disactivateUser(BigInteger.TWO);
+      assertFalse(userDAO.getUserById(BigInteger.TWO).isActive());
+    } catch (DAOLogicException | UserDoesNotExistException e) {
+      fail();
+    }
+  }
 
 
 
