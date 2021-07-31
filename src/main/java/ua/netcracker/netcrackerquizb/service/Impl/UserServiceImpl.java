@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
       throw new UserException(USERS_DOESNT_EXIT);
     } catch (DAOLogicException | UserDoesNotExistException | UserDoesNotConfirmedEmailException e) {
       log.info(DAO_LOGIC_EXCEPTION);
-      throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
+      throw new DAOLogicException(DAO_LOGIC_EXCEPTION + e.getMessage(), e);
     }
   }
 

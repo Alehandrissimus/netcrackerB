@@ -2,9 +2,7 @@ package ua.netcracker.netcrackerquizb.rest;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.User;
@@ -44,10 +42,16 @@ public class UserController implements RegexPatterns {
         }
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "Test";
+    }
+
     //return user?
     @PostMapping("/login")
     public void tryToAuthorize(String email, String password) {
-        try {
+        log.info("email: " + email + ", password: " + password);
+        try { 
             if(!email.matches(mailPattern)) {
                 throw new UserException(MessagesForException.INVALID_EMAIL);
             }
@@ -60,7 +64,7 @@ public class UserController implements RegexPatterns {
                     .build();
             User receivedUser = userService.authorize(user);
         } catch (DAOLogicException | UserException e) {
-            log.error("a");
+            log.error(e.getMessage());
         }
     }
 
