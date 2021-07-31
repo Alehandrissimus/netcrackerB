@@ -12,6 +12,8 @@ public interface UserService {
   String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" +
           "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
+  void setTestConnection() throws DAOConfigException;
+
   BigInteger buildNewUser(String email, String password, String name, String surname)
       throws UserException, DAOLogicException;
 
@@ -21,8 +23,6 @@ public interface UserService {
 
   void validateNewUser(String email, String password, String firstName, String lastName)
       throws UserException;
-
-
 
   User getUserById(BigInteger id) throws UserDoesNotExistException, DAOLogicException;
 

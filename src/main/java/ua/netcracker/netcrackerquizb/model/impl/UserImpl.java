@@ -182,7 +182,6 @@ public class UserImpl implements User {
     }
 
     public UserBuilder setId(BigInteger id) throws UserException {
-
       if (id == null) {
         throw new UserException(EMPTY_USER_ID);
       }
@@ -208,7 +207,6 @@ public class UserImpl implements User {
       if (lastName.isBlank() || lastName.length() < 3) {
         throw new UserException(EMPTY_LAST_NAME);
       }
-
       newUser.lastName = lastName;
       return this;
     }
@@ -234,7 +232,7 @@ public class UserImpl implements User {
       if (password == null) {
         throw new UserException(NULL_PASSWORD);
       }
-      if (password.isBlank()) {
+      if (password.isBlank() || password.length() < 8) {
         throw new UserException(EMPTY_PASSWORD);
       }
       newUser.password = password;
@@ -247,7 +245,6 @@ public class UserImpl implements User {
     }
 
     public UserBuilder setDescription(String description) {
-
       newUser.description = description;
       return this;
     }

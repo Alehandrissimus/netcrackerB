@@ -3,6 +3,7 @@ package ua.netcracker.netcrackerquizb.service;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.Session;
+import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.MailException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
@@ -31,4 +32,6 @@ public interface MailSenderService {
 
   Message prepareMessage(Session session, String from, String to, String code)
       throws MailException;
+
+  void setTestConnection() throws DAOConfigException;
 }

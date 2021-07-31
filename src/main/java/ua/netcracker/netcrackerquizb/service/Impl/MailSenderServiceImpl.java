@@ -34,7 +34,7 @@ public class MailSenderServiceImpl implements MailSenderService {
   @Autowired
   private UserDAO userDAO;
 
-
+  @Override
   public void setTestConnection() throws DAOConfigException {
     userDAO.setTestConnection();
   }

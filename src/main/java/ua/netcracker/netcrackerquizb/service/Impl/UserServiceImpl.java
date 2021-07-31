@@ -28,6 +28,7 @@ import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.User;
 import ua.netcracker.netcrackerquizb.model.impl.QuizAccomplishedImpl;
 import ua.netcracker.netcrackerquizb.model.impl.UserImpl;
+import ua.netcracker.netcrackerquizb.service.MailSenderService;
 import ua.netcracker.netcrackerquizb.service.UserService;
 
 @Service
@@ -37,11 +38,7 @@ public class UserServiceImpl implements UserService {
 
   private final UserDAO userDAO;
   private final UserAccomplishedQuizDAO userAccomplishedQuizDAO;
-  private final MailSenderServiceImpl mailSenderService;
-
-  public void setTestConnection() throws DAOConfigException {
-    userDAO.setTestConnection();
-  }
+  private final MailSenderService mailSenderService;
 
   @Autowired
   public UserServiceImpl(UserDAO userDAO, UserAccomplishedQuizDAO userAccomplishedQuizDAO,
@@ -49,6 +46,13 @@ public class UserServiceImpl implements UserService {
     this.userDAO = userDAO;
     this.userAccomplishedQuizDAO = userAccomplishedQuizDAO;
     this.mailSenderService = mailSenderService;
+  }
+
+  @Override
+  public void setTestConnection() throws DAOConfigException {
+    userDAO.setTestConnection();
+    userAccomplishedQuizDAO.setTestConnection();
+    mailSenderService.setTestConnection();
   }
 
   @Override
@@ -69,7 +73,6 @@ public class UserServiceImpl implements UserService {
           .build();
 
       return userDAO.createUser(user);
-
     } catch (DAOLogicException | UserDoesNotExistException e) {
       log.info(DAO_LOGIC_EXCEPTION);
       throw new DAOLogicException(DAO_LOGIC_EXCEPTION, e);
