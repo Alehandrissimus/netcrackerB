@@ -10,16 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.netcracker.netcrackerquizb.dao.UserDAO;
-import ua.netcracker.netcrackerquizb.dao.impl.UserDAOImpl;
 import ua.netcracker.netcrackerquizb.exception.DAOConfigException;
 import ua.netcracker.netcrackerquizb.exception.DAOLogicException;
 import ua.netcracker.netcrackerquizb.exception.MailException;
 import ua.netcracker.netcrackerquizb.exception.MessagesForException;
+import ua.netcracker.netcrackerquizb.exception.QuizDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserDoesNotExistException;
 import ua.netcracker.netcrackerquizb.exception.UserException;
 import ua.netcracker.netcrackerquizb.model.User;
-import ua.netcracker.netcrackerquizb.service.QuestionService;
-import ua.netcracker.netcrackerquizb.service.QuizService;
 import ua.netcracker.netcrackerquizb.service.UserService;
 
 @SpringBootTest
@@ -242,6 +240,15 @@ class UserServiceImplTest {
       userDAO.disactivateUser(BigInteger.TWO);
       assertFalse(userDAO.getUserById(BigInteger.TWO).isActive());
     } catch (DAOLogicException | UserDoesNotExistException e) {
+      fail();
+    }
+  }
+
+  @Test
+  void testGetAccomplishedQuizesByUser() {
+    try {
+      assertNotNull(userService.getAccomplishedQuizesByUser(BigInteger.ONE));
+    } catch (DAOLogicException | QuizDoesNotExistException | UserDoesNotExistException e) {
       fail();
     }
   }

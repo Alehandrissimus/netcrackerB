@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.netcracker.netcrackerquizb.dao.UserAccomplishedQuizDAO;
-import ua.netcracker.netcrackerquizb.dao.UserAnnouncementDAO;
 import ua.netcracker.netcrackerquizb.dao.UserDAO;
 import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.User;
