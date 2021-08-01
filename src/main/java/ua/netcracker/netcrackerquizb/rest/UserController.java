@@ -1,8 +1,11 @@
 package ua.netcracker.netcrackerquizb.rest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ua.netcracker.netcrackerquizb.exception.*;
 import ua.netcracker.netcrackerquizb.model.Quiz;
 import ua.netcracker.netcrackerquizb.model.User;
@@ -68,12 +71,30 @@ public class UserController implements RegexPatterns {
         }
     }
 
-    public void deleteUser(User user) {
-
+    @GetMapping("/user")
+    public User getUser(@RequestParam BigInteger idUser) {
+        try {
+            return userService.getUserById(idUser);
+        } catch (UserDoesNotExistException e) {
+            log.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
+        } catch (DAOLogicException e) {
+            log.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
+        }
     }
 
-    public void editUser(User user) {
-
+    @DeleteMapping("/user")
+    public void deleteUser(@RequestParam BigInteger idUser ) {
+        try {
+            userService.deleteUser(idUser);
+        } catch (DAOLogicException e) {
+            log.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
+        } catch (UserDoesNotExistException e) {
+            log.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
+        }
     }
 
     @PostMapping("/recover")
@@ -85,11 +106,28 @@ public class UserController implements RegexPatterns {
         }
     }
 
-    @PutMapping("/updatePassword")
-    public void updatePassword(BigInteger id, String newPassword) {
+    @PutMapping("/user/{idUser}")
+    public void editUser(@PathVariable BigInteger idUser,
+                         @RequestBody  UserImpl user) {
+        try {
+            if (StringUtils.isBlank(user.getFirstName()) || StringUtils.isBlank(user.getLastName()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            else userService.updateUsersFullName(idUser, user.getFirstName(), user.getLastName());
 
-        //free
-        //userService.updateUsersPassword(id, newPassword);
+            if(StringUtils.isBlank(user.getDescription()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            else userService.updateUsersDescription(idUser, user.getDescription());
+
+            if(StringUtils.isBlank(user.getPassword()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            else userService.updateUsersPassword(idUser, user.getPassword());
+        } catch (DAOLogicException e) {
+                log.error(e.getMessage(), e);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
+            } catch (UserDoesNotExistException e) {
+                log.error(e.getMessage(), e);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
+            }
     }
 
     public void registrationConfirm(User user) {
@@ -98,11 +136,6 @@ public class UserController implements RegexPatterns {
 
     public void confirmEmail(String confirmationCode) {
         //free
-    }
-
-    public User getUser(BigInteger userId) {
-        //User user = userService.getUserById(userId);
-        return null;
     }
 
     public List<Quiz> getAccomplishedQuizes(BigInteger userId) {
