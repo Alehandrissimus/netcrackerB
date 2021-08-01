@@ -55,7 +55,7 @@ class MailSenderServiceImplTest {
                 .setId(BigInteger.ONE)
                 .setFirstName("test")
                 .setLastName("test")
-                .setPassword("test")
+                .setPassword("testqwer")
                 .setEmail("max.bataiev@gmail.com")
                 .build()
         );
@@ -67,7 +67,7 @@ class MailSenderServiceImplTest {
                   .setId(BigInteger.ONE)
                   .setFirstName("test")
                   .setLastName("test")
-                  .setPassword("test")
+                  .setPassword("testqwer")
                   .setEmail("max.bataiev@gmail.com")
                   .build()
           ));
